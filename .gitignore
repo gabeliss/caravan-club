@@ -1,1 +1,14 @@
+# .gitignore
+
+# Ignore virtual environments
 venv/
+
+# Ignore binary files
+chromedriver
+
+backend/node_modules/
+frontend/node_modules/
+
+backend/app/__pycache__/
+
+.DS_Store
