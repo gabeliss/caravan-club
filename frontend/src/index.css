@@ -1,10 +1,8 @@
 body {
   margin: 0px;
   padding: 0px;
-  background-color: rgb(79, 91, 103);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  background-color: rgb(238, 230, 206);
+  font-family: New Century Schoolbook, TeX Gyre Schola, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

@@ -1,63 +1,243 @@
-.App {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-  color: peachpuff;
-}
-
+/* header */
 header {
-  background-color: lavender;
-  min-height: 10vh;
+  background-color: rgb(238, 230, 206);
+  height: 15vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.header-left,
+.header-center,
+.header-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-left {
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.header-left button {
+  color: rgb(5, 89, 26);
+}
+
+.header-logo img {
+  width: 150px;
+  height: auto;
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.header-right img {
+  width: 30px;
+  height: 30px;
+}
+
+button, .header-right img {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* footer */
+footer {
+  background-color: rgb(238, 230, 206);
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  color:rgb(5, 89, 26);
+}
+
+.footer-left,
+.footer-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-center h1 {
+  font-weight: lighter;
+}
+
+.footer-left {
+  justify-content: flex-start;
+  gap: 5px;
+  text-align: left;
+  padding-left: 40px;
+}
+
+.footer-right {
+  justify-content: flex-end;
+  gap: 5px;
+  text-align: right;
+  padding-right: 40px;
+}
+
+footer a {
+  color: black; /* Change the color to black or any color you prefer */
+  font-size: 14px; /* Adjust the font size as needed */
+  text-decoration: none; /* Remove underlines */
+}
+
+.footer-left a:hover,
+.footer-right a:hover {
+  text-decoration: underline; /* Add underline on hover if desired */
+}
+
+/* landing page */
+.landing-page {
+  font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+  margin: 0;
+  padding: 0;
+  color: rgb(5, 89, 26);
+}
+
+.landing-welcome {
+  background: url('/public/images/header/background.jpg') center/cover no-repeat;
+  height: 75vh;
+}
+
+.landing-welcome-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.landing-welcome-content button {
+  color: rgb(5, 89, 26);
+  background-color: rgb(238, 230, 206);
+  height: 40px;
+  width: 80px;
+  border-radius: 5px;
+}
+
+.landing-intro {
+  height: 20vh;
+  display: flex;
+  margin-top: 10vh;
+}
+
+.landing-intro h1 {
+  flex: 1;
+  text-align: left;
+  margin-left: 50px;
+  font-size: 350%;
+  font-weight: lighter;
+}
+
+.landing-intro p {
+  flex: 1; /* Each takes up half of the container */
+  text-align: left; /* Center the text horizontally */
+  margin-right: 50px;
+}
+
+.landing-separator {
+  width:100vw;
+  margin:0 auto;
+}
+
+.landing-separator:after{
+  content:'';
+  display:block;
+  border-right: 100vw solid white;
+  border-top: 50px solid transparent;
+}
+
+.landing-info {
+  background-color: white;
+  min-height: 50vh;
+  display: flex;
+}
+
+.landing-info h1 {
+  text-align: left;
+  margin-left: 50px;
+  font-size: 350%;
+  width: 30vw;
+  margin-top: 10vh;
+  font-weight: lighter;
+}
+
+.landing-info-questions {
+  margin-top: 10vh;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+
+.landing-questions {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; 
+  justify-content: space-between;
+  cursor: pointer;
+  margin: 0 auto;
+  width: 55vw;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+
+.landing-question {
+  display: flex;
+  align-items: center;
   width: 100%;
-  font-size: calc(10px + 2vmin);
-  color: rgb(0, 0, 0);
-  font-weight: bold;
+  color: black;
 }
 
-.trip-card {
-  border: 10px solid #ddd;
-  padding: 16px;
-  margin: 16px;
-  background-color: lightskyblue;
-  color: darkslateblue;
+.landing-toggle {
+  margin-left: auto; 
 }
 
-.trip-card > div {
+.landing-answer {
+  margin-top: 10px;
+  width: 100%; 
+}
+
+.landing-gallery-item {
+  width: calc(30% - 10px); /* Adjusted width to account for margin */
+  margin: 2px;
+}
+
+.landing-gallery-item img {
+  width: 30vw;
+  height: auto;
+  align-items: flex-start;
+}
+
+.landing-gallery-container {
+  background-color: white;
+}
+
+.landing-gallery {
+  display: flex;
+  padding-top: 50px;
+}
+
+.landing-gallery-column {
+  background-clip: padding-box;
+  margin: 0 5px;
+}
+
+.landing-gallery-item {
+  width: 100%;
+  box-sizing: border-box;
   margin-bottom: 10px;
 }
 
-.form-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 300px;
-}
-
-.form-container label {
-  display: flex; /* Add this line to make the label a flex container */
-  align-items: center;
-}
-
-.form-container span {
-  /* Add any label-specific styling here */
-  display: flex;
-  align-items: center;
-  width: 200px;
-}
-
-.form-container input {
-  /* Add any input-specific styling here */
-  width: 200px;
-}
-
-.form-container button {
-  /* Add any button-specific styling here */
-  margin-left: 37.5%;
-  width: 25%;
+.landing-gallery-item img {
+  width: 100%;
+  height: auto;
 }
