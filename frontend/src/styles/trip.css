@@ -1,0 +1,172 @@
+/* trip page */
+
+.trip-page {
+    background-color: white;
+    color: rgb(5, 89, 26);
+    margin: auto;
+}
+
+.trip-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
+}
+
+.trip-header h1 {
+    border-top: 1px solid rgb(5, 89, 26);
+    border-bottom: 1px solid rgb(5, 89, 26);
+    width: 33vw;
+    padding: 20px;
+    font-weight: lighter;
+}
+
+.trips-all {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.trip-left, .trip-right {
+    display: flex;
+    position: relative;
+    width: 100%;
+    height: 50vh;
+    margin-bottom: 60px;
+}
+
+.trip-left {
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.trip-right {
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.pic-left, .pic-right {
+    height: 100%;
+    width: 70%;
+}
+
+.pic-left {
+    margin-left: 4%;
+}
+
+.pic-right {
+    margin-right: 4%;
+}
+
+.info-left-container, .info-right-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 40%;
+    top: 10%;
+}
+
+.info-left-container {
+    right: 0;
+    margin-right: 4%;
+}
+
+.info-right-container {
+    left: 0;
+    margin-left: 4%;
+}
+
+.info-left, .info-right {
+    background-color: rgb(238, 230, 206);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.info-left h2, .info-right h2 {
+    margin-bottom: 20px;
+    font-weight: lighter;
+    font-size: xx-large;
+}
+
+.info-left p, .info-right p {
+    font-weight: lighter;
+    color: black;
+}
+
+.read-more-left, .read-more-right {
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid #000;
+    color: black;
+    margin-top: 10px;
+    align-self: center;
+}
+
+.read-more-left {
+    margin-left: 70px;
+}
+
+.read-more-right {
+    margin-right: 70px;
+}
+
+.read-more-left:hover, .read-more-right:hover {
+    background-color: black;
+    color: white;
+}
+
+@media (max-width: 600px) {
+    .trip-left, .trip-right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        height: auto;
+        margin-bottom: 12%;
+    }
+
+    .pic-left, .pic-right {
+        width: 90%;
+        height: 30vh;
+        margin: 0 5% 5% 5%;
+    }
+
+    .info-left-container, .info-right-container {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        width: 80%;
+        top: auto;
+        left: auto;
+        transform: none;
+        margin: -10% auto 0;
+    }
+
+    .info-left, .info-right {
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .read-more-left, .read-more-right {
+        margin: 10px auto 0;
+    }
+}
+
+.northern-michigan {
+    background: url('../../public/images/trippage/northernmichigan.png') center/cover;
+}
+
+.arizona {
+    background: url('../../public/images/trippage/arizona.png') center/cover;
+}
+
+.smoky-mountain {
+    background: url('../../public/images/trippage/smokymountain.png') center/cover;
+}
+
+.southern-california {
+    background: url('../../public/images/trippage/southerncalifornia.png') center/cover;
+}

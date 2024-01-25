@@ -1,0 +1,34 @@
+.explore-page {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    background-color: white;
+  }
+  
+  .explore-item {
+    flex-basis: calc(45% - 20px);
+    max-width: calc(45% - 20px);
+    text-align: center;
+    padding-top: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  
+  .explore-item img {
+    width: 100%;
+    height: auto;
+  }
+
+  .explore-item h1 {
+    font-weight: lighter;
+  }
+  
+  @media (max-width: 768px) {
+    .explore-item {
+      flex-basis: 100%;
+      max-width: 100%;
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+  }

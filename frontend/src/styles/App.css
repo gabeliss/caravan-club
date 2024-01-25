@@ -1,7 +1,13 @@
+/* contains header, footer, landing page styles */
+
 /* header */
+.blur-effect {
+  filter: blur(5px); /* Adjust the blur value as needed */
+}
+
 header {
   background-color: rgb(238, 230, 206);
-  height: 15vh;
+  height: 18vh;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -35,17 +41,91 @@ header {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
+  margin-right: 2%;
 }
 
-.header-right img {
-  width: 30px;
-  height: 30px;
+.header-icon {
+  font-size: 30px;
+  color: rgb(5, 89, 26);
 }
 
 button, .header-right img {
   border: none;
   background: none;
   cursor: pointer;
+}
+
+.header-menu {
+  display: none; /* Hide the menu by default */
+}
+
+@media (max-width: 600px) {
+  .header-left, .header-right {
+    display: none; /* Hide left and right header parts */
+  }
+  
+  .header-menu {
+    position: relative;
+    display: flex;
+    justify-content: space-evenly;
+    width: 30%;
+  }
+
+  header {
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+
+  .header-menu button {
+    width: 50px;
+    height: 50px;
+  }
+
+  .header-menu a {
+    width: 50px;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .menu-button {
+    font-size: 300%;
+    color: rgb(5, 89, 26);
+  }
+
+  .header-menu img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: rgb(238, 230, 206);
+    width: 100%; /* Adjust as necessary */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+  }
+  
+  .dropdown-menu.open {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .dropdown-menu a:hover, .dropdown-menu button:hover {
+    background-color: rgb(212, 199, 161);
+  }
+
 }
 
 /* footer */
@@ -101,6 +181,7 @@ footer a {
   margin: 0;
   padding: 0;
   color: rgb(5, 89, 26);
+  background-color: white;
 }
 
 .landing-welcome {
@@ -124,57 +205,78 @@ footer a {
   border-radius: 5px;
 }
 
+/* Base styles (mobile view) */
+.landing-intro, .landing-info {
+    display: flex;
+    flex-direction: column;
+    padding-top: 10vh;
+    padding-left: 8%;
+    padding-right: 8%;
+}
+
 .landing-intro {
-  height: 20vh;
-  display: flex;
-  margin-top: 10vh;
-}
-
-.landing-intro h1 {
-  flex: 1;
-  text-align: left;
-  margin-left: 50px;
-  font-size: 350%;
-  font-weight: lighter;
-}
-
-.landing-intro p {
-  flex: 1; /* Each takes up half of the container */
-  text-align: left; /* Center the text horizontally */
-  margin-right: 50px;
-}
-
-.landing-separator {
-  width:100vw;
-  margin:0 auto;
-}
-
-.landing-separator:after{
-  content:'';
-  display:block;
-  border-right: 100vw solid white;
-  border-top: 50px solid transparent;
+  background-color: rgb(238, 230, 206);
+  min-height: 20vh;
+  padding-bottom: 10%;
 }
 
 .landing-info {
   background-color: white;
   min-height: 50vh;
-  display: flex;
+  padding-top: 5vh;
 }
 
-.landing-info h1 {
-  text-align: left;
-  margin-left: 50px;
-  font-size: 350%;
-  width: 30vw;
-  margin-top: 10vh;
-  font-weight: lighter;
+.landing-intro h1, .landing-info h1 {
+    text-align: center;
+    width: 100%;
+    font-weight: lighter;
+    font-size: 350%;
 }
 
 .landing-info-questions {
-  margin-top: 10vh;
-  border-top: 1px solid #ccc;
-  padding-top: 10px;
+    border-top: 1px solid #ccc;
+}
+
+/* Styles for screens wider than 768px */
+@media (min-width: 768px) {
+    .landing-intro {
+        flex-direction: row;
+    }
+
+    .landing-intro h1 {
+        flex: 1; 
+        text-align: left;
+        line-height: 0%;
+    }
+
+    .landing-intro p {
+        flex: 1;
+        text-align: left;
+    }
+
+    .landing-info {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .landing-info h1 {
+        text-align: left;
+        width: 30%;
+    }
+
+    .landing-info-questions {
+        width: 60%;
+        padding-top: 10px;
+    }
+}
+
+.landing-separator {
+  width:100vw;
+  height: 5vh;
+  background: linear-gradient(to top left, white 50%, rgb(238, 230, 206) 50%);
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
 }
 
 .landing-questions {
@@ -183,8 +285,6 @@ footer a {
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  margin: 0 auto;
-  width: 55vw;
   margin-bottom: 10px;
   border-bottom: 1px solid #ccc;
   padding-bottom: 10px;
@@ -203,12 +303,7 @@ footer a {
 
 .landing-answer {
   margin-top: 10px;
-  width: 100%; 
-}
-
-.landing-gallery-item {
-  width: calc(30% - 10px); /* Adjusted width to account for margin */
-  margin: 2px;
+  width: 100%;
 }
 
 .landing-gallery-item img {
@@ -224,6 +319,8 @@ footer a {
 .landing-gallery {
   display: flex;
   padding-top: 50px;
+  padding-left: 2%;
+  padding-right: 2%;
 }
 
 .landing-gallery-column {

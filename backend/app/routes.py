@@ -1,6 +1,5 @@
 from app import app
 from app.helpers import scrape_price
-from flask import Flask, render_template, jsonify
 import os, base64
 
 @app.route('/')
@@ -9,13 +8,11 @@ def index():
 
 @app.route('/api/images')
 def serve_images():
-    print('serving images')
     image_paths = get_image_paths()
     images = [read_image(path) for path in image_paths]
     return images
 
 def get_image_paths():
-    print('getting image paths')
     gallery_path = 'app/static/images/landing-gallery' 
     image_paths = []
 
@@ -29,10 +26,8 @@ def get_image_paths():
     return image_paths
 
 def read_image(path):
-    print('reading images')
     with open(path, 'rb') as image_file:
         encoded_image = base64.b64encode(image_file.read())
-        # Convert the bytes to a UTF-8 string
         encoded_image_str = encoded_image.decode('utf-8')
         return encoded_image_str
 
