@@ -1,0 +1,67 @@
+.page {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+}
+
+.title {
+    font-size: 300%;
+    font-weight: normal;
+    text-align: center;
+}
+
+.descriptor {
+    width: 80%;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    text-align: center;
+    font-weight: lighter;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.day {
+    width: 90%;
+}
+
+.day-title {
+    text-align: center;
+    font-weight: lighter;
+}
+
+.other-trips {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    padding-left: 4%;
+    padding-right: 4%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.flex-end {
+    justify-content:flex-end;
+}
+
+.trip-link {
+    width: 18%;
+    text-decoration: none;
+}
+
+.trip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trip-title {
+    text-align: center;
+    font-size: larger;
+}
+
+.arrow {
+    font-size: xx-large;
+}
