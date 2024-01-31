@@ -1,5 +1,6 @@
 import React from 'react';
 import Slider from 'react-slick';
+import { Link } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './../styles/book.css';
@@ -8,22 +9,22 @@ const tripData = [
     {
         image: 'images/trippage/smokymountain.png',
         title: 'Smoky Mountain National Park',
-        link: '#book-now-link-1',
+        link: '/bookoptions',
     },
     {
         image: 'images/trippage/southerncalifornia.png',
         title: 'Southern California',
-        link: '#book-now-link-2',
+        link: '/bookoptions',
     },
     {
         image: 'images/trippage/arizona.png',
         title: 'Arizona',
-        link: '#book-now-link-3',
+        link: '/bookoptions',
     },
     {
         image: 'images/trippage/northernmichigan.png',
         title: 'Northern Michigan',
-        link: '#book-now-link-4',
+        link: '/book/northernmichigan',
     }
 ];
 
@@ -53,9 +54,7 @@ function BookPage() {
             },
             },
         ],
-        };
-
-
+    };
 
     return (
         <div className='book-page'>
@@ -67,9 +66,9 @@ function BookPage() {
                     your road trip experience is nothing short of extraordinary. Book your road trip today and get ready for an 
                     unforgettable expedition filled with freedom, discovery, and endless memories!
                 </h3>
-                <div class="book-divider">
+                <div className="book-divider">
                     <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                        <path d="M0,0V7.23C0,65.52,268.63,112.77,600,112.77S1200,65.52,1200,7.23V0Z" class="shape-fill"></path>
+                        <path d="M0,0V7.23C0,65.52,268.63,112.77,600,112.77S1200,65.52,1200,7.23V0Z" className="shape-fill"></path>
                     </svg>
                 </div>
             </div>
@@ -98,9 +97,9 @@ function BookPage() {
                         <p>Set off on your road trip with less time spent on planning and more time dedicated to adventure</p>
                     </div>
                 </div>
-                <div class="wave-divider">
+                <div className="wave-divider">
                     <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                        <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" class="shape-fill"></path>
+                        <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" className="shape-fill"></path>
                     </svg>
                 </div>
             </div>
@@ -113,7 +112,9 @@ function BookPage() {
                             </div>
                             <div className="trip-info-container">
                             <h2>{trip.title}</h2>
-                            <p><a href={trip.link} className="book-link">Book Now</a></p>
+                            <Link to={trip.link} className="book-link">
+                                <p>Book Now</p>
+                            </Link>
                             </div>
                         </div>
                     ))}

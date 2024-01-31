@@ -1,0 +1,73 @@
+import React, { useState, useRef, useEffect } from 'react';
+import './../styles/bookpages.css';
+
+const ToggleItem = ({ title, content, isActive, setActive, availability, isSelected, onSelect }) => {
+    const contentRef = useRef(null);
+    const [contentHeight, setContentHeight] = useState(0);
+
+    useEffect(() => {
+        if (contentRef.current) {
+            setContentHeight(contentRef.current.scrollHeight);
+        }
+    }, []);
+
+    const currentHeight = isActive ? contentHeight : 0;
+
+    const availabilityClass = isSelected ? 'availability-selected' : '';
+
+    return (
+        <div className="toggle-item">
+            <div className='toggle-container'>
+                <div className="toggle-header" onClick={setActive}>
+                    {title}
+                    <span className={`toggle-icon ${isActive ? 'active' : ''}`}>▼</span>
+                </div>
+                <div 
+                    className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'availability-selected' : ''}`} 
+                    onClick={() => availability && onSelect()}
+                >
+                    {availability ? 'Available: $217 per night' : 'Not Available for Selected Dates'}
+                </div>
+            </div>
+            <div
+                ref={contentRef}
+                className="toggle-content"
+                style={{ maxHeight: `${currentHeight}px` }}
+            >
+                <p>{content}</p>
+            </div>
+        </div>
+    );
+};
+
+const ToggleList = ({ data }) => {
+    const [activeIndex, setActiveIndex] = useState(null);
+    const [selectedStatusIndex, setSelectedStatusIndex] = useState(null);
+
+    const handleSetActive = index => {
+        setActiveIndex(prevIndex => prevIndex === index ? null : index);
+    };
+
+    const handleSelectStatus = index => {
+        setSelectedStatusIndex(prevIndex => prevIndex === index ? null : index);
+    };
+
+    return (
+        <div className="toggle-list">
+            {data.map((item, index) => (
+                <ToggleItem 
+                    key={index} 
+                    title={item.title} 
+                    content={item.content} 
+                    isActive={index === activeIndex}
+                    setActive={() => handleSetActive(index)} 
+                    availability={item.available}
+                    isSelected={index === selectedStatusIndex}
+                    onSelect={() => handleSelectStatus(index)}
+                />
+            ))}
+        </div>
+    );
+};
+
+export default ToggleList;

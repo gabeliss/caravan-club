@@ -1,0 +1,141 @@
+.book-page {
+    min-height: 50vh;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.intro h1, h2 {
+    text-align: center;
+    font-weight: lighter;
+}
+
+.intro h1 {
+    font-size: 300%;
+}
+
+.intro h2 {
+    font-size: 200%;
+    color: grey;
+    padding-bottom: 30px;
+}
+
+.nights {
+    display: flex;
+    flex-direction: column;
+    width: 88%;
+}
+
+.nights img {
+    width: 100%;
+    height: 35vh;
+    object-fit: cover; /* Image covers the area without distortion */
+    object-position: center; /* Center the image in the container */
+    border-radius: 5%;
+}
+
+.info {
+    padding-bottom: 80px;
+}
+
+.info h2 {
+    font-size: 175%;
+    text-align: left;
+}
+
+.info p {
+    color: grey;
+}
+
+.select-stay-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: auto;
+}
+
+.blank {
+    width: 80%;
+}
+
+.select-stay {
+    margin-top: 10px;
+    font-weight: lighter;
+}
+
+/* toggle css */
+.toggle-list {
+    border-top: 1px solid #ccc;
+}
+
+.toggle-item {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 20px;
+}
+
+.toggle-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.availability-status {
+    width: 20%;
+    margin-top: 20px;
+    text-align: center;
+    border: 2px solid black;
+    border-radius: 5%;
+    color: grey;
+    cursor: pointer;
+}
+
+.availability-status.available {
+    background-color: rgb(238, 230, 206);
+}
+
+.availability-status.not-available {
+    background-color: white;
+}
+
+.availability-status.available.availability-selected {
+    background-color: green;
+    color: white;
+    border: 3px solid #333;
+    transform: scale(1.1);
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+}
+
+.toggle-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: larger;
+    padding-top: 20px;
+    width: 75%;
+  }
+
+  .toggle-icon {
+    transition: transform 0.3s ease;
+    display: inline-block;
+    color: grey;
+  }
+
+  .toggle-icon.active {
+    transform: rotate(-180deg); /* rotates the arrow to point upwards when active */
+  }
+  
+  .toggle-content {
+    overflow: hidden;
+    max-height: 50em;
+    transition: max-height 0.3s ease-in-out;
+    width: 70%;
+  }
+
+  .toggle-content.active {
+    max-height: 50em; /* Set to a value that is greater than what you expect the content height to be */
+    transition: max-height 0.3s ease-in; /* Adjust this value to fit your content */
+    width: 70%;
+  }

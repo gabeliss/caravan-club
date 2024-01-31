@@ -38,13 +38,13 @@ function Header({ isMenuOpen, setIsMenuOpen }) {
       <div className="header-menu">
         <button className="menu-button" onClick={toggleMenu}>{isMenuOpen ? '✕' : '☰'}</button>
         <div className={`dropdown-menu ${isMenuOpen ? 'open' : ''}`}>
-          <Link to="/trips"><button>Trips</button></Link>
-          <Link to="/book"><button>Book</button></Link>
-          <Link to="/media"><button>Media</button></Link>
-          <a href="http://instagram.com/squarespace" target="_blank" rel="noopener noreferrer" class="icon-container">
+          <Link to="/trips" onClick={toggleMenu}><button>Trips</button></Link>
+          <Link to="/book" onClick={toggleMenu}><button>Book</button></Link>
+          <Link to="/media" onClick={toggleMenu}><button>Media</button></Link>
+          <a href="http://instagram.com/squarespace" target="_blank" rel="noopener noreferrer" className="icon-container" onClick={toggleMenu}>
             <i className="fab fa-instagram header-icon"></i>
           </a>
-          <a href="mailto:null" target="_blank" rel="noopener noreferrer" class="icon-container">
+          <a href="mailto:null" target="_blank" rel="noopener noreferrer" className="icon-container" onClick={toggleMenu}>
             <i className="fas fa-envelope header-icon"></i>
           </a>
         </div>
