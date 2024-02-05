@@ -87,6 +87,7 @@
     margin-bottom: 20px;
     font-weight: lighter;
     font-size: xx-large;
+    color: black;
 }
 
 .info-left p, .info-right p {
@@ -99,7 +100,6 @@
     border-radius: 5px;
     cursor: pointer;
     border: 2px solid #000;
-    color: black;
     margin-top: 10px;
     align-self: center;
 }
@@ -114,10 +114,13 @@
 
 .read-more-left:hover, .read-more-right:hover {
     background-color: black;
+}
+
+.read-more-left:hover button, .read-more-right:hover button {
     color: white;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .trip-left, .trip-right {
         display: flex;
         flex-direction: column;

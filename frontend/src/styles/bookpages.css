@@ -6,9 +6,15 @@
     align-items: center;
 }
 
+.intro {
+    background-color: rgb(118, 142, 143);
+    width: 100%;
+}
+
 .intro h1, h2 {
     text-align: center;
     font-weight: lighter;
+    color: white;
 }
 
 .intro h1 {
@@ -17,14 +23,17 @@
 
 .intro h2 {
     font-size: 200%;
-    color: grey;
     padding-bottom: 30px;
+}
+
+.book-page h1 {
+    font-weight: lighter;
 }
 
 .nights {
     display: flex;
     flex-direction: column;
-    width: 88%;
+    width: 95%;
 }
 
 .nights img {
@@ -35,13 +44,57 @@
     border-radius: 5%;
 }
 
-.info {
+.night {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
     padding-bottom: 80px;
 }
+
+.pic {
+    height: 100%;
+    width: 100%;
+}
+
+.pic img {
+    width: 100%;
+    object-fit: cover; /* Cover the area, maintain aspect ratio */
+}
+
+@media (min-width: 768px) { 
+    .night {
+        flex-direction: row;
+        align-items: stretch; /* Ensure children fill the available height */
+    }
+
+    .pic, .info {
+        flex: 1;
+        margin: 20px; /* Adjust margin for visual separation */
+    }
+
+    .pic {
+        height: auto;
+    }
+
+    .pic img {
+        width: 100%;
+        height: 100%; /* This will stretch the image to the height of the .pic */
+        max-height: 100vh;
+    }
+
+    .reverse-pic {
+        order: 2;
+    }
+    .reverse-info {
+        order: 1;
+    }
+}
+
 
 .info h2 {
     font-size: 175%;
     text-align: left;
+    color: black;
 }
 
 .info p {
@@ -129,13 +182,13 @@
   
   .toggle-content {
     overflow: hidden;
-    max-height: 50em;
+    max-height: 100em;
     transition: max-height 0.3s ease-in-out;
     width: 70%;
   }
 
   .toggle-content.active {
-    max-height: 50em; /* Set to a value that is greater than what you expect the content height to be */
+    max-height: 100em; /* Set to a value that is greater than what you expect the content height to be */
     transition: max-height 0.3s ease-in; /* Adjust this value to fit your content */
     width: 70%;
   }

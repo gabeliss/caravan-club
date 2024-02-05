@@ -197,6 +197,10 @@ footer a {
   text-align: center;
 }
 
+.landing-welcome-content h2 {
+  color: rgb(5, 89, 26);
+}
+
 .landing-welcome-content button {
   color: rgb(5, 89, 26);
   background-color: rgb(238, 230, 206);

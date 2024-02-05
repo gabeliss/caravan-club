@@ -13,8 +13,6 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, isSelec
 
     const currentHeight = isActive ? contentHeight : 0;
 
-    const availabilityClass = isSelected ? 'availability-selected' : '';
-
     return (
         <div className="toggle-item">
             <div className='toggle-container'>
@@ -24,7 +22,7 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, isSelec
                 </div>
                 <div 
                     className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'availability-selected' : ''}`} 
-                    onClick={() => availability && onSelect()}
+                    onClick={() => availability && onSelect(title)}
                 >
                     {availability ? 'Available: $217 per night' : 'Not Available for Selected Dates'}
                 </div>
@@ -40,7 +38,7 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, isSelec
     );
 };
 
-const ToggleList = ({ data }) => {
+const ToggleList = ({ data, onSelectionChange }) => {
     const [activeIndex, setActiveIndex] = useState(null);
     const [selectedStatusIndex, setSelectedStatusIndex] = useState(null);
 
@@ -50,6 +48,7 @@ const ToggleList = ({ data }) => {
 
     const handleSelectStatus = index => {
         setSelectedStatusIndex(prevIndex => prevIndex === index ? null : index);
+        onSelectionChange(index);
     };
 
     return (
