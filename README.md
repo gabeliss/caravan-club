@@ -2,7 +2,7 @@
 
 Clone the repo
 To run:
-cd frontend
+cd frontend,
 npm start
 
 
