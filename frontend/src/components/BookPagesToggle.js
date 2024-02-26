@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './../styles/bookpages.css';
 
-const ToggleItem = ({ title, content, isActive, setActive, availability, isSelected, onSelect }) => {
+const ToggleItem = ({ title, content, isActive, setActive, availability, isSelected, onSelect, detailsSubmitted }) => {
     const contentRef = useRef(null);
     const [contentHeight, setContentHeight] = useState(0);
 
@@ -12,20 +12,25 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, isSelec
     }, []);
 
     const currentHeight = isActive ? contentHeight : 0;
+    const toggleHeaderWidth = {
+        width: detailsSubmitted ? '75%' : '100%',
+    };
 
     return (
         <div className="toggle-item">
             <div className='toggle-container'>
-                <div className="toggle-header" onClick={setActive}>
+                <div className="toggle-header" onClick={setActive} style={toggleHeaderWidth}>
                     {title}
                     <span className={`toggle-icon ${isActive ? 'active' : ''}`}>▼</span>
                 </div>
-                <div 
-                    className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'availability-selected' : ''}`} 
-                    onClick={() => availability && onSelect(title)}
-                >
-                    {availability ? 'Available: $217 per night' : 'Not Available for Selected Dates'}
-                </div>
+                {detailsSubmitted && (
+                    <div 
+                        className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'availability-selected' : ''}`} 
+                        onClick={() => availability && onSelect(title)}
+                    >
+                        {availability ? 'Available: $217 per night' : 'Not Available for Selected Dates'}
+                    </div>
+                )}
             </div>
             <div
                 ref={contentRef}
@@ -38,7 +43,7 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, isSelec
     );
 };
 
-const ToggleList = ({ data, onSelectionChange }) => {
+const ToggleList = ({ data, onSelectionChange, detailsSubmitted }) => {
     const [activeIndex, setActiveIndex] = useState(null);
     const [selectedStatusIndex, setSelectedStatusIndex] = useState(null);
 
@@ -63,6 +68,7 @@ const ToggleList = ({ data, onSelectionChange }) => {
                     availability={item.available}
                     isSelected={index === selectedStatusIndex}
                     onSelect={() => handleSelectStatus(index)}
+                    detailsSubmitted={detailsSubmitted}
                 />
             ))}
         </div>

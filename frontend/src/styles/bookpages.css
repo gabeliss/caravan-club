@@ -6,6 +6,13 @@
     align-items: center;
 }
 
+.center {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .intro {
     background-color: rgb(118, 142, 143);
     width: 100%;
@@ -99,6 +106,7 @@
 
 .info p {
     color: grey;
+    padding-bottom: 10px;
 }
 
 .select-stay-container {
@@ -167,7 +175,6 @@
     align-items: center;
     font-size: larger;
     padding-top: 20px;
-    width: 75%;
   }
 
   .toggle-icon {
@@ -182,13 +189,13 @@
   
   .toggle-content {
     overflow: hidden;
-    max-height: 100em;
+    max-height: 500em;
     transition: max-height 0.3s ease-in-out;
     width: 70%;
   }
 
   .toggle-content.active {
-    max-height: 100em; /* Set to a value that is greater than what you expect the content height to be */
+    max-height: 500em; /* Set to a value that is greater than what you expect the content height to be */
     transition: max-height 0.3s ease-in; /* Adjust this value to fit your content */
     width: 70%;
   }

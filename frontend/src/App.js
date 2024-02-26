@@ -9,6 +9,7 @@ import MediaPage from "./pages/MediaPage";
 import ExplorePage from './pages/ExplorePage';
 import BookOptionsPage from "./pages/BookOptionsPage";
 import ReviewTripPage from "./pages/ReviewTripPage";
+import PaymentPage from "./pages/PaymentPage";
 import Arizona from './pages/trips/Arizona';
 import NorthernMichigan from './pages/trips/NorthernMichigan';
 import SmokyMountain from './pages/trips/SmokyMountain';
@@ -31,6 +32,7 @@ function App() {
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/bookoptions" element={<BookOptionsPage />} />
             <Route path="/reviewtrip" element={<ReviewTripPage />} />
+            <Route path="/payments" element={<PaymentPage />} />
             <Route path="/trips/arizona" element={<Arizona />} />
             <Route path="/trips/northernmichigan" element={<NorthernMichigan />} />
             <Route path="/trips/smokymountain" element={<SmokyMountain />} />

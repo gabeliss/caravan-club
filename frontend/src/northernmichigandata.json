@@ -7,12 +7,7 @@
       },
       {
         "title": "Timber Ridge Recreation",
-        "content": "Discover the ideal glamping destination at Timber Ridge Recreation, where you can stay in a yurt, cottage, cabin, or tent. Located just 18 minutes from downtown, these accommodations provide a unique experience and can comfortably host up to 10 people.",
-        "available": false
-      },
-      {
-        "title": "Island View Cottages",
-        "content": "The Anchor Inn offers a boutique lodging experience just a 9-minute drive from Traverse City, featuring charming cabins with a private beach that can accommodate up to six people.",
+        "content": "Nestled near Lake Michigan at the base of the east arm of Grand Traverse Bay, Timber Ridge RV & Recreation Resort boasts a charming location bordering Pere Marquette State Forest. With eight basic cabins, 10 deluxe cabins, and 15 full-service cottages, it's an ideal year-round haven for weekend getaways, family reunions, or retirement parties. In summer, revel in the swimming pool, nature trails, playground, family activities, and more. Winter brings heated cabins, cross-country ski rentals, access to a lodge and kitchen, and direct entry to groomed snowmobile trails. Just 10 minutes from downtown Traverse City, this peaceful retreat offers over 200 clean campsites, resort-quality facilities, and additional perks like barbecue grills, a camp store, and laundry facilities.",
         "available": false
       },
       {
@@ -21,8 +16,8 @@
         "available": true
       },
       {
-        "title": "The Grey Hare Inn",
-        "content": "Experience the ambiance of the Tuscan countryside at Grey Hare Inn, a picturesque vineyard bed and breakfast located just 17 minutes outside of downtown.",
+        "title": "Traverse City KOA",
+        "content": "Traverse City KOA stands out as a top-tier camping destination in Northern Michigan, boasting a prime location that combines natural beauty with urban convenience. Campers can choose from RV sites, tent sites, or comfortable cabins, all surrounded by the picturesque landscapes of the region. Located just a short drive from downtown Traverse City, this family-friendly campground offers easy access to the city's attractions while providing a serene retreat. The well-equipped facilities include clean restrooms, a camp store stocked with essentials, and a refreshing swimming pool. Guests can immerse themselves in a range of recreational activities, from exploring nearby hiking trails to enjoying themed weekends and organized events. Traverse City KOA ensures a distinctive camping experience, blending relaxation with outdoor adventures for an unforgettable stay in the heart of Michigan.",
         "available": true
       }
     ],
@@ -31,16 +26,6 @@
         "title": "Mackinaw Mill Creek Camping & Cabins",
         "content": "Uncover the enchantment of Mackinaw Mill Creek Camping and Glamping, strategically positioned just a brief 5-minute drive from the ferry port to Mackinaw Island. This accommodation offers the choice between tents or cabins and is conveniently situated right next to the water. It serves as the perfect base camp for your island exploration adventures.",
         "available": true
-      },
-      {
-        "title": "Tee Pee Campground",
-        "content": "Tee Pee Campground offers an excellent accommodation option conveniently located next to the ferry port for easy access to the island. With a complimentary shuttle service and a picturesque waterfront setting, this campsite caters exclusively to tent and RV camping, embracing a 'no-frills' experience focused on nature, a renovated bathroom, and your personal site. It provides a great and budget-friendly retreat for nature enthusiasts.",
-        "available": false
-      },
-      {
-        "title": "Roberts Landing Campground",
-        "content": "Roberts Landing Campground is a scenic retreat for tents and RVs, situated directly on the shores of Lake Huron. Offering convenient access to Mackinaw Island ports, just a 10-minute drive away, this campground typically features lakefront sites, providing an excellent opportunity to be close to nature.",
-        "available": false
       },
       {
         "title": "Straits State Park",
@@ -55,21 +40,6 @@
       {
         "title": "St Ignace / Mackinac Island KOA",
         "content": "Mackinaw City KOA is an ideal retreat for those seeking a cozy stay in a tent or cabin, conveniently located just 6 minutes from the Mackinac Island port. While it's not directly situated on the beach, the campground offers a short and pleasant walk to the shore. Embrace the scenic surroundings as you enjoy the close proximity to the water, providing a serene and picturesque setting. Whether you prefer the charm of a tent or the comfort of a cabin, Mackinaw City KOA ensures a delightful stay with its strategic location and easy access to both natural beauty and the gateway to Mackinac Island.",
-        "available": true
-    },
-    {
-        "title": "The Inn at Stonecliffe",
-        "content": "The Inn at Stone Cliff is your premier destination for luxury accommodations just outside the charming town of Mackinac Island. Offering a quaint and sophisticated stay, the Inn boasts a delightful patio, a refreshing pool, a wellness center, and breathtaking views of the lake. Immerse yourself in comfort and style as you unwind in this idyllic setting, providing a perfect blend of relaxation and indulgence. Whether you're seeking tranquility or a touch of elegance, The Inn at Stone Cliff promises a memorable experience with its upscale amenities and picturesque surroundings.",
-        "available": true
-    },
-    {
-        "title": "Haan's 1830 Inn",
-        "content": "Embrace the enchanting allure of Haan's 1830 Inn, situated just a few blocks east from downtown, providing our guests with a convenient and tranquil escape. Revel in the serenity that comes with being away from the bustling crowds while still relishing the proximity to Mackinac Island's key attractions. The bed and breakfast warmly welcomes guests each morning with a delicious breakfast, fostering a communal atmosphere where travelers can share stories and experiences. This stay is reasonably priced, ensuring that your visit to Mackinac Island is not only delightful but also affordable. Experience the perfect blend of charm, comfort, and affordability at this historic inn.",
-        "available": false
-    },
-    {
-        "title": "Metiview Inn",
-        "content": "Discover the historic charm of Metivier Inn, ideally situated on Market Street in Mackinac Island, Michigan. Originally built in 1877 as a private residence by Louis Metivier, the inn retains its original French and English influences, preserving a rich heritage. With a convenient downtown location, Metivier Inn offers spacious, relaxing porches, beautiful Victorian gardens, and peaceful sitting areas where guests can unwind. Enjoy a delightful breakfast served daily, completing the experience at this picturesque inn.",
         "available": true
     }
     ],
