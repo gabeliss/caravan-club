@@ -33,61 +33,37 @@ def scrape_uncleducky(url):
             EC.presence_of_element_located((By.ID, 'cf-query-end_date'))
         )
         driver.execute_script("arguments[0].value = '';", end_date_input)
-        end_date_input.send_keys('06/03/24')
+        end_date_input.send_keys('06/02/24')
 
         close_button = WebDriverWait(driver, 10).until(
             EC.element_to_be_clickable((By.CLASS_NAME, 'input-group-btn.date_btn'))
         )
         close_button.click()
-
-        first_book_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CLASS_NAME, 'cf-btn-book'))
+        #click yurts
+        yurt_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.ID, 'cf-tab2'))
         )
-        first_book_button.click()
+        yurt_button.click()
 
-        submit_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.ID, 'sub_btn'))
+        items = WebDriverWait(driver, 10).until(
+        EC.presence_of_all_elements_located((By.CLASS_NAME, "cf-item-data"))
         )
-        submit_button.click()
+    
+        # Iterate over the items
+        for item in items:
+            # Find the <p> tag within the item's summary
+            item_summary = item.find_element(By.CLASS_NAME, "cf-item-summary")
+            p_tag_text = item_summary.find_element(By.TAG_NAME, "p").text
+            
+            # Check if the <p> tag text contains "Sleeps 8"
+            if "Sleeps 5" in p_tag_text:
+                # Find and click the book button
+                book_button = item.find_element(By.CLASS_NAME, "cf-btn-book")
+                book_button.click()
+
+                break
 
         # get price
-
-        price_element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.ID, 'cf-tally-metadata'))
-        )
-        price = price_element.get_attribute('data-total')
-        print(price)
-
-        # fill out customer info
-        customer_name_input = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.ID, 'customer_name'))
-        )
-        customer_name_input.clear()  # Clear existing text, if any
-        customer_name_input.send_keys('Joe Smith')
-
-        customer_email_input = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.ID, 'customer_email'))
-        )
-        customer_email_input.clear()
-        customer_email_input.send_keys('joesmith@gmail.com')
-
-        customer_phone_input = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.ID, 'customer_phone'))
-        )
-        customer_phone_input.clear()
-        customer_phone_input.send_keys('2481231234')
-
-        # Click the checkbox for customer_tos_agree
-        checkbox_label = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, 'label.btn.btn-checkbox[for="customer_tos_agree"]'))
-        )
-        checkbox_label.click()
-
-        # Click the submit button
-        submit_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.ID, 'continue'))
-        )
-        submit_button.click()
 
     except TimeoutException as e:
         print(f"Timed out waiting for element: {e}")

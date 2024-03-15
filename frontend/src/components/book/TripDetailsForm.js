@@ -3,15 +3,12 @@ import React from 'react';
 function TripDetailsForm({ numTravelers, setNumTravelers, startDate, setStartDate, endDate, setEndDate, handleDetailsSubmit, detailsSubmitted }) {
 
     const handleStartDateChange = (e) => {
-        // Update the start date based on user selection
         const start = e.target.value;
         setStartDate(start);
     
-        // Calculate the end date to be 5 days after the start date
         const startDate = new Date(start);
         const endDate = new Date(startDate.setDate(startDate.getDate() + 5));
     
-        // Format the end date to YYYY-MM-DD to match the input format
         const formattedEndDate = endDate.toISOString().split('T')[0];
         setEndDate(formattedEndDate);
     };

@@ -95,7 +95,7 @@ function BookNorthernMichiganPage() {
             handleDetailsSubmit={handleDetailsSubmit}
             detailsSubmitted={detailsSubmitted}
         />
- <div className='nights'>
+        <div className='nights'>
             <div className='night'>
                 <div className='pic'>
                     <img src="/images/bookpages/northernmichigan1.png" alt="Northern Michigan" />
