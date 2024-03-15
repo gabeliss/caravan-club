@@ -7,7 +7,7 @@ from selenium.common.exceptions import TimeoutException
 import time
 
 
-def scrape_price(url):
+def scrape_uncleducky(url):
     webdriver_path = '../chromedriver'
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument(f"executable_path={webdriver_path}")
@@ -101,7 +101,7 @@ def scrape_price(url):
 
 def main():
     iframeurl = 'https://paddlersvillage.checkfront.com/reserve/?inline=1&category_id=3%2C2%2C4%2C9&provider=droplet&ssl=1&src=https%3A%2F%2Fwww.paddlingmichigan.com&1704390232826'
-    price = scrape_price(iframeurl)
+    price = scrape_uncleducky(iframeurl)
     print(price)
 
 

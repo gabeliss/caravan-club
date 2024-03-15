@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Gallery from './../components/Gallery';
-import LandingQuestions from '../components/LandingQuestions';
+import Gallery from './../components/general/Gallery';
+import LandingQuestions from '../components/general/LandingQuestions';
 
 function HomePage() {
 

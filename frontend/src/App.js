@@ -1,7 +1,7 @@
 import './styles/App.css';
 import React, { useState } from 'react';
-import Header from './components/Header';
-import Footer from './components/Footer'
+import Header from './components/general/Header';
+import Footer from './components/general/Footer'
 import HomePage from "./pages/HomePage";
 import TripPage from './pages/TripPage';
 import BookPage from "./pages/BookPage";

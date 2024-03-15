@@ -1,5 +1,5 @@
 from app import app
-from app.helpers import scrape_price
+from app.helpers import scrape_uncleducky
 import os, base64
 
 @app.route('/')
@@ -32,9 +32,9 @@ def read_image(path):
         return encoded_image_str
 
 
-@app.route('/api/price')
+@app.route('/api/scrape/uncleducky')
 def get_price():
-    price = scrape_price()
+    price = scrape_uncleducky()
     return price
 
 # this is how to use in the react

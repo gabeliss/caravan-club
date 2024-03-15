@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './../../styles/bookpages.css';
-import ToggleList from './../../components/BookPagesToggle';
+import ToggleList from '../../components/book/BookPagesToggle';
 import accommodationsData from './../../northernmichigandata.json'
+import TripDetailsForm from '../../components/book/TripDetailsForm';
 
 function BookNorthernMichiganPage() {
 
@@ -67,18 +69,13 @@ function BookNorthernMichiganPage() {
         });
     };
 
-    const handleStartDateChange = (e) => {
-        // Update the start date based on user selection
-        const start = e.target.value;
-        setStartDate(start);
-    
-        // Calculate the end date to be 5 days after the start date
-        const startDate = new Date(start);
-        const endDate = new Date(startDate.setDate(startDate.getDate() + 5));
-    
-        // Format the end date to YYYY-MM-DD to match the input format
-        const formattedEndDate = endDate.toISOString().split('T')[0];
-        setEndDate(formattedEndDate);
+    const handleGetUncleDucky = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:5000/api/scrape/uncleducky');
+            // setPrice(response.data);
+        } catch (error) {
+            console.error('Error fetching price:', error);
+        }
     };
 
   return (
@@ -88,38 +85,17 @@ function BookNorthernMichiganPage() {
             <h2>5-Day Road Trip</h2>
         </div>
         <h1>Let's Get Started</h1>
-        <div className='details center'>
-            <h1 className='center'>Tell us about your trip:</h1>
-            <div className='form-group'>
-                <label htmlFor='numTravelers'>Number of Travelers (required)</label>
-                <select id='numTravelers' value={numTravelers} onChange={(e) => setNumTravelers(e.target.value)} required>
-                    <option value=''>Select an option</option>
-                    <option value='1'>1</option>
-                    <option value='2'>2</option>
-                    <option value='3'>3</option>
-                    <option value='4'>4</option>
-                    <option value='5'>5</option>
-                    <option value='6'>6</option>
-                    <option value='7'>7</option>
-                    <option value='8'>8</option>
-                    <option value='9'>9</option>
-                    <option value='10'>10</option>
-                </select>
-            </div>
-            <div className='form-group'>
-                <label htmlFor='startDate'>Start Date (required)</label>
-                <input type='date' id='startDate' value={startDate} onChange={handleStartDateChange} required />
-                <label htmlFor='endDate'>End Date</label>
-                <input type='date' id='endDate' value={endDate} readOnly required /> {/* Make this readOnly */}
-            </div>
-            <div className='form-group center'>
-                <button type='submit' className='submit-button' onClick={handleDetailsSubmit}>Submit</button>
-            </div>
-            {!detailsSubmitted && (
-                <h3>Submit trip details to view availability and pricing for each night.</h3>
-            )}
-        </div>
-        <div className='nights'>
+        <TripDetailsForm
+            numTravelers={numTravelers}
+            setNumTravelers={setNumTravelers}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
+            handleDetailsSubmit={handleDetailsSubmit}
+            detailsSubmitted={detailsSubmitted}
+        />
+ <div className='nights'>
             <div className='night'>
                 <div className='pic'>
                     <img src="/images/bookpages/northernmichigan1.png" alt="Northern Michigan" />

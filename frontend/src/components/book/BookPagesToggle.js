@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './../styles/bookpages.css';
+import './../../styles/bookpages.css';
 
 const ToggleItem = ({ title, content, isActive, setActive, availability, isSelected, onSelect, detailsSubmitted }) => {
     const contentRef = useRef(null);

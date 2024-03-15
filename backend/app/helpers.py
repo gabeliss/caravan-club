@@ -7,7 +7,7 @@ from selenium.common.exceptions import TimeoutException
 import time
 
 
-def scrape_price():
+def scrape_uncleducky():
     url = 'https://paddlersvillage.checkfront.com/reserve/?inline=1&category_id=3%2C2%2C4%2C9&provider=droplet&ssl=1&src=https%3A%2F%2Fwww.paddlingmichigan.com&1704390232826'
     webdriver_path = '../chromedriver'
     chrome_options = webdriver.ChromeOptions()
