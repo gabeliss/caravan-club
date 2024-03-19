@@ -47,7 +47,9 @@
       {
         "title": "Uncle Ducky's - Paddlers Village",
         "content": "Uncle Ducky's - Paddlers Village offers a charming accommodation near Pictured Rocks, allowing guests to choose between yurts, tents, and cabins. With a delightful beer garden and lakefront access, it provides a serene and versatile retreat for a memorable stay.",
-        "available": true
+        "available": true,
+        "price": 1.1,
+        "message": "Available"
       }
     ]
   }

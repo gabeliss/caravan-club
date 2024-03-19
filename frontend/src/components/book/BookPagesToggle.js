@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './../../styles/bookpages.css';
 
-const ToggleItem = ({ title, content, isActive, setActive, availability, isSelected, onSelect, detailsSubmitted }) => {
+const ToggleItem = ({ title, content, isActive, setActive, availability, price, message, isSelected, onSelect, detailsSubmitted }) => {
     const contentRef = useRef(null);
     const [contentHeight, setContentHeight] = useState(0);
 
@@ -25,10 +25,10 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, isSelec
                 </div>
                 {detailsSubmitted && (
                     <div 
-                        className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'availability-selected' : ''}`} 
-                        onClick={() => availability && onSelect(title)}
+                        className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'selected' : ''}`} 
+                        onClick={() => availability && onSelect()}
                     >
-                        {availability ? 'Available: $217 per night' : 'Not Available for Selected Dates'}
+                        {message}
                     </div>
                 )}
             </div>
@@ -66,6 +66,8 @@ const ToggleList = ({ data, onSelectionChange, detailsSubmitted }) => {
                     isActive={index === activeIndex}
                     setActive={() => handleSetActive(index)} 
                     availability={item.available}
+                    price={item.price}
+                    message={item.message}
                     isSelected={index === selectedStatusIndex}
                     onSelect={() => handleSelectStatus(index)}
                     detailsSubmitted={detailsSubmitted}

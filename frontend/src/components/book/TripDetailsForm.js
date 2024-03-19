@@ -13,6 +13,8 @@ function TripDetailsForm({ numTravelers, setNumTravelers, startDate, setStartDat
         setEndDate(formattedEndDate);
     };
 
+    const today = new Date().toISOString().split('T')[0];
+
     return (
         <div className='details center'>
             <h1 className='center'>Tell us about your trip:</h1>
@@ -34,7 +36,7 @@ function TripDetailsForm({ numTravelers, setNumTravelers, startDate, setStartDat
             </div>
             <div className='form-group'>
                 <label htmlFor='startDate'>Start Date (required)</label>
-                <input type='date' id='startDate' value={startDate} onChange={handleStartDateChange} required />
+                <input type='date' id='startDate' value={startDate} onChange={handleStartDateChange} min={today} required />
                 <label htmlFor='endDate'>End Date</label>
                 <input type='date' id='endDate' value={endDate} readOnly required />
             </div>

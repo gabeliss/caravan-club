@@ -1,6 +1,7 @@
 from app import app
 from app.helpers import scrape_uncleducky
 import os, base64
+from flask import request
 
 @app.route('/')
 def index():
@@ -33,9 +34,20 @@ def read_image(path):
 
 
 @app.route('/api/scrape/uncleducky')
-def get_price():
-    price = scrape_uncleducky()
-    return price
+def get_uncleducky_price():
+    num_travelers = request.args.get('numTravelers', default=1, type=int)
+    if num_travelers < 4:
+        returnData = {"available": False, "price": None, "message": "Not available for less than 4 travelers"}
+        return returnData
+    
+    if num_travelers > 4:
+        returnData = {"available": False, "price": None, "message": "Not available for more than 8 travelers"}
+        return returnData
+
+    start_date = request.args.get('startDate', default='', type=str)
+    end_date = request.args.get('endDate', default='', type=str)
+    uncleDuckyData = scrape_uncleducky(num_travelers, start_date, end_date)
+    return uncleDuckyData
 
 # this is how to use in the react
 #   const handleGetPrice = async () => {
