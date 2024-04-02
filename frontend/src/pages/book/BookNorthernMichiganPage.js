@@ -48,13 +48,27 @@ function BookNorthernMichiganPage() {
       return true;
     };
 
-    const handleDetailsSubmit = (event) => {
+    const handleDetailsSubmit = async (event) => {
         event.preventDefault();
         if (validateDetails()) {
             setDetailsSubmitted(true)
             let uncleDuckyStartDate = convertDateFormat(adjustDate(startDate, 4))
             let uncleDuckyEndDate = convertDateFormat(endDate)
-            handleGetUncleDucky(numTravelers, uncleDuckyStartDate, uncleDuckyEndDate);
+            let timberRidgeStartDate = convertDateFormat(startDate)
+            let timberRidgeEndDate = convertDateFormat(adjustDate(startDate, 2))
+
+            setIsLoading(true);
+
+            try {
+                await Promise.all([
+                    handleGetUncleDucky(numTravelers, uncleDuckyStartDate, uncleDuckyEndDate),
+                    handleGetTimberRidge(numTravelers, timberRidgeStartDate, timberRidgeEndDate)
+                ]);
+            } catch (error) {
+                console.error('Error in fetching details:', error);
+            } finally {
+                setIsLoading(false);
+            }
         }
       };
   
@@ -76,12 +90,12 @@ function BookNorthernMichiganPage() {
     };
 
     const handleGetUncleDucky = async (numTravelers, startDate, endDate) => {
-        setIsLoading(true);
+        console.log(`Requesting Uncle Ducky with numTravelers: ${numTravelers}, startDate: ${startDate}, endDate: ${endDate}`);
         try {
             const response = await axios.get('http://127.0.0.1:5000/api/scrape/uncleducky', {
                 params: { numTravelers, startDate, endDate }
             });
-            console.log(response)
+            console.log('Uncle Ducky response:', response);
             const available = response.data['available']
             const price = response.data['price']
             const message = response.data['message']
@@ -95,11 +109,56 @@ function BookNorthernMichiganPage() {
             // Update your state or whatever you use to keep track of accommodations data
             setPlaceDetails(updatedPlaceDetails);
         } catch (error) {
-            console.error('Error fetching price:', error);
-        } finally {
-            setIsLoading(false); // End loading
+            console.error('Error fetching Uncle Ducky price:', error);
+            // Detailed Axios error logging
+            if (error.response) {
+                // Server responded with a status code outside the 2xx range
+                console.log('Error Response:', error.response);
+            } else if (error.request) {
+                // The request was made but no response was received
+                console.log('Error Request:', error.request);
+            } else {
+                // Something happened in setting up the request
+                console.log('Error Message:', error.message);
+            }
         }
     };
+
+    const handleGetTimberRidge = async (numTravelers, startDate, endDate) => {
+        console.log(`Requesting Timber Ridge with numTravelers: ${numTravelers}, startDate: ${startDate}, endDate: ${endDate}`);
+        try {
+            const response = await axios.get('http://127.0.0.1:5000/api/scrape/timberRidge', {
+                params: { numTravelers, startDate, endDate }
+            });
+            console.log('Timber Ridge response:', response);
+            const available = response.data['available']
+            const price = response.data['price']
+            const message = response.data['message']
+            
+            // Update accommodations data with the new price and availability
+            const updatedPlaceDetails = { ...placeDetails };
+            updatedPlaceDetails['night1and2'][1].available = available;
+            updatedPlaceDetails['night1and2'][1].price = price;
+            updatedPlaceDetails['night1and2'][1].message = message;
+            
+            // Update your state or whatever you use to keep track of accommodations data
+            setPlaceDetails(updatedPlaceDetails);
+        } catch (error) {
+            console.error('Error fetching Timber Ridge price:', error);
+            // Detailed Axios error logging
+            if (error.response) {
+                // Server responded with a status code outside the 2xx range
+                console.log('Error Response:', error.response);
+            } else if (error.request) {
+                // The request was made but no response was received
+                console.log('Error Request:', error.request);
+            } else {
+                // Something happened in setting up the request
+                console.log('Error Message:', error.message);
+            }
+        }
+    };
+
 
   return (
     <div className='book-page'>

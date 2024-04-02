@@ -1,7 +1,10 @@
+import logging
 from flask import Flask
 from flask_cors import CORS
 
+logging.basicConfig(level=logging.DEBUG)
+
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})  # Be more explicit in CORS setup
 
 from app import routes

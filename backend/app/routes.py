@@ -1,9 +1,10 @@
 from app import app
-from app.helpers import scrape_uncleducky
+from app.helpers import scrape_uncleducky, scrape_timberRidge
 import os, base64
 from flask import request
+import logging
 
-@app.route('/')
+@app.route('/api/hello')
 def index():
     return 'Hello, World!'
 
@@ -35,19 +36,46 @@ def read_image(path):
 
 @app.route('/api/scrape/uncleducky')
 def get_uncleducky_price():
-    num_travelers = request.args.get('numTravelers', default=1, type=int)
-    if num_travelers < 4:
-        returnData = {"available": False, "price": None, "message": "Not available for less than 4 travelers"}
-        return returnData
-    
-    if num_travelers > 4:
-        returnData = {"available": False, "price": None, "message": "Not available for more than 8 travelers"}
-        return returnData
+    logging.info("Uncle Ducky Request Args: %s", request.args)
+    try:
+        num_travelers = request.args.get('numTravelers', default=1, type=int)
+        if num_travelers < 4:
+            returnData = {"available": False, "price": None, "message": "Not available for less than 4 travelers"}
+            return returnData
+        
+        if num_travelers > 8:
+            returnData = {"available": False, "price": None, "message": "Not available for more than 8 travelers"}
+            return returnData
 
-    start_date = request.args.get('startDate', default='', type=str)
-    end_date = request.args.get('endDate', default='', type=str)
-    uncleDuckyData = scrape_uncleducky(num_travelers, start_date, end_date)
-    return uncleDuckyData
+        start_date = request.args.get('startDate', default='', type=str)
+        end_date = request.args.get('endDate', default='', type=str)
+        uncleDuckyData = scrape_uncleducky(num_travelers, start_date, end_date)
+        return uncleDuckyData
+    except Exception as e:
+        logging.error("Error in Uncle Ducky: %s", str(e), exc_info=True)
+        return {"error": "Internal server error"}, 500
+
+
+@app.route('/api/scrape/timberRidge')
+def get_timberRidge_price():
+    logging.info("Timber Ridge Request Args: %s", request.args)
+    try:
+        num_travelers = request.args.get('numTravelers', default=1, type=int)
+        if num_travelers < 4:
+            returnData = {"available": False, "price": None, "message": "Not available for less than 4 travelers"}
+            return returnData
+        
+        if num_travelers > 5:
+            returnData = {"available": False, "price": None, "message": "Not available for more than 5 travelers"}
+            return returnData
+
+        start_date = request.args.get('startDate', default='', type=str)
+        end_date = request.args.get('endDate', default='', type=str)
+        timberRidgeData = scrape_timberRidge(num_travelers, start_date, end_date)
+        return timberRidgeData
+    except Exception as e:
+        logging.error("Error in Timber Ridge: %s", str(e), exc_info=True)
+        return {"error": "Internal server error"}, 500
 
 # this is how to use in the react
 #   const handleGetPrice = async () => {
