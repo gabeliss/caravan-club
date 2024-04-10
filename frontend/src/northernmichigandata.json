@@ -1,56 +1,85 @@
 {
-    "night1and2": [
-      {
-        "title": "Traverse City State Park",
-        "content": "Immerse yourself in nature by camping at Traverse City State Park, situated right on Traverse City Bay. Enjoy the serenity of the outdoors while being just 10 minutes away from downtown.",
-        "available": true
-      },
-      {
-        "title": "Timber Ridge Recreation",
-        "content": "Nestled near Lake Michigan at the base of the east arm of Grand Traverse Bay, Timber Ridge RV & Recreation Resort boasts a charming location bordering Pere Marquette State Forest. With eight basic cabins, 10 deluxe cabins, and 15 full-service cottages, it's an ideal year-round haven for weekend getaways, family reunions, or retirement parties. In summer, revel in the swimming pool, nature trails, playground, family activities, and more. Winter brings heated cabins, cross-country ski rentals, access to a lodge and kitchen, and direct entry to groomed snowmobile trails. Just 10 minutes from downtown Traverse City, this peaceful retreat offers over 200 clean campsites, resort-quality facilities, and additional perks like barbecue grills, a camp store, and laundry facilities.",
-        "available": false
-      },
-      {
-        "title": "Anchor Inn",
-        "content": "Immerse yourself in nature by camping at Traverse City State Park, situated right on Traverse City Bay. Enjoy the serenity of the outdoors while being just 10 minutes away from downtown.",
-        "available": true
-      },
-      {
-        "title": "Traverse City KOA",
-        "content": "Traverse City KOA stands out as a top-tier camping destination in Northern Michigan, boasting a prime location that combines natural beauty with urban convenience. Campers can choose from RV sites, tent sites, or comfortable cabins, all surrounded by the picturesque landscapes of the region. Located just a short drive from downtown Traverse City, this family-friendly campground offers easy access to the city's attractions while providing a serene retreat. The well-equipped facilities include clean restrooms, a camp store stocked with essentials, and a refreshing swimming pool. Guests can immerse themselves in a range of recreational activities, from exploring nearby hiking trails to enjoying themed weekends and organized events. Traverse City KOA ensures a distinctive camping experience, blending relaxation with outdoor adventures for an unforgettable stay in the heart of Michigan.",
-        "available": true
-      }
-    ],
-    "night3and4": [
-      {
-        "title": "Mackinaw Mill Creek Camping & Cabins",
-        "content": "Uncover the enchantment of Mackinaw Mill Creek Camping and Glamping, strategically positioned just a brief 5-minute drive from the ferry port to Mackinaw Island. This accommodation offers the choice between tents or cabins and is conveniently situated right next to the water. It serves as the perfect base camp for your island exploration adventures.",
-        "available": true
-      },
-      {
-        "title": "Straits State Park",
-        "content": "Straits State Park has fantastic views of the Mackinac Bridge and the boat traffic going under the bridge on the Straits of Mackinac from the trails, campground or the viewing platform. The park has a picnic area, playground and waterfront area along Lake Huron.",
-        "available": true
-      },
-      {
-        "title": "Cabins of Mackinaw",
-        "content": "Nestled in Downtown Mackinaw City, Cabins of Mackinac offer a two-story retreat with two bedrooms, a jacuzzi bath, kitchenette, and living area. Located across from Mackinac Island Ferry Docks, guests enjoy a scenic view of Lake Huron. Amenities include indoor/outdoor pools, a whirlpool spa, and unlimited access to the adjacent Pirate's Adventure waterpark. Perfect for a relaxing Mackinaw getaway with convenient access to both tranquility and adventure.",
-        "available": false
-      },
-      {
-        "title": "St Ignace / Mackinac Island KOA",
-        "content": "Mackinaw City KOA is an ideal retreat for those seeking a cozy stay in a tent or cabin, conveniently located just 6 minutes from the Mackinac Island port. While it's not directly situated on the beach, the campground offers a short and pleasant walk to the shore. Embrace the scenic surroundings as you enjoy the close proximity to the water, providing a serene and picturesque setting. Whether you prefer the charm of a tent or the comfort of a cabin, Mackinaw City KOA ensures a delightful stay with its strategic location and easy access to both natural beauty and the gateway to Mackinac Island.",
-        "available": true
+  "night1and2": {
+    "traverseCityStatePark": {
+      "title": "Traverse City State Park",
+      "content": "Traverse City State Park is a premier camping destination situated along the beautiful shores of Lake Michigan in Michigan, USA. Offering a picturesque natural setting, the park provides campers with a range of camping options, including modern and rustic campsites suitable for tents and RVs. With its convenient location just minutes away from downtown Traverse City, campers can enjoy both the tranquility of nature and easy access to urban amenities. The park features well-maintained facilities, including clean restrooms and shower facilities, making it a comfortable choice for campers. Additionally, outdoor enthusiasts can explore nearby hiking trails, engage in water activities, or simply relax on the sandy beaches along Lake Michigan. Traverse City State Park promises a delightful camping experience with a perfect blend of natural beauty and recreational opportunities.",
+      "available": false
+    },
+    "timberRidge": {
+      "title": "Timber Ridge Recreation",
+      "content": "Nestled near Lake Michigan at the base of the east arm of Grand Traverse Bay, Timber Ridge RV & Recreation Resort boasts a charming location bordering Pere Marquette State Forest. With eight basic cabins, 10 deluxe cabins, and 15 full-service cottages, it's an ideal year-round haven for weekend getaways, family reunions, or retirement parties. In summer, revel in the swimming pool, nature trails, playground, family activities, and more. Winter brings heated cabins, cross-country ski rentals, access to a lodge and kitchen, and direct entry to groomed snowmobile trails. Just 10 minutes from downtown Traverse City, this peaceful retreat offers over 200 clean campsites, resort-quality facilities, and additional perks like barbecue grills, a camp store, and laundry facilities.",
+      "available": false,
+      "price": 0,
+      "message": "Unavailable"
+    },
+    "anchorInn": {
+      "title": "Anchor Inn",
+      "content": "The Anchor Inn offers distinctive cottages and rooms set in a camp-like environment, featuring a private sandy beach on the West Grand Traverse Bay. Immerse yourself in the charm of vintage lake cottage living, providing a cozy ambiance for your 'up north' getaway. Operating throughout the year, each cottage is equipped with fireplaces for added warmth. The Anchor Inn is your exclusive retreat to unwind, have fun, and discover.",
+      "available": false
+    },
+    "traverseCityKOA": {
+      "title": "Traverse City KOA",
+      "content": "Traverse City KOA stands out as a top-tier camping destination in Northern Michigan, boasting a prime location that combines natural beauty with urban convenience. Campers can choose from RV sites, tent sites, or comfortable cabins, all surrounded by the picturesque landscapes of the region. Located just a short drive from downtown Traverse City, this family-friendly campground offers easy access to the city's attractions while providing a serene retreat. The well-equipped facilities include clean restrooms, a camp store stocked with essentials, and a refreshing swimming pool. Guests can immerse themselves in a range of recreational activities, from exploring nearby hiking trails to enjoying themed weekends and organized events. Traverse City KOA ensures a distinctive camping experience, blending relaxation with outdoor adventures for an unforgettable stay in the heart of Michigan.",
+      "available": false
     }
-    ],
-    "night5": [
-      {
-        "title": "Uncle Ducky's - Paddlers Village",
-        "content": "Uncle Ducky's - Paddlers Village offers a charming accommodation near Pictured Rocks, allowing guests to choose between yurts, tents, and cabins. With a delightful beer garden and lakefront access, it provides a serene and versatile retreat for a memorable stay.",
-        "available": true,
-        "price": 1.1,
-        "message": "Available"
-      }
-    ]
+  },
+  "night3and4": {
+    "mackinacMill": {
+      "title": "Mackinaw Mill Creek Camping & Cabins",
+      "content": "Mackinaw Mill Creek Camping, a highly awarded northern Michigan campground, offers diverse camping, glamping, and stunning views of Lake Huron and Mackinac Island. Operated by the Rogala family since 1964, it provides a unique experience for all campers, combining natural beauty with convenient access to Mackinaw City attractions. Recognized for its hospitality and amenities, the campground has become a beloved annual tradition for many.",
+      "available": false
+    },
+    "straitsStatePark": {
+      "title": "Straits State Park",
+      "content": "Straits State Campground offers both tent and RV spots, providing a scenic setting within Straits State Park. Enjoy breathtaking views of the iconic Mackinac Bridge and observe boat traffic passing beneath it in the Straits of Mackinac, accessible from the trails, campground, or the dedicated viewing platform. The park also features a picnic area, playground, and a waterfront space along Lake Huron for added enjoyment.",
+      "available": false
+    },
+    "cabinsOfMackinaw": {
+      "title": "Cabins of Mackinaw",
+      "content": "Nestled in Downtown Mackinaw City, Cabins of Mackinac offer a two-story retreat with two bedrooms, a jacuzzi bath, kitchenette, and living area. Located across from Mackinac Island Ferry Docks, guests enjoy a scenic view of Lake Huron. Amenities include indoor/outdoor pools, a whirlpool spa, and unlimited access to the adjacent Pirate's Adventure waterpark. Perfect for a relaxing Mackinaw getaway with convenient access to both tranquility and adventure.",
+      "available": false
+    },
+    "stIgnace": {
+      "title": "St Ignace / Mackinac Island KOA",
+      "content": "Mackinaw City KOA is an ideal retreat for those seeking a cozy stay in a tent or cabin, conveniently located just 6 minutes from the Mackinac Island port. While it's not directly situated on the beach, the campground offers a short and pleasant walk to the shore. Embrace the scenic surroundings as you enjoy the close proximity to the water, providing a serene and picturesque setting. Whether you prefer the charm of a tent or the comfort of a cabin, Mackinaw City KOA ensures a delightful stay with its strategic location and easy access to both natural beauty and the gateway to Mackinac Island.",
+      "available": false
+    }
+  },
+  "night5and6": {
+    "uncleDucky": {
+      "title": "Uncle Ducky's - Paddlers Village",
+      "content": "Paddlers Village offers a modern camping experience with electricity in every unit, mini fridges, and direct access to amenities like the Duck Pond Eatery and Grand Island Boat Cruise dock. The smaller private beach adds waterfront charm. In contrast, Au Train Beach Campground is larger, embracing a rustic feel with solar-powered lights and USB ports for most units. Only Grand Yurts and Common Areas have wired electricity. Despite lacking on-site beach access, it compensates with proximity to the expansive 3-mile-long Au Train Beach, providing a natural and spacious setting with the option to have fires. The choice boils down to preferences for modern conveniences and smaller beaches (Paddlers Village) versus a larger, rustic ambiance and access to a significant natural beach (Au Train Beach Campground).",
+      "available": false,
+      "price": 0,
+      "message": "Unavailable"
+    },
+    "uncleDuckyAuTrain": {
+      "title": "Uncle Ducky's - Au Train Beach",
+      "content": "Paddlers Village offers a modern camping experience with electricity in every unit, mini fridges, and direct access to amenities like the Duck Pond Eatery and Grand Island Boat Cruise dock. The smaller private beach adds waterfront charm. In contrast, Au Train Beach Campground is larger, embracing a rustic feel with solar-powered lights and USB ports for most units. Only Grand Yurts and Common Areas have wired electricity. Despite lacking on-site beach access, it compensates with proximity to the expansive 3-mile-long Au Train Beach, providing a natural and spacious setting with the option to have fires. The choice boils down to preferences for modern conveniences and smaller beaches (Paddlers Village) versus a larger, rustic ambiance and access to a significant natural beach (Au Train Beach Campground).",
+      "available": false,
+      "price": 0,
+      "message": "Unavailable"
+    },
+    "touristPark": {
+      "title": "Tourist Park Campground",
+      "content": "Description",
+      "available": false,
+      "price": 0,
+      "message": "Unavailable"
+    },
+    "fortSuperior": {
+      "title": "Fort Superior Campground",
+      "content": "Description",
+      "available": false,
+      "price": 0,
+      "message": "Unavailable"
+    },
+    "picturedRocksKoa": {
+      "title": "Munising / Pictured Rocks KOA",
+      "content": "Description",
+      "available": false,
+      "price": 0,
+      "message": "Unavailable"
+    }
   }
-  
+}

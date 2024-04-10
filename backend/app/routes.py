@@ -1,5 +1,6 @@
 from app import app
-from app.helpers import scrape_uncleducky, scrape_timberRidge
+from app.scrape_helpers.night1and2 import scrape_timberRidge
+from app.scrape_helpers.night5and6api import scrape_uncleducky_api
 import os, base64
 from flask import request
 import logging
@@ -32,57 +33,33 @@ def read_image(path):
         encoded_image = base64.b64encode(image_file.read())
         encoded_image_str = encoded_image.decode('utf-8')
         return encoded_image_str
+    
 
-
-@app.route('/api/scrape/uncleducky')
-def get_uncleducky_price():
-    logging.info("Uncle Ducky Request Args: %s", request.args)
+def get_price(place_name, min_travelers, max_travelers, scrape_function):
+    logging.info(f"{place_name} Request Args: %s", request.args)
     try:
         num_travelers = request.args.get('numTravelers', default=1, type=int)
-        if num_travelers < 4:
-            returnData = {"available": False, "price": None, "message": "Not available for less than 4 travelers"}
-            return returnData
+        if num_travelers < min_travelers:
+            return {"available": False, "price": None, "message": f"Not available for less than {min_travelers} travelers"}
         
-        if num_travelers > 8:
-            returnData = {"available": False, "price": None, "message": "Not available for more than 8 travelers"}
-            return returnData
+        if num_travelers > max_travelers:
+            return {"available": False, "price": None, "message": f"Not available for more than {max_travelers} travelers"}
 
         start_date = request.args.get('startDate', default='', type=str)
         end_date = request.args.get('endDate', default='', type=str)
-        uncleDuckyData = scrape_uncleducky(num_travelers, start_date, end_date)
-        return uncleDuckyData
+        data = scrape_function(num_travelers, start_date, end_date)
+        logging.info('get_price return value', data)
+        return data
     except Exception as e:
-        logging.error("Error in Uncle Ducky: %s", str(e), exc_info=True)
+        logging.error(f"Error in {place_name}: %s", str(e), exc_info=True)
         return {"error": "Internal server error"}, 500
 
 
 @app.route('/api/scrape/timberRidge')
 def get_timberRidge_price():
-    logging.info("Timber Ridge Request Args: %s", request.args)
-    try:
-        num_travelers = request.args.get('numTravelers', default=1, type=int)
-        if num_travelers < 4:
-            returnData = {"available": False, "price": None, "message": "Not available for less than 4 travelers"}
-            return returnData
-        
-        if num_travelers > 5:
-            returnData = {"available": False, "price": None, "message": "Not available for more than 5 travelers"}
-            return returnData
+    return get_price('Timber Ridge', 4, 5, scrape_timberRidge)
 
-        start_date = request.args.get('startDate', default='', type=str)
-        end_date = request.args.get('endDate', default='', type=str)
-        timberRidgeData = scrape_timberRidge(num_travelers, start_date, end_date)
-        return timberRidgeData
-    except Exception as e:
-        logging.error("Error in Timber Ridge: %s", str(e), exc_info=True)
-        return {"error": "Internal server error"}, 500
 
-# this is how to use in the react
-#   const handleGetPrice = async () => {
-#     try {
-#       const response = await axios.get('http://127.0.0.1:5000/api/price');
-#       setPrice(response.data);
-#     } catch (error) {
-#       console.error('Error fetching price:', error);
-#     }
-#   };
+@app.route('/api/scrape/uncleDucky')
+def get_uncleducky_price():
+    return get_price('Uncle Ducky', 4, 8, scrape_uncleducky_api)

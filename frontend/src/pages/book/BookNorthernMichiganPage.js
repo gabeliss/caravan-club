@@ -1,11 +1,12 @@
 import React, {useState} from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './../../styles/bookpages.css';
 import ToggleList from '../../components/book/BookPagesToggle';
 import accommodationsData from './../../northernmichigandata.json'
 import TripDetailsForm from '../../components/book/TripDetailsForm';
 import { adjustDate, convertDateFormat } from './../../utils/helpers.js'
+import { fetchAccommodationDetails } from '../../api/northernMichiganApi.js';
 
 function BookNorthernMichiganPage() {
 
@@ -20,10 +21,10 @@ function BookNorthernMichiganPage() {
     const [selectedAccommodations, setSelectedAccommodations] = useState({
       night1and2: null,
       night3and4: null,
-      night5: null,
+      night5and6: null,
     });
     
-    const navigate = useNavigate(); // For navigation
+    const navigate = useNavigate();
 
     const validateDetails = () => {
         if (!numTravelers || !startDate || !endDate) {
@@ -36,7 +37,6 @@ function BookNorthernMichiganPage() {
     }
   
     const validatePage = () => {
-      // Check if all required fields are filled and at least one accommodation per night is selected
       if (!numTravelers || !startDate || !endDate) {
         alert("Please fill all required fields");
         return false;
@@ -52,110 +52,58 @@ function BookNorthernMichiganPage() {
         event.preventDefault();
         if (validateDetails()) {
             setDetailsSubmitted(true)
-            let uncleDuckyStartDate = convertDateFormat(adjustDate(startDate, 4))
-            let uncleDuckyEndDate = convertDateFormat(endDate)
-            let timberRidgeStartDate = convertDateFormat(startDate)
-            let timberRidgeEndDate = convertDateFormat(adjustDate(startDate, 2))
+            let night1and2StartDate = convertDateFormat(startDate)
+            let night1and2EndDate = convertDateFormat(adjustDate(startDate, 2))
+            let night5and6StartDate = convertDateFormat(adjustDate(startDate, 4))
+            let night5and6EndDate = convertDateFormat(endDate)
 
             setIsLoading(true);
 
             try {
-                await Promise.all([
-                    handleGetUncleDucky(numTravelers, uncleDuckyStartDate, uncleDuckyEndDate),
-                    handleGetTimberRidge(numTravelers, timberRidgeStartDate, timberRidgeEndDate)
+                const responses = await Promise.all([
+                    fetchAccommodationDetails('timberRidge', numTravelers, night1and2StartDate, night1and2EndDate),
+                    fetchAccommodationDetails('uncleDucky', numTravelers, night5and6StartDate, night5and6EndDate),
                 ]);
+
+                const [timberRidgeDetails, uncleDuckyDetails] = responses;
+                updateAccommodationsState('timberRidge', timberRidgeDetails, 'night1and2');
+                updateAccommodationsState('uncleDucky', uncleDuckyDetails, 'night5and6');
+
             } catch (error) {
                 console.error('Error in fetching details:', error);
+
             } finally {
                 setIsLoading(false);
             }
         }
       };
-  
-    const handlePageSubmit = (event) => {
-      event.preventDefault();
-      if (validatePage()) {
-        console.log('Navigating with state:', { tripTitle, numTravelers, startDate, endDate, selectedAccommodations }); // Debugging log
-        // Proceed with the navigation and pass the state to the ReviewTrip page
-        navigate('/reviewtrip', { state: { tripTitle, numTravelers, startDate, endDate, selectedAccommodations } });
-      }
-    };
+
+
+      function updateAccommodationsState(place, details, nightXandY) {
+        console.log('updateAccomodationsState: place, details, nightXandY', place, details, nightXandY)
+        const updatedPlaceDetails = { ...placeDetails };
+        updatedPlaceDetails[nightXandY][place] = {
+            ...updatedPlaceDetails[nightXandY][place],
+            ...details // Assume details contain 'available', 'price', and 'message'
+        };
+        
+        setPlaceDetails(updatedPlaceDetails);
+    }
+
 
     const handleSelectStatus = (nightKey, index) => {
         setSelectedAccommodations(prev => {
             const newState = { ...prev, [nightKey]: prev[nightKey] === index ? null : index };
-            console.log(`Updated state for ${nightKey}:`, newState[nightKey]); // Debugging log
+            console.log(`Updated state for ${nightKey}:`, newState[nightKey]);
             return newState;
         });
     };
-
-    const handleGetUncleDucky = async (numTravelers, startDate, endDate) => {
-        console.log(`Requesting Uncle Ducky with numTravelers: ${numTravelers}, startDate: ${startDate}, endDate: ${endDate}`);
-        try {
-            const response = await axios.get('http://127.0.0.1:5000/api/scrape/uncleducky', {
-                params: { numTravelers, startDate, endDate }
-            });
-            console.log('Uncle Ducky response:', response);
-            const available = response.data['available']
-            const price = response.data['price']
-            const message = response.data['message']
-            
-            // Update accommodations data with the new price and availability
-            const updatedPlaceDetails = { ...placeDetails };
-            updatedPlaceDetails['night5'][0].available = available;
-            updatedPlaceDetails['night5'][0].price = price;
-            updatedPlaceDetails['night5'][0].message = message;
-            
-            // Update your state or whatever you use to keep track of accommodations data
-            setPlaceDetails(updatedPlaceDetails);
-        } catch (error) {
-            console.error('Error fetching Uncle Ducky price:', error);
-            // Detailed Axios error logging
-            if (error.response) {
-                // Server responded with a status code outside the 2xx range
-                console.log('Error Response:', error.response);
-            } else if (error.request) {
-                // The request was made but no response was received
-                console.log('Error Request:', error.request);
-            } else {
-                // Something happened in setting up the request
-                console.log('Error Message:', error.message);
-            }
-        }
-    };
-
-    const handleGetTimberRidge = async (numTravelers, startDate, endDate) => {
-        console.log(`Requesting Timber Ridge with numTravelers: ${numTravelers}, startDate: ${startDate}, endDate: ${endDate}`);
-        try {
-            const response = await axios.get('http://127.0.0.1:5000/api/scrape/timberRidge', {
-                params: { numTravelers, startDate, endDate }
-            });
-            console.log('Timber Ridge response:', response);
-            const available = response.data['available']
-            const price = response.data['price']
-            const message = response.data['message']
-            
-            // Update accommodations data with the new price and availability
-            const updatedPlaceDetails = { ...placeDetails };
-            updatedPlaceDetails['night1and2'][1].available = available;
-            updatedPlaceDetails['night1and2'][1].price = price;
-            updatedPlaceDetails['night1and2'][1].message = message;
-            
-            // Update your state or whatever you use to keep track of accommodations data
-            setPlaceDetails(updatedPlaceDetails);
-        } catch (error) {
-            console.error('Error fetching Timber Ridge price:', error);
-            // Detailed Axios error logging
-            if (error.response) {
-                // Server responded with a status code outside the 2xx range
-                console.log('Error Response:', error.response);
-            } else if (error.request) {
-                // The request was made but no response was received
-                console.log('Error Request:', error.request);
-            } else {
-                // Something happened in setting up the request
-                console.log('Error Message:', error.message);
-            }
+  
+    const handlePageSubmit = (event) => {
+        event.preventDefault();
+        if (validatePage()) {
+        console.log('Navigating with state:', { tripTitle, numTravelers, startDate, endDate, selectedAccommodations }); // Debugging log
+        navigate('/reviewtrip', { state: { tripTitle, numTravelers, startDate, endDate, selectedAccommodations } });
         }
     };
 
@@ -236,8 +184,8 @@ function BookNorthernMichiganPage() {
                                 </div>
                             )}
                             <ToggleList
-                                data={placeDetails['night5']}
-                                onSelectionChange={(index) => handleSelectStatus('night5', index)}
+                                data={placeDetails['night5and6']}
+                                onSelectionChange={(index) => handleSelectStatus('night5and6', index)}
                                 detailsSubmitted={detailsSubmitted}
                             />
                         </div>

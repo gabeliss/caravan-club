@@ -58,16 +58,16 @@ const ToggleList = ({ data, onSelectionChange, detailsSubmitted }) => {
 
     return (
         <div className="toggle-list">
-            {data.map((item, index) => (
+            {Object.entries(data).map(([key, details], index) => (
                 <ToggleItem 
-                    key={index} 
-                    title={item.title} 
-                    content={item.content} 
+                    key={key}
+                    title={details.title}
+                    content={details.content}
                     isActive={index === activeIndex}
-                    setActive={() => handleSetActive(index)} 
-                    availability={item.available}
-                    price={item.price}
-                    message={item.message}
+                    setActive={() => handleSetActive(index)}
+                    availability={details.available}
+                    price={details.price}
+                    message={details.message}
                     isSelected={index === selectedStatusIndex}
                     onSelect={() => handleSelectStatus(index)}
                     detailsSubmitted={detailsSubmitted}

@@ -10,5 +10,6 @@ backend/node_modules/
 frontend/node_modules/
 
 backend/app/__pycache__/
+backend/app/scrape_helpers/__pycache__/
 
 .DS_Store

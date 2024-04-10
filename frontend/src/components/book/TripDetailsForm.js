@@ -7,7 +7,7 @@ function TripDetailsForm({ numTravelers, setNumTravelers, startDate, setStartDat
         setStartDate(start);
     
         const startDate = new Date(start);
-        const endDate = new Date(startDate.setDate(startDate.getDate() + 5));
+        const endDate = new Date(startDate.setDate(startDate.getDate() + 6));
     
         const formattedEndDate = endDate.toISOString().split('T')[0];
         setEndDate(formattedEndDate);
