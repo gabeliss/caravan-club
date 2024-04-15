@@ -1,5 +1,5 @@
 from app import app
-from app.scrape_helpers.night1and2 import scrape_timberRidge
+from app.scrape_helpers.night1and2api import scrape_timberRidge_api
 from app.scrape_helpers.night5and6api import scrape_uncleducky_api
 import os, base64
 from flask import request
@@ -57,7 +57,7 @@ def get_price(place_name, min_travelers, max_travelers, scrape_function):
 
 @app.route('/api/scrape/timberRidge')
 def get_timberRidge_price():
-    return get_price('Timber Ridge', 4, 5, scrape_timberRidge)
+    return get_price('Timber Ridge', 4, 5, scrape_timberRidge_api)
 
 
 @app.route('/api/scrape/uncleDucky')
