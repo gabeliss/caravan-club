@@ -15,7 +15,9 @@
     "anchorInn": {
       "title": "Anchor Inn",
       "content": "The Anchor Inn offers distinctive cottages and rooms set in a camp-like environment, featuring a private sandy beach on the West Grand Traverse Bay. Immerse yourself in the charm of vintage lake cottage living, providing a cozy ambiance for your 'up north' getaway. Operating throughout the year, each cottage is equipped with fireplaces for added warmth. The Anchor Inn is your exclusive retreat to unwind, have fun, and discover.",
-      "available": false
+      "available": false,
+      "price": 0,
+      "message": "Unavailable"
     },
     "traverseCityKOA": {
       "title": "Traverse City KOA",

@@ -62,11 +62,13 @@ function BookNorthernMichiganPage() {
             try {
                 const responses = await Promise.all([
                     fetchAccommodationDetails('timberRidge', numTravelers, night1and2StartDate, night1and2EndDate),
+                    fetchAccommodationDetails('anchorInn', numTravelers, night1and2StartDate, night1and2EndDate),
                     fetchAccommodationDetails('uncleDucky', numTravelers, night5and6StartDate, night5and6EndDate),
                 ]);
 
-                const [timberRidgeDetails, uncleDuckyDetails] = responses;
+                const [timberRidgeDetails, anchorInnDetails, uncleDuckyDetails] = responses;
                 updateAccommodationsState('timberRidge', timberRidgeDetails, 'night1and2');
+                updateAccommodationsState('anchorInn', anchorInnDetails, 'night1and2')
                 updateAccommodationsState('uncleDucky', uncleDuckyDetails, 'night5and6');
 
             } catch (error) {

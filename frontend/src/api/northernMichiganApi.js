@@ -8,7 +8,7 @@ export const fetchAccommodationDetails = async (accommodationType, numTravelers,
         const response = await axios.get(url, {
             params: { numTravelers, startDate, endDate }
         });
-        console.log('fetchAccomodationDetails response.data', response.data)
+        console.log('fetchAccomodationDetails response.data', accommodationType, response.data)
         return response.data;
     } catch (error) {
         throw error;
