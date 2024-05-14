@@ -7,16 +7,6 @@ import './../styles/book.css';
 
 const tripData = [
     {
-        image: 'images/trippage/smokymountain.png',
-        title: 'Smoky Mountain National Park',
-        link: '/bookoptions',
-    },
-    {
-        image: 'images/trippage/southerncalifornia.png',
-        title: 'Southern California',
-        link: '/bookoptions',
-    },
-    {
         image: 'images/trippage/arizona.png',
         title: 'Arizona',
         link: '/bookoptions',
@@ -25,6 +15,16 @@ const tripData = [
         image: 'images/trippage/northernmichigan.png',
         title: 'Northern Michigan',
         link: '/book/northernmichigan',
+    },
+    {
+        image: 'images/trippage/smokymountain.png',
+        title: 'Smoky Mountain National Park',
+        link: '/bookoptions',
+    },
+    {
+        image: 'images/trippage/southerncalifornia.png',
+        title: 'Southern California',
+        link: '/bookoptions',
     }
 ];
 

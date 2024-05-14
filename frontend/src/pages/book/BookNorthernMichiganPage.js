@@ -54,6 +54,8 @@ function BookNorthernMichiganPage() {
             setDetailsSubmitted(true)
             let night1and2StartDate = convertDateFormat(startDate)
             let night1and2EndDate = convertDateFormat(adjustDate(startDate, 2))
+            let night3and4StartDate = convertDateFormat(startDate, 2)
+            let night3and4EndDate = convertDateFormat(adjustDate(startDate, 4))
             let night5and6StartDate = convertDateFormat(adjustDate(startDate, 4))
             let night5and6EndDate = convertDateFormat(endDate)
 
@@ -64,13 +66,17 @@ function BookNorthernMichiganPage() {
                     fetchAccommodationDetails('timberRidge', numTravelers, night1and2StartDate, night1and2EndDate),
                     fetchAccommodationDetails('anchorInn', numTravelers, night1and2StartDate, night1and2EndDate),
                     fetchAccommodationDetails('traverseCityKoa', numTravelers, night1and2StartDate, night1and2EndDate),
+                    fetchAccommodationDetails('straightsKoa', numTravelers, night3and4StartDate, night3and4EndDate),
+                    fetchAccommodationDetails('cabinsOfMackinaw', numTravelers, night3and4StartDate, night3and4EndDate),
                     fetchAccommodationDetails('uncleDucky', numTravelers, night5and6StartDate, night5and6EndDate),
                 ]);
 
-                const [timberRidgeDetails, anchorInnDetails, traverseCityKoaDetails, uncleDuckyDetails] = responses;
+                const [timberRidgeDetails, anchorInnDetails, traverseCityKoaDetails, straightsKoaDetails, cabinsOfMackinawDetails, uncleDuckyDetails] = responses;
                 updateAccommodationsState('timberRidge', timberRidgeDetails, 'night1and2');
                 updateAccommodationsState('anchorInn', anchorInnDetails, 'night1and2')
                 updateAccommodationsState('traverseCityKoa', traverseCityKoaDetails, 'night1and2')
+                updateAccommodationsState('stIgnace', straightsKoaDetails, 'night3and4')
+                updateAccommodationsState('cabinsOfMackinaw', cabinsOfMackinawDetails, 'night3and4')
                 updateAccommodationsState('uncleDucky', uncleDuckyDetails, 'night5and6');
 
             } catch (error) {
@@ -88,7 +94,7 @@ function BookNorthernMichiganPage() {
         const updatedPlaceDetails = { ...placeDetails };
         updatedPlaceDetails[nightXandY][place] = {
             ...updatedPlaceDetails[nightXandY][place],
-            ...details // Assume details contain 'available', 'price', and 'message'
+            ...details
         };
         
         setPlaceDetails(updatedPlaceDetails);
@@ -106,7 +112,7 @@ function BookNorthernMichiganPage() {
     const handlePageSubmit = (event) => {
         event.preventDefault();
         if (validatePage()) {
-        console.log('Navigating with state:', { tripTitle, numTravelers, startDate, endDate, selectedAccommodations }); // Debugging log
+        console.log('Navigating with state:', { tripTitle, numTravelers, startDate, endDate, selectedAccommodations });
         navigate('/reviewtrip', { state: { tripTitle, numTravelers, startDate, endDate, selectedAccommodations } });
         }
     };
@@ -115,7 +121,7 @@ function BookNorthernMichiganPage() {
   return (
     <div className='book-page'>
         {isLoading ? (
-            <div className="loader">Loading...</div> // Replace this with your loading spinner or animation
+            <div className="loader">Loading...</div>
         ) : (
             <>
                 <div className='intro'>

@@ -1,5 +1,6 @@
 from app import app
 from app.scrape_helpers.night1and2api import scrape_timberRidge_api, scrape_anchorInn_api, scrape_traverseCityKoa_api
+from app.scrape_helpers.night3and4api import scrape_straightsKoa_api, scrape_cabinsOfMackinaw_api
 from app.scrape_helpers.night5and6api import scrape_uncleducky_api
 import os, base64
 from flask import request
@@ -57,7 +58,7 @@ def get_price(place_name, min_travelers, max_travelers, scrape_function):
 
 @app.route('/api/scrape/timberRidge')
 def get_timberRidge_price():
-    return get_price('Timber Ridge', 4, 5, scrape_timberRidge_api)
+    return get_price('Timber Ridge', 1, 10, scrape_timberRidge_api)
 
 
 @app.route('/api/scrape/anchorInn')
@@ -67,7 +68,17 @@ def get_anchorInn_price():
 
 @app.route('/api/scrape/traverseCityKoa')
 def get_traverseCityKoa_price():
-    return get_price('traverseCityKoa', 1, 8, scrape_traverseCityKoa_api)
+    return get_price('Traverse City Koa', 1, 8, scrape_traverseCityKoa_api)
+
+
+@app.route('/api/scrape/straightsKoa')
+def get_straightsKoa_price():
+    return get_price('Straights Koa', 1, 8, scrape_straightsKoa_api)
+
+
+@app.route('/api/scrape/cabinsOfMackinaw')
+def get_cabinsOfMackinaw_price():
+    return get_price('Cabins Of Mackinaw', 1, 6, scrape_cabinsOfMackinaw_api)
 
 
 @app.route('/api/scrape/uncleDucky')

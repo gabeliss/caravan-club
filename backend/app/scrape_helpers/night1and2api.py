@@ -2,6 +2,25 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 
+# couldn't access, blocked by captcha
+def scrape_traverseCityStatePark_api(num_travelers, start_date, end_date):
+    session = requests.Session()
+    url = 'https://midnrreservations.com/api/availability/map'
+    params = {
+        'mapId': -2147483042,
+        'startDate': start_date,
+        'endDate': end_date,
+        'partySize': num_travelers
+    }
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15",
+        "Referer": f"https://midnrreservations.com/create-booking/results?mapId=-2147483042&searchTabGroupId=0&bookingCategoryId=0&startDate={start_date}&endDate={end_date}&nights=2&isReserving=true&partySize=2&equipmentCapacity=1&filterData=%7B%22-32761%22:%22%5B%5B1%5D,0,0,0%5D%22%7D&searchTime=2024-05-07T12:48:54.494&flexibleSearch=%5Bfalse,false,%222024-05-01%22,1%5D&resourceLocationId=-2147483344&equipmentId=-32768&subEquipmentId=-32768"
+    }
+    
+    response = session.get(url, params=params, headers=headers)
+    print('Status Code:', response.status_code)
+    return response.text
+
 
 def scrape_timberRidge_api(num_travelers, start_date_str, end_date_str):
 
@@ -52,18 +71,75 @@ def scrape_timberRidge_api(num_travelers, start_date_str, end_date_str):
                 stay_name = a_tag.text
                 price_span = container.find_all("span", class_="newbook_online_from_price_text")
                 if price_span:
-                    stay_price = price_span[0].text.lstrip("$")
-                    stays[stay_name] = stay_price
+                    buttons = container.find_all('button', class_='newbook_responsive_button')
+                    button_label = buttons[2].get('aria-label')
+                    book_now = False
+                    if button_label == "Book now":
+                        book_now = True
+                        stay_price = price_span[0].text.lstrip("$")
+                        stays[stay_name] = stay_price
+                    else:
+                        stays[stay_name] = 'Unavailable'
                 else:
                     stays[stay_name] = 'Unavailable'
         
+        bunkhouse = "Bunkhouse (Sleeps 10)"
+        cabin_deluxe = "Cabin Deluxe (Sleeps 2.)"
+        cottage = "Cottage (Sleeps 5)"
+        cottage_premium = "Cottage Premium  (Sleeps 5)"
+        park_home = "Park Home (Sleeps 5+)"
+        premium_park_home = "Premium Park Home  (sleeps 7)"
         yurt_basic = "Yurt Basic Sleeps 5"
         yurt_deluxe = "Yurt Deluxe Sleeps 5"
-        if stays[yurt_basic] != "Unavailable":
-            price = stays[yurt_basic]
-            return {"available": True, "price": price, "message": "Available: $" + price + " per night"}
-        elif stays[yurt_deluxe] != "Unavailable":
-            price = stays[yurt_deluxe]
+
+        available = True
+        price = -1
+        if num_travelers <= 2:
+            if stays[cabin_deluxe] != "Unavailable":
+                price = stays[cabin_deluxe]
+            elif stays[yurt_deluxe] != "Unavailable":
+                price = stays[yurt_deluxe]
+            elif stays[yurt_basic] != "Unavailable":
+                price = stays[yurt_basic]
+            elif stays[cottage] != "Unavailable":
+                price = stays[cottage]
+            elif stays[cottage_premium] != "Unavailable":
+                price = stays[cottage_premium]
+            elif stays[park_home] != "Unavailable":
+                price = stays[park_home]
+            else:
+                available = False
+                price = None
+        elif num_travelers <= 5:
+            if stays[yurt_deluxe] != "Unavailable":
+                price = stays[yurt_deluxe]
+            elif stays[yurt_basic] != "Unavailable":
+                price = stays[yurt_basic]
+            elif stays[cottage] != "Unavailable":
+                price = stays[cottage]
+            elif stays[cottage_premium] != "Unavailable":
+                price = stays[cottage_premium]
+            elif stays[park_home] != "Unavailable":
+                price = stays[park_home]
+            else:
+                available = False
+                price = None  
+        elif num_travelers <= 7:
+            if stays[premium_park_home] != "Unavailable":
+                price = stays[premium_park_home]
+            elif stays[bunkhouse] != "Unavailable":
+                price = stays[bunkhouse]
+            else:
+                available = False
+                price = None  
+        else:
+            if stays[bunkhouse] != "Unavailable":
+                price = stays[bunkhouse]
+            else:
+                available = False
+                price = None                                  
+
+        if available:
             return {"available": True, "price": price, "message": "Available: $" + price + " per night"}
         else:
             return {"available": False, "price": None, "message": "Not available for selected dates."}
@@ -86,13 +162,9 @@ def scrape_anchorInn_api(num_travelers, start_date_str, end_date_str):
         "King w/ Fireplace & Sofa-Bed": "Unavailable",
     }
 
-    stays_ordered = ["Single Queen Room", "Cozy Queen Room", "King Room", "1 Bedroom with Kitchenette", 
-                     "King w/ Fireplace & Sofa-Bed", "2 Bedrooms with Full Kitchen", "Lake House"]
-    # Convert date strings to required format
     start_date = datetime.strptime(start_date_str, '%m/%d/%y').strftime('%Y-%m-%d')
     end_date = datetime.strptime(end_date_str, '%m/%d/%y').strftime('%Y-%m-%d')
     
-    # Prepare the request details
     url = f"https://secure.thinkreservations.com/api/hotels/3399/availabilities/v2?start_date={start_date}&end_date={end_date}&number_of_adults={num_travelers}&number_of_children=0&session_id=ad0b9271-17e5-46c8-9d5c-6f50ad3f938b"
     headers = {
         "Accept": "application/json",
@@ -103,8 +175,7 @@ def scrape_anchorInn_api(num_travelers, start_date_str, end_date_str):
     }
 
     
-    # Send the request
-    response = requests.post(url, headers=headers, data={})  # Sending an empty JSON object as payload
+    response = requests.post(url, headers=headers, data={})
 
     if response.status_code == 200:
         units = response.json()
@@ -115,12 +186,47 @@ def scrape_anchorInn_api(num_travelers, start_date_str, end_date_str):
             if valid:
                 stays[name] = price
 
-        for stay in stays_ordered:
-            if stays[stay] != "Unavailable":
-                price = stays[stay]
-                return {"available": True, "price": price, "message": "Available: $" + str(price) + " per night"}
-            
-        return {"available": False, "price": None, "message": "Not available for selected dates."}
+        available = True
+        price = -1
+        if num_travelers <= 2:
+            if stays["Cozy Queen Room"] != "Unavailable":
+                price = stays["Cozy Queen Room"]
+            elif stays["Single Queen Room"] != "Unavailable":
+                price = stays["Single Queen Room"]    
+            elif stays["King Room"] != "Unavailable":
+                price = stays["King Room"]
+            elif stays["King w/ Fireplace & Sofa-Bed"] != "Unavailable":
+                price = stays["King w/ Fireplace & Sofa-Bed"]
+            elif stays["1 Bedroom with Kitchenette"] != "Unavailable":
+                price = stays['1 Bedroom with Kitchenette']
+            else:
+                available = False  
+        elif num_travelers <= 4:
+            if stays["1 Bedroom with Kitchenette"] != "Unavailable":
+                price = stays['1 Bedroom with Kitchenette']
+            elif stays["King w/ Fireplace & Sofa-Bed"] != "Unavailable":
+                price = stays["King w/ Fireplace & Sofa-Bed"]                  
+            elif stays["2 Bedrooms with Full Kitchen"] != "Unavailable":
+                price = stays["2 Bedrooms with Full Kitchen"]
+            elif stays["Lake House"] != "Unavailable":
+                price = stays["Lake House"]
+            else:
+                available = False 
+        elif num_travelers <= 6:
+            if stays["2 Bedrooms with Full Kitchen"] != "Unavailable":
+                price = stays["2 Bedrooms with Full Kitchen"]
+            elif stays["Lake House"] != "Unavailable":
+                price = stays["Lake House"]
+            else:
+                available = False 
+        else:
+            available = False
+
+
+        if available:
+            return {"available": True, "price": price, "message": "Available: $" + str(price) + " per night"}
+        else:
+            return {"available": False, "price": None, "message": "Not available for selected dates."}
 
 
     else:
@@ -129,14 +235,16 @@ def scrape_anchorInn_api(num_travelers, start_date_str, end_date_str):
 
 
 
-def fetch_csrf_token(session, url):
+def fetch_koa_csrf_token(session, url):
     # Fetch the initial page to get the CSRF token and cookies
     response = session.get(url)
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
+        token = soup.find('input', {'name': 'datadome'})
         token = soup.find('input', {'name': '__RequestVerificationToken'})
         return token['value'] if token else None
     return None
+
 
 def scrape_traverseCityKoa_api(num_travelers, start_date_str, end_date_str):
     session = requests.Session()
@@ -148,7 +256,7 @@ def scrape_traverseCityKoa_api(num_travelers, start_date_str, end_date_str):
     })
 
     token_url = "https://koa.com/campgrounds/traverse-city/reserve/"
-    csrf_token = fetch_csrf_token(session, token_url)
+    csrf_token = fetch_koa_csrf_token(session, token_url)
     if not csrf_token:
         return "Failed to retrieve CSRF token"
 
@@ -197,17 +305,15 @@ def scrape_traverseCityKoa_api(num_travelers, start_date_str, end_date_str):
         return f"Failed to fetch data: {response.status_code}, Reason: {response.reason}"
     
 
-def write_response_to_file(html_content):
-    with open("response.html", "w", encoding="utf-8") as file:
-        file.write(html_content)
-
 def main():
-    traverseCityKoaData = scrape_traverseCityKoa_api(2, '08/20/24', '08/22/24')
-    print(traverseCityKoaData)
-    # timberRidgeData = scrape_timberRidge_api(5, '05/28/24', '05/30/24')
-    # print(timberRidgeData)
-    # anchorInnData = scrape_anchorInn_api(5, '05/28/24', '05/30/24')
-    # print(anchorInnData)
+    #traverseCityStateParkData = scrape_traverseCityStatePark_api(2, '2024-05-21', '2024-05-23')
+    # print(traverseCityStateParkData)
+    timberRidgeData = scrape_timberRidge_api(4, '08/20/24', '08/22/24')
+    print(timberRidgeData)
+    anchorInnData = scrape_anchorInn_api(4, '08/20/24', '08/22/24')
+    print(anchorInnData)
+    # traverseCityKoaData = scrape_traverseCityKoa_api(4, '08/20/24', '08/22/24')
+    # print(traverseCityKoaData)
 
 if __name__ == '__main__':
     main()
