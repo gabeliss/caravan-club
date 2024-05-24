@@ -65,17 +65,17 @@ function BookNorthernMichiganPage() {
                 const responses = await Promise.all([
                     fetchAccommodationDetails('timberRidge', numTravelers, night1and2StartDate, night1and2EndDate),
                     fetchAccommodationDetails('anchorInn', numTravelers, night1and2StartDate, night1and2EndDate),
-                    fetchAccommodationDetails('traverseCityKoa', numTravelers, night1and2StartDate, night1and2EndDate),
-                    fetchAccommodationDetails('straightsKoa', numTravelers, night3and4StartDate, night3and4EndDate),
+                    // fetchAccommodationDetails('traverseCityKoa', numTravelers, night1and2StartDate, night1and2EndDate),
+                    // fetchAccommodationDetails('straightsKoa', numTravelers, night3and4StartDate, night3and4EndDate),
                     fetchAccommodationDetails('cabinsOfMackinaw', numTravelers, night3and4StartDate, night3and4EndDate),
                     fetchAccommodationDetails('uncleDucky', numTravelers, night5and6StartDate, night5and6EndDate),
                 ]);
 
-                const [timberRidgeDetails, anchorInnDetails, traverseCityKoaDetails, straightsKoaDetails, cabinsOfMackinawDetails, uncleDuckyDetails] = responses;
+                const [timberRidgeDetails, anchorInnDetails, cabinsOfMackinawDetails, uncleDuckyDetails] = responses;
                 updateAccommodationsState('timberRidge', timberRidgeDetails, 'night1and2');
                 updateAccommodationsState('anchorInn', anchorInnDetails, 'night1and2')
-                updateAccommodationsState('traverseCityKoa', traverseCityKoaDetails, 'night1and2')
-                updateAccommodationsState('stIgnace', straightsKoaDetails, 'night3and4')
+                // updateAccommodationsState('traverseCityKoa', traverseCityKoaDetails, 'night1and2')
+                // updateAccommodationsState('stIgnace', straightsKoaDetails, 'night3and4')
                 updateAccommodationsState('cabinsOfMackinaw', cabinsOfMackinawDetails, 'night3and4')
                 updateAccommodationsState('uncleDucky', uncleDuckyDetails, 'night5and6');
 
@@ -101,9 +101,12 @@ function BookNorthernMichiganPage() {
     }
 
 
-    const handleSelectStatus = (nightKey, index) => {
+    const handleSelectStatus = (nightKey, accommodationKey) => {
         setSelectedAccommodations(prev => {
-            const newState = { ...prev, [nightKey]: prev[nightKey] === index ? null : index };
+            const newState = {
+                ...prev,
+                [nightKey]: prev[nightKey] === accommodationKey ? null : accommodationKey
+            };
             console.log(`Updated state for ${nightKey}:`, newState[nightKey]);
             return newState;
         });

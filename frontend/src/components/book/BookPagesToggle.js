@@ -45,15 +45,15 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
 
 const ToggleList = ({ data, onSelectionChange, detailsSubmitted }) => {
     const [activeIndex, setActiveIndex] = useState(null);
-    const [selectedStatusIndex, setSelectedStatusIndex] = useState(null);
+    const [selectedStatusKey, setSelectedStatusKey] = useState(null);
 
     const handleSetActive = index => {
         setActiveIndex(prevIndex => prevIndex === index ? null : index);
     };
 
-    const handleSelectStatus = index => {
-        setSelectedStatusIndex(prevIndex => prevIndex === index ? null : index);
-        onSelectionChange(index);
+    const handleSelectStatus = key => {
+        setSelectedStatusKey(prevKey => prevKey === key ? null : key);
+        onSelectionChange(key);
     };
 
     return (
@@ -68,8 +68,8 @@ const ToggleList = ({ data, onSelectionChange, detailsSubmitted }) => {
                     availability={details.available}
                     price={details.price}
                     message={details.message}
-                    isSelected={index === selectedStatusIndex}
-                    onSelect={() => handleSelectStatus(index)}
+                    isSelected={key === selectedStatusKey}
+                    onSelect={() => handleSelectStatus(key)}
                     detailsSubmitted={detailsSubmitted}
                 />
             ))}

@@ -83,4 +83,4 @@ def get_cabinsOfMackinaw_price():
 
 @app.route('/api/scrape/uncleDucky')
 def get_uncleducky_price():
-    return get_price('Uncle Ducky', 4, 8, scrape_uncleducky_api)
+    return get_price('Uncle Ducky', 1, 8, scrape_uncleducky_api)

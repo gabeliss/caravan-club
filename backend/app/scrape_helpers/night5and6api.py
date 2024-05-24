@@ -58,23 +58,32 @@ def scrape_uncleducky_api(num_travelers, start_date_str, end_date_str):
             return {"available": False, "price": None, "message": "Not available for selected dates."}
         else:
             items = soup.find_all(class_="cf-item-data")
-            price = '0'
+            cheapest_price = 10000
+            cheapest_name = ''
             for item in items:
                 item_summary = item.find(class_="cf-item-summary")
                 p_tag_text = item_summary.get_text()
+                name = item.find(class_="mobile-title").h2.text
 
                 if num_travelers > 5:
                     if "Sleeps 8" in p_tag_text:
                         item_price_span = item.find(class_="cf-price").strong.span
-                        price = item_price_span.text.strip("$")
-                        break
+                        price = float(item_price_span.text.strip("$"))
+                        if price < cheapest_price:
+                            cheapest_price = price
+                            cheapest_name = name
                 else:
                     if "Sleeps 5" in p_tag_text:
                         item_price_span = item.find(class_="cf-price").strong.span
-                        price = item_price_span.text.strip("$")
-                        break
+                        price = float(item_price_span.text.strip("$"))
+                        if price < cheapest_price:
+                            cheapest_price = price
+                            cheapest_name = name
                         
-            return {"available": True, "price": price, "message": "Available: $" + price + " per night"}
+            if cheapest_price < 10000:
+                return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "Available: $" + str(cheapest_price) + " per night"}
+            else:
+                return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
 
     else:
         print("Failed to retrieve data:", response.status_code)

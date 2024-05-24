@@ -160,7 +160,7 @@
     background-color: white;
 }
 
-.availability-status.available.availability-selected {
+.availability-status.available.selected {
     background-color: green;
     color: white;
     border: 3px solid #333;

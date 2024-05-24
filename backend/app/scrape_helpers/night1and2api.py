@@ -308,12 +308,12 @@ def scrape_traverseCityKoa_api(num_travelers, start_date_str, end_date_str):
 def main():
     #traverseCityStateParkData = scrape_traverseCityStatePark_api(2, '2024-05-21', '2024-05-23')
     # print(traverseCityStateParkData)
-    timberRidgeData = scrape_timberRidge_api(4, '08/20/24', '08/22/24')
-    print(timberRidgeData)
-    anchorInnData = scrape_anchorInn_api(4, '08/20/24', '08/22/24')
-    print(anchorInnData)
-    # traverseCityKoaData = scrape_traverseCityKoa_api(4, '08/20/24', '08/22/24')
-    # print(traverseCityKoaData)
+    # timberRidgeData = scrape_timberRidge_api(4, '08/20/24', '08/22/24')
+    # print(timberRidgeData)
+    # anchorInnData = scrape_anchorInn_api(4, '08/20/24', '08/22/24')
+    # print(anchorInnData)
+    traverseCityKoaData = scrape_traverseCityKoa_api(4, '08/20/24', '08/22/24')
+    print(traverseCityKoaData)
 
 if __name__ == '__main__':
     main()

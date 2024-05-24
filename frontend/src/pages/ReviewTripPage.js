@@ -13,12 +13,18 @@ function ReviewTripPage() {
         navigate(-1); // Go back to the previous page
     };
   
-    const getAccommodationTitle = (nightKey, index) => {
-        if (index === null) return 'Not Selected';
-        
-        const nightData = accommodationsData[nightKey];
-        return nightData && nightData[index] ? nightData[index].title : 'Not Selected';
-    };
+    const getAccommodationDetails = (nightKey, accommodationKey, detail) => {
+      if (accommodationKey == null) return 'Not Selectedddd';
+  
+      const nightData = accommodationsData[nightKey];
+      const accommodation = nightData[accommodationKey];
+      if (detail == 'title') {
+        return accommodation ? accommodation.title : 'Not Selected';
+      }
+      else {
+        return accommodation ? accommodation.price : 'Not Selected';
+      }
+  };
 
     const formatDates = (startDate, endDate) => {
 
@@ -56,16 +62,16 @@ function ReviewTripPage() {
         <h3 className='header-info'><strong>Travelers: </strong>{numTravelers}</h3>
         <h3 className='header-info'><strong>Dates: </strong>{formatDates(startDate, endDate)}</h3>
         <div className='nightstay'>
-          <h2>Night 1 and 2: {getAccommodationTitle('night1and2', selectedAccommodations.night1and2)}</h2>
-          <h2>Total for Stay: $100</h2>
+          <h2>Night 1 and 2: {getAccommodationDetails('night1and2', selectedAccommodations.night1and2, 'title')}</h2>
+          <h2>Total for Stay: ${getAccommodationDetails('night1and2', selectedAccommodations.night1and2, 'price')}</h2>
         </div>
         <div className='nightstay'>
-          <h2>Night 3 and 4: {getAccommodationTitle('night3and4', selectedAccommodations.night3and4)}</h2>
-          <h2>Total for Stay: $100</h2>
+          <h2>Night 3 and 4: {getAccommodationDetails('night3and4', selectedAccommodations.night3and4, 'title')}</h2>
+          <h2>Total for Stay: ${getAccommodationDetails('night3and4', selectedAccommodations.night3and4, 'price')}</h2>
         </div>
         <div className='nightstay'>
-          <h2>Night 5: {getAccommodationTitle('night5', selectedAccommodations.night5)}</h2>
-          <h2>Total for Stay: $100</h2>
+          <h2>Night 5 and 6: {getAccommodationDetails('night5and6', selectedAccommodations.night5and6, 'title')}</h2>
+          <h2>Total for Stay: ${getAccommodationDetails('night5and6', selectedAccommodations.night5and6, 'price')}</h2>
         </div>
         <div className='buttons'>
           <button onClick={handleBack} className='button'>Back</button>

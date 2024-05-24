@@ -6,24 +6,94 @@ from bs4 import BeautifulSoup
 import time
 import requests 
 import re
+import urllib
+from lxml import etree
+import cloudscraper
 
 
 def scrape_straightsKoa_api(num_travelers, start_date, end_date):
     check_in_date = f"{start_date[:6]}20{start_date[6:]}"
     check_out_date = f"{end_date[:6]}20{end_date[6:]}"
 
-    get_url = "https://koa.com/campgrounds/st-ignace/"
 
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15",
-        "Referer": "https://koa.com/campgrounds/st-ignace/",
-        "Origin": "https://koa.com"
+    webdriver_path = '../chromedriver'
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument(f"executable_path={webdriver_path}")
+    #chrome_options.add_argument('--headless')
+
+    driver = webdriver.Chrome(options=chrome_options)
+
+    # Step 1: Access the main page using Selenium
+    driver.get('https://koa.com/campgrounds/st-ignace/')
+
+    # Retrieve cookies from the browser
+    cookies = driver.get_cookies()
+
+    # Close the browser
+    driver.quit()
+    session = requests.Session()
+    for cookie in cookies:
+        session.cookies.set(cookie['name'], cookie['value'])
+
+    # Check the cookies set by Selenium
+    cookies_main = session.cookies.get_dict()
+    print("Cookies after main page request:", cookies_main)
+
+    # Format cookies as a string to use in the headers
+    cookies_string = '; '.join([f'{key}={value}' for key, value in cookies_main.items()])
+    print("Formatted cookies string:", cookies_string)
+
+    # Step 1: Access the main page to initialize cookies
+    response_main = session.get('https://koa.com/')
+    print("Main page status:", response_main.status_code)
+
+    # Check the cookies set by the main page
+    cookies_main = session.cookies.get_dict()
+    print("Cookies after main page request:", cookies_main)
+
+    # Format cookies as a string to use in the headers
+    cookies_string = '; '.join([f'{key}={value}' for key, value in cookies_main.items()])
+
+    # Step 2: Perform the search request to get redirected to the campground page
+    search_url = 'https://koa.com/campgrounds/st-ignace/'
+    search_headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Connection': 'keep-alive',
+        'Cookie': cookies_string,
+        'Host': 'koa.com',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15'
     }
 
-    session = requests.Session()
+    response_search = session.get(search_url, headers=search_headers)
+    print("Search page status:", response_search.status_code)
 
-    response = session.get(get_url, headers=headers)
-    response.raise_for_status() 
+    # Check cookies set by the server after the search request
+    print("Cookies after search request:", session.cookies.get_dict())
+
+    # Step 3: Access the campground page directly
+    campground_url = 'https://koa.com/campgrounds/st-ignace/'
+    campground_headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://koa.com/',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'same-origin',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15'
+    }
+
+    response_campground = session.get(campground_url, headers=campground_headers)
+    print("Campground page status:", response_campground.status_code)
+
+    # Print the content of the final page (optional)
+    print(response_campground.text)
 
     soup = BeautifulSoup(response.text, 'html.parser')
     token = soup.find('input', {'name': '__RequestVerificationToken'})
@@ -169,10 +239,10 @@ def scrape_cabinsOfMackinaw_api(num_travelers, start_date_str, end_date_str):
 
 
 def main():
-    # straightsKoaData = scrape_straightsKoa_api(2, '06/18/24', '06/20/24')
-    # print(straightsKoaData)
-    cabinsofmackinawData = scrape_cabinsOfMackinaw_api(2, '06/18/24', '06/20/24')
-    print(cabinsofmackinawData)
+    straightsKoaData = scrape_straightsKoa_api(4, '07/26/24', '07/28/24')
+    print(straightsKoaData)
+    # cabinsofmackinawData = scrape_cabinsOfMackinaw_api(2, '06/18/24', '06/20/24')
+    # print(cabinsofmackinawData)
 
 if __name__ == '__main__':
     main()

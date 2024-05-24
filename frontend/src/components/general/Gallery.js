@@ -4,6 +4,8 @@ import Masonry from 'react-masonry-css';
 
 const Gallery = () => {
   const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -11,7 +13,10 @@ const Gallery = () => {
         const response = await axios.get('http://127.0.0.1:5000/api/images');
         setImages(response.data);
       } catch (error) {
+        setError('Error fetching images');
         console.error('Error fetching images:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -23,6 +28,14 @@ const Gallery = () => {
     1100: 3,
     700: 3,
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <Masonry
