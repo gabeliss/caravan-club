@@ -10,17 +10,50 @@
     color: black;
 }
 
-.back {
+.form-container {
+    width: 40%;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+}
+
+.button  {
     height: 50px;
     background-color: rgb(238, 230, 206);
     margin-top: 20px;
     margin-bottom: 30px;
     width: 40%;
+    display: flex;
+    justify-content: center;
     text-decoration: none;
+    align-items: center;
     border-radius: 10px;
     border: 2px solid rgb(5, 89, 26);
 }
 
-.back:hover  {
+.button:hover {
     background-color: rgb(221, 195, 89);
 }

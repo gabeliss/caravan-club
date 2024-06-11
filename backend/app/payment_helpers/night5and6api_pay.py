@@ -1,9 +1,3 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import TimeoutException
 from playwright.sync_api import sync_playwright
 import time
 
@@ -61,8 +55,10 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
 
                     customer_name_input = form.query_selector('#customer_name')
                     customer_name_input.fill(payment_info["name"])
+                    page.wait_for_timeout(500)
                     customer_email_input = form.query_selector('#customer_email')
                     customer_email_input.fill(payment_info["email"])
+                    page.wait_for_timeout(500)
                     customer_phone_input = form.query_selector('#customer_phone')
                     customer_phone_input.fill(payment_info["phone_number"])
 
@@ -96,29 +92,32 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
                     clear_button = page.query_selector("#clear-pre")
                     clear_button.click()
                     clear_button.click()
+                    return True
 
 
         except Exception as e:
             print(f"An error occurred: {e}")
+            with open("error_log.txt", "a") as log_file:
+                log_file.write(f"Error: {str(e)}\n")
             price = None
+            return False
 
         finally:
             browser.close()
 
-    returnData = {"available": True, "price": price, "message": "Available: $" + price + " per night"}
-    return returnData
+    return False
 
 
 def main():
     payment_info = {
         "name": "Lebron James",
         "email": "lebronjames@gmail.com",
-        "phone_number": "3134321234",
+        "phone_number": "(313) 432-1234",
         "card_number": "123412345612345",
         "expiry_date": "0130",
         "cvc": "1234"
     }
-    uncleDuckyData = pay_uncleducky_api(4, '08/24/24', '08/26/24', '#32 Yurt: Wolf (Paddlers Village)', payment_info)
+    uncleDuckyData = pay_uncleducky_api(4, '08/18/24', '08/20/24', '#33 Yurt: Whitetail (Paddlers Village)', payment_info)
     print(uncleDuckyData)
 
 

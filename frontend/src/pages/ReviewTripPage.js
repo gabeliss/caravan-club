@@ -1,6 +1,7 @@
 import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import accommodationsData from './../northernmichigandata.json'
+import './../styles/reviewtrip.css';
 import './../styles/reviewtrip.css';
 
 function ReviewTripPage() {
@@ -14,7 +15,7 @@ function ReviewTripPage() {
     };
   
     const getAccommodationDetails = (nightKey, accommodationKey, detail) => {
-      if (accommodationKey == null) return 'Not Selectedddd';
+      if (accommodationKey == null) return 'Not Selected';
   
       const nightData = accommodationsData[nightKey];
       const accommodation = nightData[accommodationKey];
@@ -24,7 +25,18 @@ function ReviewTripPage() {
       else {
         return accommodation ? accommodation.price : 'Not Selected';
       }
-  };
+    };
+
+
+    const calculateTotalPrice = () => {
+      const night1and2Price = parseFloat(getAccommodationDetails('night1and2', selectedAccommodations.night1and2, 'price'));
+      const night3and4Price = parseFloat(getAccommodationDetails('night3and4', selectedAccommodations.night3and4, 'price'));
+      const night5and6Price = parseFloat(getAccommodationDetails('night5and6', selectedAccommodations.night5and6, 'price'));
+      
+      return (night1and2Price + night3and4Price + night5and6Price).toFixed(2);
+    };
+  
+
 
     const formatDates = (startDate, endDate) => {
 
@@ -54,6 +66,19 @@ function ReviewTripPage() {
     
       return `${formattedStart} - ${formattedEnd}`;
     };
+
+    const handleConfirm = () => {
+      const totalPrice = calculateTotalPrice();
+      navigate('/payments', {
+          state: {
+              selectedAccommodations,
+              totalPrice,
+              numTravelers,
+              startDate,
+              endDate
+          }
+      });
+    };
   
     return (
       <div className='review-trip-page'>
@@ -74,13 +99,8 @@ function ReviewTripPage() {
           <h2>Total for Stay: ${getAccommodationDetails('night5and6', selectedAccommodations.night5and6, 'price')}</h2>
         </div>
         <div className='buttons'>
-          <button onClick={handleBack} className='button'>Back</button>
-          {/* <Link to="/payments" className='button'>
-            <button>Confirm</button>
-          </Link> */}
-          <button className='button'>
-            <Link to="/payments" className='btn-link'>Confirm</Link>
-          </button>
+          <button className='button' onClick={handleBack}>Back</button>
+          <button className='button' onClick={handleConfirm}>Confirm</button>
         </div>
       </div>
     );

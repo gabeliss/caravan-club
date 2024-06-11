@@ -2,8 +2,9 @@ from app import app
 from app.scrape_helpers.night1and2api import scrape_timberRidge_api, scrape_anchorInn_api, scrape_traverseCityKoa_api
 from app.scrape_helpers.night3and4api import scrape_straightsKoa_api, scrape_cabinsOfMackinaw_api
 from app.scrape_helpers.night5and6api import scrape_uncleducky_api
+from app.payment_helpers.night5and6api_pay import pay_uncleducky_api
 import os, base64
-from flask import request
+from flask import request, jsonify
 import logging
 
 @app.route('/api/hello')
@@ -84,3 +85,36 @@ def get_cabinsOfMackinaw_price():
 @app.route('/api/scrape/uncleDucky')
 def get_uncleducky_price():
     return get_price('Uncle Ducky', 1, 8, scrape_uncleducky_api)
+
+
+@app.route('/api/pay/anchorInn')
+def pay_anchorInn():
+    result = True  # or False based on your logic
+    return jsonify(success=result)
+
+
+@app.route('/api/pay/cabinsOfMackinaw')
+def pay_cabinsOfMackinaw():
+    result = True  # or False based on your logic
+    return jsonify(success=result)
+
+
+
+@app.route('/api/pay/uncleDucky')
+def pay_uncleDucky():
+    num_travelers = request.args.get('numTravelers', default=1, type=int)
+    start_date = request.args.get('startDate', default='', type=str)
+    end_date = request.args.get('endDate', default='', type=str)
+    stay_name = request.args.get('stayName', default='', type=str)
+    
+    payment_info = {
+        "name": request.args.get('payment_info[name]', default='', type=str),
+        "email": request.args.get('payment_info[email]', default='', type=str),
+        "phone_number": request.args.get('payment_info[phone_number]', default='', type=str),
+        "card_number": request.args.get('payment_info[card_number]', default='', type=str),
+        "expiry_date": request.args.get('payment_info[expiry_date]', default='', type=str),
+        "cvc": request.args.get('payment_info[cvc]', default='', type=str)
+    }
+    
+    result = pay_uncleducky_api(num_travelers, start_date, end_date, stay_name, payment_info)
+    return jsonify(success=result)

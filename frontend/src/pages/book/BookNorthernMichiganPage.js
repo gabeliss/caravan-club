@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import './../../styles/bookpages.css';
 import ToggleList from '../../components/book/BookPagesToggle';
 import accommodationsData from './../../northernmichigandata.json'
