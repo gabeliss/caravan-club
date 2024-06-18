@@ -57,3 +57,18 @@
 .button:hover {
     background-color: rgb(221, 195, 89);
 }
+
+/* New CSS for side-by-side fields */
+.form-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-row .form-group {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.form-row .form-group:last-child {
+    margin-right: 0;
+}

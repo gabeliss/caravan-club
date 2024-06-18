@@ -54,7 +54,7 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
                     form = page.wait_for_selector('#cf-form', timeout=10000)
 
                     customer_name_input = form.query_selector('#customer_name')
-                    customer_name_input.fill(payment_info["name"])
+                    customer_name_input.fill(payment_info["first_name"] + " " + payment_info["last_name"])
                     page.wait_for_timeout(500)
                     customer_email_input = form.query_selector('#customer_email')
                     customer_email_input.fill(payment_info["email"])
@@ -87,6 +87,7 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
                     pay_button = page.query_selector("#process")
                     # uncomment to pay
                     # pay_button.click()
+                    # time.sleep(5)
                     back_button = page.query_selector("#back-to-reserve")
                     back_button.click()
                     clear_button = page.query_selector("#clear-pre")
@@ -110,9 +111,15 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
 
 def main():
     payment_info = {
-        "name": "Lebron James",
+        "first_name": "Lebron",
+        "last_name": "James",
         "email": "lebronjames@gmail.com",
         "phone_number": "(313) 432-1234",
+        "street_address": "1234 Rocky Rd",
+        "city": "San Francisco",
+        "state": "CA",
+        "zip_code": "45445",
+        "country": "USA",
         "card_number": "123412345612345",
         "expiry_date": "0130",
         "cvc": "1234"

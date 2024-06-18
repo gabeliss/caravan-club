@@ -2,7 +2,6 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import accommodationsData from './../northernmichigandata.json'
 import './../styles/reviewtrip.css';
-import './../styles/reviewtrip.css';
 
 function ReviewTripPage() {
     const { state } = useLocation();
@@ -98,9 +97,9 @@ function ReviewTripPage() {
           <h2>Night 5 and 6: {getAccommodationDetails('night5and6', selectedAccommodations.night5and6, 'title')}</h2>
           <h2>Total for Stay: ${getAccommodationDetails('night5and6', selectedAccommodations.night5and6, 'price')}</h2>
         </div>
-        <div className='buttons'>
-          <button className='button' onClick={handleBack}>Back</button>
-          <button className='button' onClick={handleConfirm}>Confirm</button>
+        <div className='reviewtrip-buttons'>
+          <button className='reviewtrip-button' onClick={handleBack}>Back</button>
+          <button className='reviewtrip-button' onClick={handleConfirm}>Confirm</button>
         </div>
       </div>
     );

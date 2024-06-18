@@ -2,6 +2,7 @@ from app import app
 from app.scrape_helpers.night1and2api import scrape_timberRidge_api, scrape_anchorInn_api, scrape_traverseCityKoa_api
 from app.scrape_helpers.night3and4api import scrape_straightsKoa_api, scrape_cabinsOfMackinaw_api
 from app.scrape_helpers.night5and6api import scrape_uncleducky_api
+from app.payment_helpers.night3and4api_pay import pay_cabinsOfMackinaw_api
 from app.payment_helpers.night5and6api_pay import pay_uncleducky_api
 import os, base64
 from flask import request, jsonify
@@ -55,6 +56,31 @@ def get_price(place_name, min_travelers, max_travelers, scrape_function):
     except Exception as e:
         logging.error(f"Error in {place_name}: %s", str(e), exc_info=True)
         return {"error": "Internal server error"}, 500
+    
+
+def process_payment(api_function):
+    num_travelers = request.args.get('numTravelers', default=1, type=int)
+    start_date = request.args.get('startDate', default='', type=str)
+    end_date = request.args.get('endDate', default='', type=str)
+    stay_name = request.args.get('stayName', default='', type=str)
+    
+    payment_info = {
+        "first_name": request.args.get('payment_info[first_name]', default='', type=str),
+        "last_name": request.args.get('payment_info[last_name]', default='', type=str),
+        "email": request.args.get('payment_info[email]', default='', type=str),
+        "phone_number": request.args.get('payment_info[phone_number]', default='', type=str),
+        "street_address": request.args.get('payment_info[street_address]', default='', type=str),
+        "city": request.args.get('payment_info[city]', default='', type=str),
+        "state": request.args.get('payment_info[state]', default='', type=str),
+        "zip_code": request.args.get('payment_info[zip_code]', default='', type=str),
+        "country": request.args.get('payment_info[country]', default='', type=str),
+        "card_number": request.args.get('payment_info[card_number]', default='', type=str),
+        "expiry_date": request.args.get('payment_info[expiry_date]', default='', type=str),
+        "cvc": request.args.get('payment_info[cvc]', default='', type=str)
+    }
+    
+    result = api_function(num_travelers, start_date, end_date, stay_name, payment_info)
+    return jsonify(success=result)
 
 
 @app.route('/api/scrape/timberRidge')
@@ -95,26 +121,9 @@ def pay_anchorInn():
 
 @app.route('/api/pay/cabinsOfMackinaw')
 def pay_cabinsOfMackinaw():
-    result = True  # or False based on your logic
-    return jsonify(success=result)
-
+    return process_payment(pay_cabinsOfMackinaw_api)
 
 
 @app.route('/api/pay/uncleDucky')
 def pay_uncleDucky():
-    num_travelers = request.args.get('numTravelers', default=1, type=int)
-    start_date = request.args.get('startDate', default='', type=str)
-    end_date = request.args.get('endDate', default='', type=str)
-    stay_name = request.args.get('stayName', default='', type=str)
-    
-    payment_info = {
-        "name": request.args.get('payment_info[name]', default='', type=str),
-        "email": request.args.get('payment_info[email]', default='', type=str),
-        "phone_number": request.args.get('payment_info[phone_number]', default='', type=str),
-        "card_number": request.args.get('payment_info[card_number]', default='', type=str),
-        "expiry_date": request.args.get('payment_info[expiry_date]', default='', type=str),
-        "cvc": request.args.get('payment_info[cvc]', default='', type=str)
-    }
-    
-    result = pay_uncleducky_api(num_travelers, start_date, end_date, stay_name, payment_info)
-    return jsonify(success=result)
+    return process_payment(pay_uncleducky_api)
