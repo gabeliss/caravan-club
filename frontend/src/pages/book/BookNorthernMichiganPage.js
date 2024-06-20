@@ -97,6 +97,7 @@ function BookNorthernMichiganPage() {
         };
         
         setPlaceDetails(updatedPlaceDetails);
+        localStorage.setItem('placeDetails', JSON.stringify(updatedPlaceDetails));
     }
 
 
@@ -114,8 +115,10 @@ function BookNorthernMichiganPage() {
     const handlePageSubmit = (event) => {
         event.preventDefault();
         if (validatePage()) {
-        console.log('Navigating with state:', { tripTitle, numTravelers, startDate, endDate, selectedAccommodations });
-        navigate('/reviewtrip', { state: { tripTitle, numTravelers, startDate, endDate, selectedAccommodations } });
+            const tripDetails = { tripTitle, numTravelers, startDate, endDate, selectedAccommodations };
+            console.log('Navigating with state:', tripDetails);
+            localStorage.setItem('tripDetails', JSON.stringify(tripDetails));
+            navigate('/reviewtrip', { state: tripDetails });
         }
     };
 

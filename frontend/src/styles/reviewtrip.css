@@ -18,10 +18,22 @@
 }
 
 .nightstay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     background-color: rgb(5, 89, 26);
     width: 50%;
     margin-top: 15px;
     margin-bottom: 15px;
+}
+
+.disclaimer {
+    width: 50%;
+}
+
+.stay-disclaimer {
+    width: 85%;
+    font-size: medium;
 }
 
 .reviewtrip-buttons {
