@@ -2,6 +2,7 @@ from app import app
 from app.scrape_helpers.night1and2api import scrape_timberRidge_api, scrape_anchorInn_api, scrape_traverseCityKoa_api
 from app.scrape_helpers.night3and4api import scrape_straightsKoa_api, scrape_cabinsOfMackinaw_api
 from app.scrape_helpers.night5and6api import scrape_uncleducky_api
+from app.payment_helpers.night1and2api_pay import pay_anchorInn_api
 from app.payment_helpers.night3and4api_pay import pay_cabinsOfMackinaw_api
 from app.payment_helpers.night5and6api_pay import pay_uncleducky_api
 import os, base64
@@ -74,6 +75,7 @@ def process_payment(api_function):
         "state": request.args.get('payment_info[state]', default='', type=str),
         "zip_code": request.args.get('payment_info[zip_code]', default='', type=str),
         "country": request.args.get('payment_info[country]', default='', type=str),
+        "cardholder_name": request.args.get('payment_info[cardholder_name]', default='', type=str),
         "card_number": request.args.get('payment_info[card_number]', default='', type=str),
         "expiry_date": request.args.get('payment_info[expiry_date]', default='', type=str),
         "cvc": request.args.get('payment_info[cvc]', default='', type=str)
@@ -82,6 +84,7 @@ def process_payment(api_function):
     result = api_function(num_travelers, start_date, end_date, stay_name, payment_info)
     return jsonify(success=result)
 
+#### SCRAPES ###
 
 @app.route('/api/scrape/timberRidge')
 def get_timberRidge_price():
@@ -113,10 +116,11 @@ def get_uncleducky_price():
     return get_price('Uncle Ducky', 1, 8, scrape_uncleducky_api)
 
 
+### PAYMENTS ###
+
 @app.route('/api/pay/anchorInn')
 def pay_anchorInn():
-    result = True  # or False based on your logic
-    return jsonify(success=result)
+    return process_payment(pay_anchorInn_api)
 
 
 @app.route('/api/pay/cabinsOfMackinaw')

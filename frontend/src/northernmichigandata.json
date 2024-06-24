@@ -50,7 +50,7 @@
       "content": "Nestled in Downtown Mackinaw City, Cabins of Mackinaw offer a two-story retreat with two bedrooms, a jacuzzi bath, kitchenette, and living area. Located across from Mackinac Island Ferry Docks, guests enjoy a scenic view of Lake Huron. Amenities include indoor/outdoor pools, a whirlpool spa, and unlimited access to the adjacent Pirate's Adventure waterpark. Perfect for a relaxing Mackinaw getaway with convenient access to both tranquility and adventure.",
       "available": false,
       "price": 0,
-      "taxRate": 0,
+      "taxRate": 0.11,
       "message": "Unavailable"
     },
     "stIgnace": {

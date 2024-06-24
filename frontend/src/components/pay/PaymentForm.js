@@ -1,6 +1,18 @@
 import React from 'react';
 
 const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack, totalPrice }) => {
+
+  const handleExpiryDateChange = (e) => {
+    let value = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
+    if (value.length >= 2) {
+      value = value.slice(0, 2) + '/' + value.slice(2, 4); // Add slash after MM
+    }
+    if (value.length > 5) {
+      value = value.slice(0, 5); // Limit to MM/YY
+    }
+    handleInputChange({ target: { name: 'expiry_date', value } });
+  };
+
   return (
     <form onSubmit={handleSubmit} className='form-container'>
       <div className='form-row'>
@@ -88,6 +100,7 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
             onChange={handleInputChange} 
             required
           >
+            <option value="" disabled>Select Option</option>
             {[
               'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 
               'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 
@@ -121,11 +134,24 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
             onChange={handleInputChange} 
             required
             >
+            <option value="" disabled>Select Option</option>
             <option value="USA">USA</option>
             </select>
         </div>
       </div>
       <div className='form-row'>
+        <div className='form-group'>
+          <label htmlFor='cardholder_name'>Cardholder Name</label>
+          <input 
+            type="text" 
+            id="cardholder_name" 
+            name="cardholder_name" 
+            className="form-input"
+            value={paymentInfo.cardholder_name} 
+            onChange={handleInputChange} 
+            required 
+          />
+        </div>
         <div className='form-group'>
           <label htmlFor='card_number'>Card Number</label>
           <input 
@@ -138,6 +164,8 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
             required 
           />
         </div>
+      </div>
+      <div className='form-row'>
         <div className='form-group'>
           <label htmlFor='expiry_date'>Expiry Date</label>
           <input 
@@ -145,8 +173,9 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
             id="expiry_date" 
             name="expiry_date" 
             className="form-input"
+            placeholder="MM/YY"
             value={paymentInfo.expiry_date} 
-            onChange={handleInputChange} 
+            onChange={handleExpiryDateChange} 
             required 
           />
         </div>
@@ -166,7 +195,7 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
       <div className='form-group center'>
         <h2>Total Price: ${totalPrice}</h2>
         <div className='buttons'>
-          <button className="button" onClick={handleBack}>Back</button>
+          <button className="button" type="button" onClick={handleBack}>Back</button>
           <button className="button" type="submit">Submit Payment</button>
         </div>
       </div>

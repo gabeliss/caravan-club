@@ -82,11 +82,23 @@ def pay_cabinsOfMackinaw_api(num_travelers, start_date, end_date, place_name, pa
             country_input = page.wait_for_selector('select[name="country"]', timeout=10000)
             country_input.select_option(value=payment_info["country"])
 
+            card_number_input = page.wait_for_selector('#card_number', timeout=10000)
+            card_number_input.fill(payment_info["card_number"])
+
+            cardholder_name_input = page.wait_for_selector('#name_on_card', timeout=10000)
+            cardholder_name_input.fill(payment_info["cardholder_name"])
+
+            expiry_date_input = page.wait_for_selector('#expiry_date', timeout=10000)
+            expiry_date_input.fill(payment_info["expiry_date"])
+
+            cvv_input = page.wait_for_selector('#cvv', timeout=10000)
+            cvv_input.fill(payment_info["cvc"])
+
             checkbox_acknowledge = page.wait_for_selector('#checkme', timeout=10000)
             checkbox_acknowledge.click()
 
             # uncomment to pay
-            # complete_reservation_button = page.wait_for_selector('#sub_button2', timeout=10000)
+            complete_reservation_button = page.wait_for_selector('#sub_button2', timeout=10000)
             # complete_reservation_button.click()
 
             # time.sleep(5)
@@ -116,8 +128,9 @@ def main():
         "state": "CA",
         "zip_code": "45445",
         "country": "USA",
+        "cardholder_name": "Lebron James",
         "card_number": "123412345612345",
-        "expiry_date": "0130",
+        "expiry_date": "01/30",
         "cvc": "1234"
     }
     cabinsOfMackinawData = pay_cabinsOfMackinaw_api(4, '08/18/24', '08/20/24', 'Private Chalet - 3 Rooms, 2 Queen beds, Sofabed in Living Area, 2 TVs', payment_info)

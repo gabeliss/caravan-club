@@ -58,7 +58,6 @@
     background-color: rgb(221, 195, 89);
 }
 
-/* New CSS for side-by-side fields */
 .form-row {
     display: flex;
     justify-content: space-between;
@@ -71,4 +70,16 @@
 
 .form-row .form-group:last-child {
     margin-right: 0;
+}
+
+.banner {
+    margin: 10px;
+}
+
+.green {
+    background-color: lightgreen;
+}
+
+.red {
+    color: rgb(247, 111, 131);
 }

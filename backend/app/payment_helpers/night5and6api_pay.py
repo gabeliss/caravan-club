@@ -5,7 +5,7 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
     url = 'https://paddlersvillage.checkfront.com/reserve/?inline=1&category_id=3%2C2%2C4%2C9&provider=droplet&ssl=1&src=https%3A%2F%2Fwww.paddlingmichigan.com&1704390232826'
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         context = browser.new_context()
         page = context.new_page()
         page.goto(url)
@@ -68,6 +68,9 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
                     continue_button = form.query_selector('#continue')
                     continue_button.click()
 
+                    cardholder_name_input = page.wait_for_selector("#card-name", timeout=10000)
+                    cardholder_name_input.fill(payment_info["cardholder_name"])
+
                     card_number_iframe_element = page.wait_for_selector('#card-number iframe[title="Secure card number input frame"]', timeout=10000)
                     card_number_iframe = card_number_iframe_element.content_frame()
                     card_number_input = card_number_iframe.query_selector('input[name="cardnumber"]')
@@ -78,7 +81,6 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
                     card_expiry_input = card_expiry_iframe.query_selector('input[name="exp-date"]')
                     card_expiry_input.fill(payment_info["expiry_date"])
 
-                    # Switch to the CVC iframe and fill in the CVC
                     card_cvc_iframe_element = page.wait_for_selector('#card-cvc iframe[title="Secure CVC input frame"]', timeout=10000)
                     card_cvc_iframe = card_cvc_iframe_element.content_frame()
                     card_cvc_input = card_cvc_iframe.query_selector('input[name="cvc"]')
@@ -120,8 +122,9 @@ def main():
         "state": "CA",
         "zip_code": "45445",
         "country": "USA",
+        "cardholder_name": "Kobe Bryant",
         "card_number": "123412345612345",
-        "expiry_date": "0130",
+        "expiry_date": "01/30",
         "cvc": "1234"
     }
     uncleDuckyData = pay_uncleducky_api(4, '08/18/24', '08/20/24', '#33 Yurt: Whitetail (Paddlers Village)', payment_info)
