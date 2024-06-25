@@ -27,12 +27,6 @@ function PaymentPage() {
     cvc: ''
   });
 
-  const [paymentStatus, setPaymentStatus] = useState({
-    night1and2: { status: null, name: '' },
-    night3and4: { status: null, name: '' },
-    night5and6: { status: null, name: '' }
-  });
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPaymentInfo({ ...paymentInfo, [name]: value });
@@ -68,7 +62,7 @@ function PaymentPage() {
         initiatePayment(night5and6Place, numTravelers, night5and6StartDate, night5and6EndDate, night5and6stayName, paymentInfo)
       ]);
 
-      setPaymentStatus({
+      const paymentStatus = {
         night1and2: {
           status: responses[0].status === 'fulfilled' && responses[0].value.success ? 'success' : 'error',
           name: night1and2stayName
@@ -81,22 +75,14 @@ function PaymentPage() {
           status: responses[2].status === 'fulfilled' && responses[2].value.success ? 'success' : 'error',
           name: night5and6stayName
         }
-      });
+      };
+
+      navigate('/payments-confirmation', { state: { paymentStatus } });
 
     } catch (error) {
       console.error('Error in fetching details:', error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const renderPaymentStatus = (night, status, name) => {
-    if (status === 'success') {
-      return <div className="banner green">Payment for {night} ({name}) succeeded!</div>;
-    } else if (status === 'error') {
-      return <div className="banner red">Payment for {night} ({name}) failed!</div>;
-    } else {
-      return null;
     }
   };
 
@@ -114,9 +100,6 @@ function PaymentPage() {
             handleBack={handleBack}
             totalPrice={totalPrice}
           />
-          {renderPaymentStatus('Nights 1 and 2', paymentStatus.night1and2.status, paymentStatus.night1and2.name)}
-          {renderPaymentStatus('Nights 3 and 4', paymentStatus.night3and4.status, paymentStatus.night3and4.name)}
-          {renderPaymentStatus('Nights 5 and 6', paymentStatus.night5and6.status, paymentStatus.night5and6.name)}
         </>
       )}
     </div>

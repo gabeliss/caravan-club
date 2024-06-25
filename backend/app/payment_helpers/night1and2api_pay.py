@@ -14,7 +14,7 @@ def pay_anchorInn_api(num_travelers, start_date, end_date, place_name, payment_i
     url = 'https://secure.thinkreservations.com/anchorinn/reservations/availability'
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         context = browser.new_context()
         page = context.new_page()
         page.goto(url)

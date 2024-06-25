@@ -146,7 +146,7 @@ def scrape_cabinsOfMackinaw_api(num_travelers, start_date, end_date):
     url = 'https://ssl.mackinaw-city.com/newreservations/request.php?HotelId=13'
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         context = browser.new_context()
         page = context.new_page()
         page.goto(url)

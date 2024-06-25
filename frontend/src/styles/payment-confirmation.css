@@ -1,0 +1,32 @@
+.payment-confirmation-page {
+    min-height: 60vh;
+    padding-top: 20px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.banner {
+    margin: 10px;
+    min-height: 10vh;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.green {
+    background-color: lightgreen;
+}
+
+.red {
+    color: rgb(247, 111, 131);
+}
+
+.final-message {
+    width: 70%;
+    font-weight: light;
+}
