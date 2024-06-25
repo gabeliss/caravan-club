@@ -114,8 +114,6 @@ def pay_cabinsOfMackinaw_api(num_travelers, start_date, end_date, place_name, pa
         finally:
             browser.close()
 
-    return False
-
 
 def main():
     payment_info = {
@@ -133,6 +131,7 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
+
     cabinsOfMackinawData = pay_cabinsOfMackinaw_api(4, '08/18/24', '08/20/24', 'Private Chalet - 3 Rooms, 2 Queen beds, Sofabed in Living Area, 2 TVs', payment_info)
     print(cabinsOfMackinawData)
 

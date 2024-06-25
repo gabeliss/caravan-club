@@ -19,7 +19,8 @@
       "content": "The Anchor Inn offers distinctive cottages and rooms set in a camp-like environment, featuring a private sandy beach on the West Grand Traverse Bay. Immerse yourself in the charm of vintage lake cottage living, providing a cozy ambiance for your 'up north' getaway. Operating throughout the year, each cottage is equipped with fireplaces for added warmth. The Anchor Inn is your exclusive retreat to unwind, have fun, and discover.",
       "available": false,
       "price": 0,
-      "taxRate": 0,
+      "name": "",
+      "taxRate": 0.06,
       "message": "Unavailable"
     },
     "traverseCityKoa": {
@@ -49,6 +50,7 @@
       "title": "Cabins of Mackinaw",
       "content": "Nestled in Downtown Mackinaw City, Cabins of Mackinaw offer a two-story retreat with two bedrooms, a jacuzzi bath, kitchenette, and living area. Located across from Mackinac Island Ferry Docks, guests enjoy a scenic view of Lake Huron. Amenities include indoor/outdoor pools, a whirlpool spa, and unlimited access to the adjacent Pirate's Adventure waterpark. Perfect for a relaxing Mackinaw getaway with convenient access to both tranquility and adventure.",
       "available": false,
+      "name": "",
       "price": 0,
       "taxRate": 0.11,
       "message": "Unavailable"

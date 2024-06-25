@@ -1,6 +1,7 @@
 import React from 'react';
 
 const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack, totalPrice }) => {
+  const caravanFee = parseFloat((parseFloat(totalPrice) * 0.03).toFixed(2)); // 3% fee
 
   const handleExpiryDateChange = (e) => {
     let value = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
@@ -193,7 +194,8 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
         </div>
       </div>
       <div className='form-group center'>
-        <h2>Total Price: ${totalPrice}</h2>
+        <h2>Caravan Club Fee: ${caravanFee}</h2>
+        <h2>Total Price: ${(parseFloat(totalPrice) + caravanFee).toString()}</h2>
         <div className='buttons'>
           <button className="button" type="button" onClick={handleBack}>Back</button>
           <button className="button" type="submit">Submit Payment</button>

@@ -3,14 +3,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import './../styles/payment.css';
 import { adjustDate, convertDateFormat } from './../utils/helpers.js';
 import { initiatePayment } from '../api/northernMichiganApi.js';
-import accommodationsData from './../northernmichigandata.json';
 import PaymentForm from './../components/pay/PaymentForm.js';
 
 function PaymentPage() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [isLoading, setIsLoading] = useState(false);
-  const { selectedAccommodations, totalPrice, numTravelers, startDate, endDate } = state || {};
+  const { selectedAccommodations, totalPrice, numTravelers, startDate, endDate, placeDetails } = state || {};
 
   const [paymentInfo, setPaymentInfo] = useState({
     first_name: '',
@@ -29,9 +28,9 @@ function PaymentPage() {
   });
 
   const [paymentStatus, setPaymentStatus] = useState({
-    night1and2: null,
-    night3and4: null,
-    night5and6: null
+    night1and2: { status: null, name: '' },
+    night3and4: { status: null, name: '' },
+    night5and6: { status: null, name: '' }
   });
 
   const handleInputChange = (e) => {
@@ -56,9 +55,9 @@ function PaymentPage() {
     let night1and2Place = selectedAccommodations['night1and2'];
     let night3and4Place = selectedAccommodations['night3and4'];
     let night5and6Place = selectedAccommodations['night5and6'];
-    let night1and2stayName = accommodationsData['night1and2'][selectedAccommodations['night1and2']]['name'];
-    let night3and4stayName = accommodationsData['night3and4'][selectedAccommodations['night3and4']]['name'];
-    let night5and6stayName = accommodationsData['night5and6'][selectedAccommodations['night5and6']]['name'];
+    let night1and2stayName = placeDetails['night1and2'][night1and2Place]['name'];
+    let night3and4stayName = placeDetails['night3and4'][night3and4Place]['name'];
+    let night5and6stayName = placeDetails['night5and6'][night5and6Place]['name'];
 
     setIsLoading(true);
 
@@ -70,9 +69,18 @@ function PaymentPage() {
       ]);
 
       setPaymentStatus({
-        night1and2: responses[0].status === 'fulfilled' ? 'success' : 'error',
-        night3and4: responses[1].status === 'fulfilled' ? 'success' : 'error',
-        night5and6: responses[2].status === 'fulfilled' ? 'success' : 'error'
+        night1and2: {
+          status: responses[0].status === 'fulfilled' && responses[0].value.success ? 'success' : 'error',
+          name: night1and2stayName
+        },
+        night3and4: {
+          status: responses[1].status === 'fulfilled' && responses[1].value.success ? 'success' : 'error',
+          name: night3and4stayName
+        },
+        night5and6: {
+          status: responses[2].status === 'fulfilled' && responses[2].value.success ? 'success' : 'error',
+          name: night5and6stayName
+        }
       });
 
     } catch (error) {
@@ -82,11 +90,11 @@ function PaymentPage() {
     }
   };
 
-  const renderPaymentStatus = (night, status) => {
+  const renderPaymentStatus = (night, status, name) => {
     if (status === 'success') {
-      return <div className="banner green">Payment for {night} succeeded!</div>;
+      return <div className="banner green">Payment for {night} ({name}) succeeded!</div>;
     } else if (status === 'error') {
-      return <div className="banner red">Payment for {night} failed!</div>;
+      return <div className="banner red">Payment for {night} ({name}) failed!</div>;
     } else {
       return null;
     }
@@ -106,9 +114,9 @@ function PaymentPage() {
             handleBack={handleBack}
             totalPrice={totalPrice}
           />
-          {renderPaymentStatus('night 1 and 2', paymentStatus.night1and2)}
-          {renderPaymentStatus('night 3 and 4', paymentStatus.night3and4)}
-          {renderPaymentStatus('night 5 and 6', paymentStatus.night5and6)}
+          {renderPaymentStatus('Nights 1 and 2', paymentStatus.night1and2.status, paymentStatus.night1and2.name)}
+          {renderPaymentStatus('Nights 3 and 4', paymentStatus.night3and4.status, paymentStatus.night3and4.name)}
+          {renderPaymentStatus('Nights 5 and 6', paymentStatus.night5and6.status, paymentStatus.night5and6.name)}
         </>
       )}
     </div>

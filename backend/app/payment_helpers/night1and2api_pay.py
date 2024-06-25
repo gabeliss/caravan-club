@@ -105,10 +105,11 @@ def pay_anchorInn_api(num_travelers, start_date, end_date, place_name, payment_i
                     confirm_reservation_button = page.wait_for_selector('.confirm-reservation', timeout=10000)
                     # confirm_reservation_button.click()
                     # time.sleep(5)
-                    break
+                    return True
 
-
-            return True
+            
+            print("Place name was not found. This should not happen. Investigate further.")
+            return False
 
 
         except Exception as e:
@@ -117,8 +118,6 @@ def pay_anchorInn_api(num_travelers, start_date, end_date, place_name, payment_i
 
         finally:
             browser.close()
-
-    return False
 
 
 def main():
@@ -137,7 +136,7 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
-    anchorInnData = pay_anchorInn_api(4, '08/18/24', '08/20/24', '1 Bedroom with Kitchenette', payment_info)
+    anchorInnData = pay_anchorInn_api(4, '08/21/24', '08/23/24', '1 Bedroom with Kitchenette', payment_info)
     print(anchorInnData)
 
 

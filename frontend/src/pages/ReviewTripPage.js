@@ -66,7 +66,8 @@ function ReviewTripPage() {
                 totalPrice,
                 numTravelers,
                 startDate,
-                endDate
+                endDate,
+                placeDetails
             }
         });
     };

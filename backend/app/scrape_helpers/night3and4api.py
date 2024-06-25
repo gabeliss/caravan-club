@@ -3,12 +3,9 @@ from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
-import time
 import requests 
-import re
-import urllib
-from lxml import etree
-import cloudscraper
+from playwright.sync_api import sync_playwright
+import time
 
 
 def scrape_straightsKoa_api(num_travelers, start_date, end_date):
@@ -145,84 +142,79 @@ def scrape_straightsKoa_api(num_travelers, start_date, end_date):
         
 
 
-def scrape_cabinsOfMackinaw_api(num_travelers, start_date_str, end_date_str):
+def scrape_cabinsOfMackinaw_api(num_travelers, start_date, end_date):
+    url = 'https://ssl.mackinaw-city.com/newreservations/request.php?HotelId=13'
 
-    session = requests.Session()
-    session.get("https://ssl.mackinaw-city.com/newreservations/request.php?HotelId=13")
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto(url)
+        time.sleep(1)  # Adjust as necessary for page load
 
-    url = "https://ssl.mackinaw-city.com/newreservations/request.php"
+        try:
+            start_date_with_dashes = start_date.replace("/", "-")
+            date_of_arrival_input = page.wait_for_selector('#checkin', timeout=10000)
+            date_of_arrival_input.fill('')
+            date_of_arrival_input.fill(start_date_with_dashes)
 
-    cookie = session.cookies._cookies['ssl.mackinaw-city.com']['/']['PHPSESSID'].value
+            # Click on page to close it
+            random_click = page.wait_for_selector('#content', timeout=10000)
+            random_click.click()
 
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15',
-        'Cookie': 'PHPSESSID=' + cookie,
-        'Host': 'ssl.mackinaw-city.com',
-        'Accept': '*/*',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive'
-    }
+            # Enter nights staying
+            nights_staying_select = page.wait_for_selector('select[name="dayspan"]', timeout=10000)
+            nights_staying_select.select_option(value="2")
 
-    session.headers.update(headers)
+            # Click on check rates button
+            check_rates_button = page.wait_for_selector('#sub_button', timeout=10000)
+            check_rates_button.click()
 
-    start_date = datetime.strptime(start_date_str, '%m/%d/%y')
-    end_date = datetime.strptime(end_date_str, '%m/%d/%y')
-
-    params = {
-        'roomtype': 7,
-        'selectdate': start_date.strftime('%m-%d-%Y'),
-        'dayspan': 2,
-        'numberrooms': 1,
-        'numberguests': num_travelers,
-        'ratetype': 'Internet Special',
-        'submit_x': 'true'
-    }
-
-    response = session.get(url, headers=headers, params=params)
-
-    if response.status_code == 200 and response.text:
-        soup = BeautifulSoup(response.text, 'html.parser')
-
-        cabins_data = {}
-        
-        table = soup.find_all('table', class_='data')[1]
-        
-        if table:
-            tbody = table.find('tbody')
+            time.sleep(1)
+            cabins_data = {}
+            table = page.query_selector_all('table.data')[1]
             
-            if tbody:
-                for row in tbody.find_all('tr'):
-                    print(row)
-                    a_tag = row.find('a')
-                    span_tag = row.find('span')
-                    
-                    if a_tag and span_tag:
-                        title = a_tag.text.strip()
-                        price = span_tag.text.strip()
+            if table:
+                tbody = table.query_selector('tbody')
+                
+                if tbody:
+                    rows = tbody.query_selector_all('tr')
+                    for row in rows:
+                        a_tag = row.query_selector('a')
+                        span_tag = row.query_selector('span')
+                        
+                        if a_tag and span_tag:
+                            title = a_tag.inner_text().strip()
+                            price = span_tag.inner_text().strip()
 
-                        cabins_data[title] = price
-        
+                            cabins_data[title] = price
+            
             pc1 = 'Private Chalet - 1 Room Queen Bed'
             pc2 = 'Private Chalet - 1 Room 2 Queen Beds'
             pc3 = 'Private Chalet - 2 Rooms, 2 Queen Beds and 2 TVs'
             pc4 = 'Private Chalet - 3 Rooms, 2 Queen beds, Sofabed in Living Area, 2 TVs'
+            name = ""
             available = True
             price = -1
             if num_travelers <= 2:
                 if pc1 in cabins_data and cabins_data[pc1] != 'not available':
                     price = cabins_data[pc1]
+                    name = pc1
                 else:
                     available = False
             elif num_travelers <= 4:
                 if pc2 in cabins_data and cabins_data[pc2] != 'not available':
                     price = cabins_data[pc2]
+                    name = pc2
                 elif pc3 in cabins_data and cabins_data[pc3] != 'not available':
                     price = cabins_data[pc3]
+                    name = pc3
                 else:
                     available = False
             elif num_travelers <= 6:
                 if pc4 in cabins_data and cabins_data[pc4] != 'not available':
                     price = cabins_data[pc4]
+                    name = pc4
                 else:
                     available = False 
             else:
@@ -230,19 +222,23 @@ def scrape_cabinsOfMackinaw_api(num_travelers, start_date_str, end_date_str):
 
             if available:
                 price = price.strip("$")
-                return {"available": True, "price": price, "message": "Available: $" + price + " per night"}
+                return {"available": True, "name": name, "price": price, "message": "Available: $" + price + " per night"}
             else:
-                return {"available": False, "price": None, "message": "Not available for selected dates."}              
+                return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}              
 
-    else:
-        print("Failed to retrieve data, or data is empty.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
+
+        finally:
+            browser.close()
 
 
 def main():
-    straightsKoaData = scrape_straightsKoa_api(4, '07/26/24', '07/28/24')
-    print(straightsKoaData)
-    # cabinsofmackinawData = scrape_cabinsOfMackinaw_api(2, '06/18/24', '06/20/24')
-    # print(cabinsofmackinawData)
+    # straightsKoaData = scrape_straightsKoa_api(4, '07/26/24', '07/28/24')
+    # print(straightsKoaData)
+    cabinsofmackinawData = scrape_cabinsOfMackinaw_api(2, '07/18/24', '07/20/24')
+    print(cabinsofmackinawData)
 
 if __name__ == '__main__':
     main()

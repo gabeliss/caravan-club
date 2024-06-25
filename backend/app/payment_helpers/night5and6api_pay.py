@@ -5,7 +5,7 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
     url = 'https://paddlersvillage.checkfront.com/reserve/?inline=1&category_id=3%2C2%2C4%2C9&provider=droplet&ssl=1&src=https%3A%2F%2Fwww.paddlingmichigan.com&1704390232826'
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(headless=False)
         context = browser.new_context()
         page = context.new_page()
         page.goto(url)
@@ -23,7 +23,7 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
             end_date_input.fill('')
             end_date_input.fill(end_date)
             end_date_input.press('Enter')
-
+            time.sleep(1)
             # Click on the yurt tab
             yurt_button = page.wait_for_selector('#cf-tab2', timeout=10000)
             yurt_button.click()
@@ -33,8 +33,8 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
             # Check if no availability message is present
             unavailable = page.query_selector("//p[contains(@class, 'cf-info')]//b[contains(text(), 'Nothing available for the dates selected.')]")
             if unavailable:
-                returnData = {"available": False, "price": None, "message": "Not available for selected dates."}
-                return returnData
+                print('Unavailable, returning False')
+                return False
 
             # Find all items
             items = page.query_selector_all('.cf-item-data')
@@ -108,6 +108,7 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
         finally:
             browser.close()
 
+    print("This should never happen, investigate further")
     return False
 
 
@@ -127,7 +128,7 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
-    uncleDuckyData = pay_uncleducky_api(4, '08/18/24', '08/20/24', '#33 Yurt: Whitetail (Paddlers Village)', payment_info)
+    uncleDuckyData = pay_uncleducky_api(4, '09/01/24', '09/03/24', '#31 Yurt: Moose (Paddlers Village)', payment_info)
     print(uncleDuckyData)
 
 

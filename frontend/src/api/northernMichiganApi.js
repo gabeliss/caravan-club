@@ -18,6 +18,8 @@ export const fetchAccommodationDetails = async (accommodationType, numTravelers,
 
 
 export const initiatePayment = async (accommodationType, numTravelers, startDate, endDate, stayName, payment_info) => {
+    console.log("initiatePaymentParams:", accommodationType, numTravelers, startDate, endDate, stayName, payment_info)
+    console.log("stayName", stayName)
     const url = `${PAYMENT_ENDPOINT}/${accommodationType}`;
     try {
         const response = await axios.get(url, {

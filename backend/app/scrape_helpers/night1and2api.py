@@ -150,6 +150,50 @@ def scrape_timberRidge_api(num_travelers, start_date_str, end_date_str):
     
 
 
+def get_available_stay_anchorInn_helper(stays, num_travelers):
+    available = True
+    price = -1
+    name = ""
+
+    stay_options = [
+        (2, [
+            "Cozy Queen Room",
+            "Single Queen Room",
+            "King Room",
+            "King w/ Fireplace & Sofa-Bed",
+            "1 Bedroom with Kitchenette"
+        ]),
+        (4, [
+            "1 Bedroom with Kitchenette",
+            "King w/ Fireplace & Sofa-Bed",
+            "2 Bedrooms with Full Kitchen",
+            "Lake House"
+        ]),
+        (6, [
+            "2 Bedrooms with Full Kitchen",
+            "Lake House"
+        ])
+    ]
+
+    for max_travelers, options in stay_options:
+        if num_travelers <= max_travelers:
+            for option in options:
+                if stays.get(option) != "Unavailable":
+                    price = stays[option]
+                    name = option
+                    break
+            else:
+                available = False
+            break
+    else:
+        available = False
+
+    if available:
+        return {"available": True, "name": name, "price": price, "message": "Available: $" + str(price) + " per night"}
+    else:
+        return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
+
+
 def scrape_anchorInn_api(num_travelers, start_date_str, end_date_str):
 
     stays = {
@@ -174,7 +218,6 @@ def scrape_anchorInn_api(num_travelers, start_date_str, end_date_str):
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
     }
 
-    
     response = requests.post(url, headers=headers, data={})
 
     if response.status_code == 200:
@@ -186,48 +229,9 @@ def scrape_anchorInn_api(num_travelers, start_date_str, end_date_str):
             if valid:
                 stays[name] = price
 
-        available = True
-        price = -1
-        if num_travelers <= 2:
-            if stays["Cozy Queen Room"] != "Unavailable":
-                price = stays["Cozy Queen Room"]
-            elif stays["Single Queen Room"] != "Unavailable":
-                price = stays["Single Queen Room"]    
-            elif stays["King Room"] != "Unavailable":
-                price = stays["King Room"]
-            elif stays["King w/ Fireplace & Sofa-Bed"] != "Unavailable":
-                price = stays["King w/ Fireplace & Sofa-Bed"]
-            elif stays["1 Bedroom with Kitchenette"] != "Unavailable":
-                price = stays['1 Bedroom with Kitchenette']
-            else:
-                available = False  
-        elif num_travelers <= 4:
-            if stays["1 Bedroom with Kitchenette"] != "Unavailable":
-                price = stays['1 Bedroom with Kitchenette']
-            elif stays["King w/ Fireplace & Sofa-Bed"] != "Unavailable":
-                price = stays["King w/ Fireplace & Sofa-Bed"]                  
-            elif stays["2 Bedrooms with Full Kitchen"] != "Unavailable":
-                price = stays["2 Bedrooms with Full Kitchen"]
-            elif stays["Lake House"] != "Unavailable":
-                price = stays["Lake House"]
-            else:
-                available = False 
-        elif num_travelers <= 6:
-            if stays["2 Bedrooms with Full Kitchen"] != "Unavailable":
-                price = stays["2 Bedrooms with Full Kitchen"]
-            elif stays["Lake House"] != "Unavailable":
-                price = stays["Lake House"]
-            else:
-                available = False 
-        else:
-            available = False
-
-
-        if available:
-            return {"available": True, "price": price, "message": "Available: $" + str(price) + " per night"}
-        else:
-            return {"available": False, "price": None, "message": "Not available for selected dates."}
-
+        # Use the refactored get_available_stay function
+        result = get_available_stay_anchorInn_helper(stays, num_travelers)
+        return result
 
     else:
         print(f"Failed to fetch data: {response.status_code}, {response.text}")
@@ -310,10 +314,10 @@ def main():
     # print(traverseCityStateParkData)
     # timberRidgeData = scrape_timberRidge_api(4, '08/20/24', '08/22/24')
     # print(timberRidgeData)
-    # anchorInnData = scrape_anchorInn_api(4, '08/20/24', '08/22/24')
-    # print(anchorInnData)
-    traverseCityKoaData = scrape_traverseCityKoa_api(4, '08/20/24', '08/22/24')
-    print(traverseCityKoaData)
+    anchorInnData = scrape_anchorInn_api(4, '08/20/24', '08/22/24')
+    print(anchorInnData)
+    # traverseCityKoaData = scrape_traverseCityKoa_api(4, '08/20/24', '08/22/24')
+    # print(traverseCityKoaData)
 
 if __name__ == '__main__':
     main()

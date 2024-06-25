@@ -18,16 +18,13 @@ export function convertDateFormat(dateStr) {
 
 export function calculateTotalForStay(nightKey, accommodationKey, accommodationsData) {
     const accommodation = accommodationsData[nightKey][accommodationKey];
-    console.log(`Accommodation Data for ${nightKey} - ${accommodationKey}:`, accommodation);
 
     if (!accommodation) return { total: 0, payment: 0, disclaimer: '' };
 
     const priceForTwoNights = parseFloat(accommodation.price) * 2;
-    console.log(`Price for Two Nights for ${nightKey} - ${accommodationKey}:`, priceForTwoNights);
 
     const taxRate = accommodation.taxRate || 0;
     const totalForStay = priceForTwoNights + (priceForTwoNights * taxRate);
-    console.log(`Total for Stay for ${nightKey} - ${accommodationKey}:`, totalForStay);
 
     let paymentAmount = totalForStay;
     if (accommodation.partialPayment) {

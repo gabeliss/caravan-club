@@ -96,6 +96,7 @@ function BookNorthernMichiganPage() {
             ...details
         };
         
+        console.log("updatedPlaceDetails", updatedPlaceDetails)
         setPlaceDetails(updatedPlaceDetails);
         localStorage.setItem('placeDetails', JSON.stringify(updatedPlaceDetails));
     }
