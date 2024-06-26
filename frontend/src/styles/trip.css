@@ -2,7 +2,7 @@
 
 .trip-page {
     background-color: white;
-    color: rgb(5, 89, 26);
+    color: var(--primary-color);
     margin: auto;
 }
 
@@ -15,8 +15,8 @@
 }
 
 .trip-header h1 {
-    border-top: 1px solid rgb(5, 89, 26);
-    border-bottom: 1px solid rgb(5, 89, 26);
+    border-top: 1px solid var(--primary-color);
+    border-bottom: 1px solid var(--primary-color);
     width: 33vw;
     padding: 20px;
     font-weight: lighter;
@@ -78,7 +78,7 @@
 }
 
 .info-left, .info-right {
-    background-color: rgb(238, 230, 206);
+    background-color: var(--secondary-color);
     padding: 20px;
     box-sizing: border-box;
 }

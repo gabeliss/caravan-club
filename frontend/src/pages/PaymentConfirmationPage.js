@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import './../styles/payment-confirmation.css';
 
 function PaymentConfirmationPage() {
@@ -27,6 +27,9 @@ function PaymentConfirmationPage() {
         caravanclub@gmail.com and we will do our best to accomodate you. We hope you have an amazing trip. Thank you for 
         booking through Caravan Club!
       </h4>
+      <Link to="/">
+        <button className='home-button'>Back to Home</button>
+      </Link>
     </div>
   );
 }

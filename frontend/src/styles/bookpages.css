@@ -153,7 +153,7 @@
 }
 
 .availability-status.available {
-    background-color: rgb(238, 230, 206);
+    background-color: var(--secondary-color);
 }
 
 .availability-status.not-available {

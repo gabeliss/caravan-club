@@ -14,14 +14,14 @@
 .header-info {
     font-weight: lighter;
     color: rgba(86, 84, 84, 0.998);
-    border-bottom: solid 2px rgb(238, 230, 206);;
+    border-bottom: solid 2px var(--secondary-color);;
 }
 
 .nightstay {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgb(5, 89, 26);
+    background-color: var(--primary-color);
     width: 50%;
     margin-top: 15px;
     margin-bottom: 15px;
@@ -45,7 +45,7 @@
 
 .reviewtrip-button  {
     height: 50px;
-    background-color: rgb(238, 230, 206);
+    background-color: var(--secondary-color);
     margin-top: 20px;
     margin-bottom: 30px;
     width: 40%;
@@ -54,7 +54,7 @@
     text-decoration: none;
     align-items: center;
     border-radius: 10px;
-    border: 2px solid rgb(5, 89, 26);
+    border: 2px solid var(--primary-color);
 }
 
 .reviewtrip-button:hover {

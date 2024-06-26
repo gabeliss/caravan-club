@@ -6,11 +6,8 @@
 }
 
 header {
-  background-color: rgb(238, 230, 206);
+  background-color: var(--secondary-color);
   height: 18vh;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   padding: 0 20px;
 }
 
@@ -18,9 +15,6 @@ header {
 .header-center,
 .header-right {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .header-left {
@@ -29,7 +23,7 @@ header {
 }
 
 .header-left button {
-  color: rgb(5, 89, 26);
+  color: var(--primary-color);
 }
 
 .header-logo img {
@@ -46,7 +40,7 @@ header {
 
 .header-icon {
   font-size: 30px;
-  color: rgb(5, 89, 26);
+  color: var(--primary-color);
 }
 
 button, .header-right img {
@@ -90,7 +84,7 @@ button, .header-right img {
 
   .menu-button {
     font-size: 300%;
-    color: rgb(5, 89, 26);
+    color: var(--primary-color);
   }
 
   .header-menu img {
@@ -103,7 +97,7 @@ button, .header-right img {
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: rgb(238, 230, 206);
+    background-color: var(--secondary-color);
     width: 100%; /* Adjust as necessary */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 100;
@@ -116,9 +110,6 @@ button, .header-right img {
   }
 
   .icon-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     text-decoration: none;
   }
 
@@ -130,13 +121,13 @@ button, .header-right img {
 
 /* footer */
 footer {
-  background-color: rgb(238, 230, 206);
+  background-color: var(--secondary-color);
   height: 10vh;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  color:rgb(5, 89, 26);
+  color:var(--primary-color);
 }
 
 .footer-left,
@@ -180,7 +171,7 @@ footer a {
   font-family: New Century Schoolbook, TeX Gyre Schola, serif;
   margin: 0;
   padding: 0;
-  color: rgb(5, 89, 26);
+  color: var(--primary-color);
   background-color: white;
 }
 
@@ -198,12 +189,12 @@ footer a {
 }
 
 .landing-welcome-content h2 {
-  color: rgb(5, 89, 26);
+  color: var(--primary-color);
 }
 
 .landing-welcome-content button {
-  color: rgb(5, 89, 26);
-  background-color: rgb(238, 230, 206);
+  color: var(--primary-color);
+  background-color: var(--secondary-color);
   height: 40px;
   width: 80px;
   border-radius: 5px;
@@ -219,7 +210,7 @@ footer a {
 }
 
 .landing-intro {
-  background-color: rgb(238, 230, 206);
+  background-color: var(--secondary-color);
   min-height: 20vh;
   padding-bottom: 10%;
 }
@@ -279,7 +270,7 @@ footer a {
 .landing-separator {
   width:100vw;
   height: 5vh;
-  background: linear-gradient(to top left, white 50%, rgb(238, 230, 206) 50%);
+  background: linear-gradient(to top left, white 50%, var(--secondary-color) 50%);
   clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
 }
 

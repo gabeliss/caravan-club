@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 function Header({ isMenuOpen, setIsMenuOpen }) {
@@ -8,8 +8,8 @@ function Header({ isMenuOpen, setIsMenuOpen }) {
   };
 
   return (
-    <header>
-      <div className="header-left">
+    <header className='flex-between'>
+      <div className="header-left flex-center">
         <Link to="/trips">
           <button>Trips</button>
         </Link>
@@ -27,7 +27,7 @@ function Header({ isMenuOpen, setIsMenuOpen }) {
         </Link>
       </div>
 
-      <div className="header-right">
+      <div className="header-right flex-center">
         <a href="http://instagram.com/squarespace" target="_blank" rel="noopener noreferrer">
           <i className="fab fa-instagram header-icon"></i>
         </a>
@@ -41,10 +41,10 @@ function Header({ isMenuOpen, setIsMenuOpen }) {
           <Link to="/trips" onClick={toggleMenu}><button>Trips</button></Link>
           <Link to="/book" onClick={toggleMenu}><button>Book</button></Link>
           <Link to="/media" onClick={toggleMenu}><button>Media</button></Link>
-          <a href="http://instagram.com/squarespace" target="_blank" rel="noopener noreferrer" className="icon-container" onClick={toggleMenu}>
+          <a href="http://instagram.com/squarespace" target="_blank" rel="noopener noreferrer" className="icon-container flex-center" onClick={toggleMenu}>
             <i className="fab fa-instagram header-icon"></i>
           </a>
-          <a href="mailto:null" target="_blank" rel="noopener noreferrer" className="icon-container" onClick={toggleMenu}>
+          <a href="mailto:null" target="_blank" rel="noopener noreferrer" className="icon-container flex-center" onClick={toggleMenu}>
             <i className="fas fa-envelope header-icon"></i>
           </a>
         </div>

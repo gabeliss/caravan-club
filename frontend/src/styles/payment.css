@@ -42,7 +42,7 @@
 
 .button  {
     height: 50px;
-    background-color: rgb(238, 230, 206);
+    background-color: var(--secondary-color);
     margin-top: 20px;
     margin-bottom: 30px;
     width: 40%;
@@ -51,7 +51,7 @@
     text-decoration: none;
     align-items: center;
     border-radius: 10px;
-    border: 2px solid rgb(5, 89, 26);
+    border: 2px solid var(--primary-color);
 }
 
 .button:hover {

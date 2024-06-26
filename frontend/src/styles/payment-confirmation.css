@@ -30,3 +30,13 @@
     width: 70%;
     font-weight: light;
 }
+
+.home-button {
+    background-color: black;
+    color: white;
+    height: 40px;
+    width: 140px;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    border-radius: 20px;
+}

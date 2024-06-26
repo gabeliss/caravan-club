@@ -11,3 +11,38 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+:root {
+  --primary-color: rgb(5, 89, 26);
+  --secondary-color: rgb(238, 230, 206);
+  --light-color: rgb(247, 111, 131);
+  --text-light: white;
+  --text-dark: black;
+}
+
+h1, h2, h3 {
+  font-weight: lighter;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-center-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.text-center {
+  text-align: center;
+}
