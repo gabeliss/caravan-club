@@ -73,9 +73,7 @@ def scrape_timberRidge_api(num_travelers, start_date_str, end_date_str):
                 if price_span:
                     buttons = container.find_all('button', class_='newbook_responsive_button')
                     button_label = buttons[2].get('aria-label')
-                    book_now = False
                     if button_label == "Book now":
-                        book_now = True
                         stay_price = price_span[0].text.lstrip("$")
                         stays[stay_name] = stay_price
                     else:
@@ -93,56 +91,71 @@ def scrape_timberRidge_api(num_travelers, start_date_str, end_date_str):
         yurt_deluxe = "Yurt Deluxe Sleeps 5"
 
         available = True
+        name = None
         price = -1
         if num_travelers <= 2:
             if stays[cabin_deluxe] != "Unavailable":
+                name = cabin_deluxe
                 price = stays[cabin_deluxe]
             elif stays[yurt_deluxe] != "Unavailable":
+                name = yurt_deluxe
                 price = stays[yurt_deluxe]
             elif stays[yurt_basic] != "Unavailable":
+                name = yurt_basic
                 price = stays[yurt_basic]
             elif stays[cottage] != "Unavailable":
+                name = cottage
                 price = stays[cottage]
             elif stays[cottage_premium] != "Unavailable":
+                name = cottage_premium
                 price = stays[cottage_premium]
             elif stays[park_home] != "Unavailable":
+                name = park_home
                 price = stays[park_home]
             else:
                 available = False
                 price = None
         elif num_travelers <= 5:
             if stays[yurt_deluxe] != "Unavailable":
+                name = yurt_deluxe
                 price = stays[yurt_deluxe]
             elif stays[yurt_basic] != "Unavailable":
+                name = yurt_basic
                 price = stays[yurt_basic]
             elif stays[cottage] != "Unavailable":
+                name = cottage
                 price = stays[cottage]
             elif stays[cottage_premium] != "Unavailable":
+                name = cottage_premium
                 price = stays[cottage_premium]
             elif stays[park_home] != "Unavailable":
+                name = park_home
                 price = stays[park_home]
             else:
                 available = False
                 price = None  
         elif num_travelers <= 7:
             if stays[premium_park_home] != "Unavailable":
+                name = premium_park_home
                 price = stays[premium_park_home]
             elif stays[bunkhouse] != "Unavailable":
+                name = bunkhouse
                 price = stays[bunkhouse]
             else:
                 available = False
                 price = None  
         else:
             if stays[bunkhouse] != "Unavailable":
+                name = bunkhouse
                 price = stays[bunkhouse]
             else:
                 available = False
                 price = None                                  
 
         if available:
-            return {"available": True, "price": price, "message": "Available: $" + price + " per night"}
+            return {"available": True, "name": name, "price": price, "message": "Available: $" + price + " per night"}
         else:
-            return {"available": False, "price": None, "message": "Not available for selected dates."}
+            return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
 
     else:
         print("Failed to retrieve data:", response.status_code)
@@ -312,10 +325,10 @@ def scrape_traverseCityKoa_api(num_travelers, start_date_str, end_date_str):
 def main():
     #traverseCityStateParkData = scrape_traverseCityStatePark_api(2, '2024-05-21', '2024-05-23')
     # print(traverseCityStateParkData)
-    # timberRidgeData = scrape_timberRidge_api(4, '08/20/24', '08/22/24')
-    # print(timberRidgeData)
-    anchorInnData = scrape_anchorInn_api(4, '08/20/24', '08/22/24')
-    print(anchorInnData)
+    timberRidgeData = scrape_timberRidge_api(4, '08/20/24', '08/23/24')
+    print(timberRidgeData)
+    # anchorInnData = scrape_anchorInn_api(4, '08/20/24', '08/22/24')
+    # print(anchorInnData)
     # traverseCityKoaData = scrape_traverseCityKoa_api(4, '08/20/24', '08/22/24')
     # print(traverseCityKoaData)
 

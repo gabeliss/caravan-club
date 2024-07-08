@@ -2,7 +2,7 @@ from app import app
 from app.scrape_helpers.night1and2api import scrape_timberRidge_api, scrape_anchorInn_api, scrape_traverseCityKoa_api
 from app.scrape_helpers.night3and4api import scrape_straightsKoa_api, scrape_cabinsOfMackinaw_api
 from app.scrape_helpers.night5and6api import scrape_uncleducky_api
-from app.payment_helpers.night1and2api_pay import pay_anchorInn_api
+from app.payment_helpers.night1and2api_pay import pay_anchorInn_api, pay_timberRidge_api
 from app.payment_helpers.night3and4api_pay import pay_cabinsOfMackinaw_api
 from app.payment_helpers.night5and6api_pay import pay_uncleducky_api
 import os, base64
@@ -117,6 +117,10 @@ def get_uncleducky_price():
 
 
 ### PAYMENTS ###
+
+@app.route('/api/pay/timberRidge')
+def pay_timberRidge():
+    return process_payment(pay_timberRidge_api)
 
 @app.route('/api/pay/anchorInn')
 def pay_anchorInn():
