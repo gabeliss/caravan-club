@@ -64,16 +64,16 @@ function BookNorthernMichiganPage() {
                 const responses = await Promise.all([
                     fetchAccommodationDetails('timberRidge', numTravelers, night1and2StartDate, night1and2EndDate),
                     fetchAccommodationDetails('anchorInn', numTravelers, night1and2StartDate, night1and2EndDate),
-                    // fetchAccommodationDetails('traverseCityKoa', numTravelers, night1and2StartDate, night1and2EndDate),
+                    fetchAccommodationDetails('traverseCityKoa', numTravelers, night1and2StartDate, night1and2EndDate),
                     // fetchAccommodationDetails('straightsKoa', numTravelers, night3and4StartDate, night3and4EndDate),
                     fetchAccommodationDetails('cabinsOfMackinaw', numTravelers, night3and4StartDate, night3and4EndDate),
                     fetchAccommodationDetails('uncleDucky', numTravelers, night5and6StartDate, night5and6EndDate),
                 ]);
 
-                const [timberRidgeDetails, anchorInnDetails, cabinsOfMackinawDetails, uncleDuckyDetails] = responses;
+                const [timberRidgeDetails, anchorInnDetails, traverseCityKoaDetails, cabinsOfMackinawDetails, uncleDuckyDetails] = responses;
                 updateAccommodationsState('timberRidge', timberRidgeDetails, 'night1and2');
                 updateAccommodationsState('anchorInn', anchorInnDetails, 'night1and2')
-                // updateAccommodationsState('traverseCityKoa', traverseCityKoaDetails, 'night1and2')
+                updateAccommodationsState('traverseCityKoa', traverseCityKoaDetails, 'night1and2')
                 // updateAccommodationsState('stIgnace', straightsKoaDetails, 'night3and4')
                 updateAccommodationsState('cabinsOfMackinaw', cabinsOfMackinawDetails, 'night3and4')
                 updateAccommodationsState('uncleDucky', uncleDuckyDetails, 'night5and6');

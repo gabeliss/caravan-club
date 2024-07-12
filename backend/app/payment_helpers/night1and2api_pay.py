@@ -1,6 +1,11 @@
 from datetime import datetime
 from playwright.sync_api import sync_playwright
 import time
+import undetected_chromedriver as uc
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.support import expected_conditions as EC
+import traceback
 
 
 def pay_timberRidge_api(num_travelers, start_date, end_date, place_name, payment_info):
@@ -288,6 +293,112 @@ def pay_anchorInn_api(num_travelers, start_date, end_date, place_name, payment_i
             browser.close()
 
 
+def pay_traverseCityKoa_api(num_travelers, start_date, end_date, place_name, payment_info):
+    months_dict = {
+        "01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr", "05": "May", "06": "Jun",
+        "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec",
+    }
+
+    url = "https://koa.com/campgrounds/traverse-city/reserve/"
+
+    options = uc.ChromeOptions()
+    options.headless = False
+    ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
+    options.add_argument(f'--user-agent={ua}')
+    driver = uc.Chrome(options=options)
+
+    driver.get(url)
+    time.sleep(1)
+
+    try:
+        select_site_category = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'Reservation_SiteCategory'))))
+        select_site_category.select_by_value('A')
+
+        check_in_date_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'Reservation_CheckInDate')))
+        check_in_date_input.click()
+
+        start_month = start_date[0:2]
+        start_day = start_date[3:5]
+        start_year = '20' + start_date[6:10]
+
+        select_month = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'ui-datepicker-month'))))
+        select_month.select_by_visible_text(months_dict[start_month])
+
+        select_year = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'ui-datepicker-year'))))
+        select_year.select_by_visible_text(start_year)
+
+        day_selector = f'a.ui-state-default[data-date="{int(start_day)}"]'
+        select_day = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, day_selector)))
+        select_day.click()
+
+        check_out_date_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'Reservation_CheckOutDate')))
+        check_out_date_input.click()
+
+        end_month = end_date[0:2]
+        end_day = end_date[3:5]
+        end_year = '20' + end_date[6:10]
+
+        select_month = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'ui-datepicker-month'))))
+        select_month.select_by_visible_text(months_dict[end_month])
+
+        select_year = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'ui-datepicker-year'))))
+        select_year.select_by_visible_text(end_year)
+
+        day_selector = f'a.ui-state-default[data-date="{int(end_day)}"]'
+        select_day = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, day_selector)))
+        select_day.click()
+
+        adults_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'Reservation_Adults')))
+        driver.execute_script("arguments[0].value = '';", adults_input)  # Clear the input field using JavaScript
+        adults_input.send_keys(str(num_travelers))
+
+        pets_group = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'Reservation_Pets_Group')))
+        second_label = pets_group.find_elements(By.TAG_NAME, 'label')[1]
+        second_label.click()
+
+        equipment_type = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'Reservation_EquipmentType'))))
+        equipment_type.select_by_value('A')
+
+        next_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'nextButton')))
+        next_button.click()
+
+        time.sleep(1)
+
+        rows = driver.find_elements(By.CSS_SELECTOR, 'div.row.reserve-sitetype-main-row')
+        results = []
+        cheapest_price = float('inf')
+        cheapest_name = None
+
+        for row in rows:
+            title = row.find_element(By.CSS_SELECTOR, 'h4.reserve-sitetype-title').text.strip()
+            try:
+                price_span_element = row.find_element(By.CSS_SELECTOR, 'div.reserve-quote-per-night')
+                price = price_span_element.find_element(By.CSS_SELECTOR, 'span').text.strip().lstrip('$')
+                price = float(price)
+                if price < cheapest_price:
+                    cheapest_price = price
+                    cheapest_name = title
+            except:
+                price = 'Unavailable'
+
+            results.append((title, price))
+
+        if cheapest_price == float('inf'):
+            return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
+        else:
+            return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "Available: $" + str(cheapest_price) + " per night"}
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        print("Traceback:")
+        print(traceback.format_exc())
+        driver.save_screenshot('error_screenshot.png')
+        return False
+
+    finally:
+        driver.quit()
+
+
 def main():
     payment_info = {
         "first_name": "Lebron",
@@ -304,10 +415,12 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
-    timberRidgeData = pay_timberRidge_api(4, '08/20/24', '08/23/24', 'Cottage (Sleeps 5)', payment_info)
-    print(timberRidgeData)
+    # timberRidgeData = pay_timberRidge_api(4, '08/20/24', '08/23/24', 'Cottage (Sleeps 5)', payment_info)
+    # print(timberRidgeData)
     # anchorInnData = pay_anchorInn_api(4, '08/21/24', '08/23/24', '1 Bedroom with Kitchenette', payment_info)
     # print(anchorInnData)
+    traverseCityKoaData = pay_traverseCityKoa_api(4, '08/20/24', '08/23/24', 'Camping Cabin (No Bathroom)', payment_info)
+    print(traverseCityKoaData)
 
 
 if __name__ == '__main__':

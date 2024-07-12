@@ -1,25 +1,35 @@
 import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright
+import undetected_chromedriver as uc
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait, Select
+from selenium.webdriver.support import expected_conditions as EC
+import time
+import traceback
+import cloudscraper
 
 # couldn't access, blocked by captcha
 def scrape_traverseCityStatePark_api(num_travelers, start_date, end_date):
-    session = requests.Session()
-    url = 'https://midnrreservations.com/api/availability/map'
-    params = {
-        'mapId': -2147483042,
-        'startDate': start_date,
-        'endDate': end_date,
-        'partySize': num_travelers
-    }
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15",
-        "Referer": f"https://midnrreservations.com/create-booking/results?mapId=-2147483042&searchTabGroupId=0&bookingCategoryId=0&startDate={start_date}&endDate={end_date}&nights=2&isReserving=true&partySize=2&equipmentCapacity=1&filterData=%7B%22-32761%22:%22%5B%5B1%5D,0,0,0%5D%22%7D&searchTime=2024-05-07T12:48:54.494&flexibleSearch=%5Bfalse,false,%222024-05-01%22,1%5D&resourceLocationId=-2147483344&equipmentId=-32768&subEquipmentId=-32768"
-    }
-    
-    response = session.get(url, params=params, headers=headers)
-    print('Status Code:', response.status_code)
-    return response.text
+    url = 'https://midnrreservations.com/create-booking'
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto(url)
+        time.sleep(1)
+
+        try:
+            return True
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
+
+        finally:
+            browser.close()
 
 
 def scrape_timberRidge_api(num_travelers, start_date_str, end_date_str):
@@ -251,86 +261,90 @@ def scrape_anchorInn_api(num_travelers, start_date_str, end_date_str):
         return {"error": "Failed to retrieve data", "code": response.status_code}
 
 
-
-def fetch_koa_csrf_token(session, url):
-    # Fetch the initial page to get the CSRF token and cookies
-    response = session.get(url)
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.text, 'html.parser')
-        token = soup.find('input', {'name': 'datadome'})
-        token = soup.find('input', {'name': '__RequestVerificationToken'})
-        return token['value'] if token else None
-    return None
-
-
 def scrape_traverseCityKoa_api(num_travelers, start_date_str, end_date_str):
-    session = requests.Session()
-    session.headers.update({
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Origin": "https://koa.com",
-        "Referer": "https://koa.com/campgrounds/traverse-city/reserve/",
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15"
-    })
+    scraper = cloudscraper.create_scraper()
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+    }
 
     token_url = "https://koa.com/campgrounds/traverse-city/reserve/"
-    csrf_token = fetch_koa_csrf_token(session, token_url)
+    
+    # GET request to fetch the token
+    response = scraper.get(token_url, headers=headers)
+    if response.status_code != 200:
+        return f"Failed to fetch initial page. Status code: {response.status_code}"
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+    csrf_token = soup.find('input', {'name': '__RequestVerificationToken'})
     if not csrf_token:
         return "Failed to retrieve CSRF token"
+    csrf_token = csrf_token['value']
 
-    # Convert dates from string to datetime to match the required format
+    # Convert dates
     start_date = datetime.strptime(start_date_str, "%m/%d/%y").strftime("%m/%d/%Y")
     end_date = datetime.strptime(end_date_str, "%m/%d/%y").strftime("%m/%d/%Y")
 
-    # Update the payload with dynamic data and the CSRF token
+    # Prepare POST data
     data = {
         "Reservation.SiteCategory": "A",
         "Reservation.CheckInDate": start_date,
         "Reservation.CheckOutDate": end_date,
-        "Reservation.Adults": num_travelers,
-        "Reservation.Kids": 0,
-        "Reservation.Free": 0,
+        "Reservation.Adults": str(num_travelers),
+        "Reservation.Kids": "0",
+        "Reservation.Free": "0",
         "Reservation.Pets": "No",
         "Reservation.EquipmentType": "A",
-        "Reservation.EquipmentLength": 0,
+        "Reservation.EquipmentLength": "0",
         "__RequestVerificationToken": csrf_token
     }
 
-    # Post request to submit the reservation form
-    response = session.post(token_url, data=data)
-    if  response.status_code == 200:
-            soup = BeautifulSoup(response.text, 'html.parser')
-            rows = soup.find_all('div', class_='row reserve-sitetype-main-row')
-            results = []
-            cheapest_price = 'Unavailable'
-            for row in rows:
-                title = row.find('h4', class_='reserve-sitetype-title').text.strip()
-                price_span_element = row.find('div', class_='reserve-quote-per-night')
-                if price_span_element and price_span_element.find('strong').find('span'):
-                    price = price_span_element.find('span').text.strip().lstrip('$')
-                    if cheapest_price == 'Unavailable' or float(price) < float(cheapest_price):
-                        cheapest_price = price
-                else:
-                    price = 'Unavailable'
-                results.append((title, price))
+    # Add referer to headers
+    headers["Referer"] = token_url
 
-            if cheapest_price == 'Unavailable':
-                return {"available": False, "price": None, "message": "Not available for selected dates."}
+    # POST request
+    response = scraper.post(token_url, data=data, headers=headers)
+    
+    if response.status_code == 200:
+        # Process the response as before
+        soup = BeautifulSoup(response.text, 'html.parser')
+        rows = soup.find_all('div', class_='row reserve-sitetype-main-row')
+        results = []
+        cheapest_price = float('inf')
+        cheapest_name = None
+        for row in rows:
+            title = row.find('h4', class_='reserve-sitetype-title').text.strip()
+            price_span_element = row.find('div', class_='reserve-quote-per-night')
+            if price_span_element and price_span_element.find('strong').find('span'):
+                price = price_span_element.find('span').text.strip().lstrip('$')
+                if cheapest_price == 'Unavailable' or float(price) < float(cheapest_price):
+                    cheapest_price = price
+                    cheapest_name = title
             else:
-                return {"available": True, "price": cheapest_price, "message": "Available: $" + str(cheapest_price) + " per night"}
-            
+                price = 'Unavailable'
+            results.append((title, price))
+
+        if cheapest_price == float('inf'):
+            return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
+        else:
+            return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "Available: $" + str(cheapest_price) + " per night"}
     else:
         return f"Failed to fetch data: {response.status_code}, Reason: {response.reason}"
     
 
 def main():
-    #traverseCityStateParkData = scrape_traverseCityStatePark_api(2, '2024-05-21', '2024-05-23')
+    # traverseCityStateParkData = scrape_traverseCityStatePark_api(2, '2024-05-21', '2024-05-23')
     # print(traverseCityStateParkData)
-    timberRidgeData = scrape_timberRidge_api(4, '08/20/24', '08/23/24')
-    print(timberRidgeData)
+    # timberRidgeData = scrape_timberRidge_api(4, '08/20/24', '08/23/24')
+    # print(timberRidgeData)
     # anchorInnData = scrape_anchorInn_api(4, '08/20/24', '08/22/24')
     # print(anchorInnData)
-    # traverseCityKoaData = scrape_traverseCityKoa_api(4, '08/20/24', '08/22/24')
-    # print(traverseCityKoaData)
+    traverseCityKoaData = scrape_traverseCityKoa_api(4, '08/20/24', '08/22/24')
+    print(traverseCityKoaData)
 
 if __name__ == '__main__':
     main()

@@ -33,7 +33,7 @@
       "available": false,
       "price": 0,
       "name": "",
-      "taxRate": 0,
+      "taxRate": 0.11,
       "message": "Unavailable"
     }
   },
