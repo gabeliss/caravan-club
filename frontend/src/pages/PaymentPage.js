@@ -23,6 +23,7 @@ function PaymentPage() {
     country: '',
     cardholder_name: '',
     card_number: '',
+    card_type: '',
     expiry_date: '',
     cvc: ''
   });

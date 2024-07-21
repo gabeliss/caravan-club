@@ -302,7 +302,7 @@ def pay_traverseCityKoa_api(num_travelers, start_date, end_date, place_name, pay
     url = "https://koa.com/campgrounds/traverse-city/reserve/"
 
     options = uc.ChromeOptions()
-    options.headless = False
+    options.headless = True
     ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
     options.add_argument(f'--user-agent={ua}')
     driver = uc.Chrome(options=options)
@@ -311,6 +311,12 @@ def pay_traverseCityKoa_api(num_travelers, start_date, end_date, place_name, pay
     time.sleep(1)
 
     try:
+        try:
+            cookie_notice = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, "close-cookie-notice")))
+            cookie_notice.click()
+            WebDriverWait(driver, 10).until(EC.invisibility_of_element(cookie_notice))
+        except Exception as e:
+            print(f"No cookie notice to close or error closing it: {e}")
         select_site_category = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'Reservation_SiteCategory'))))
         select_site_category.select_by_value('A')
 
@@ -365,28 +371,76 @@ def pay_traverseCityKoa_api(num_travelers, start_date, end_date, place_name, pay
         time.sleep(1)
 
         rows = driver.find_elements(By.CSS_SELECTOR, 'div.row.reserve-sitetype-main-row')
-        results = []
-        cheapest_price = float('inf')
-        cheapest_name = None
 
         for row in rows:
             title = row.find_element(By.CSS_SELECTOR, 'h4.reserve-sitetype-title').text.strip()
-            try:
-                price_span_element = row.find_element(By.CSS_SELECTOR, 'div.reserve-quote-per-night')
-                price = price_span_element.find_element(By.CSS_SELECTOR, 'span').text.strip().lstrip('$')
-                price = float(price)
-                if price < cheapest_price:
-                    cheapest_price = price
-                    cheapest_name = title
-            except:
-                price = 'Unavailable'
+            if title == place_name:
+                try:
+                    submit_button = row.find_element(By.CSS_SELECTOR, 'button.koa-red-bg')
+                    submit_button.click()
 
-            results.append((title, price))
+                    page = driver.find_element(By.ID, 'mainContent')
+                    first_name_input = page.find_element(By.ID, 'Reservation_FirstName')
+                    first_name_input.send_keys(payment_info['first_name'])
 
-        if cheapest_price == float('inf'):
-            return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
-        else:
-            return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "Available: $" + str(cheapest_price) + " per night"}
+                    last_name_input = page.find_element(By.ID, 'Reservation_LastName')
+                    last_name_input.send_keys(payment_info['last_name'])
+
+                    last_name_input = page.find_element(By.ID, 'Reservation_Address1')
+                    last_name_input.send_keys(payment_info['street_address'])
+
+                    phone_number_input = page.find_element(By.ID, 'Reservation_PhoneNumber')
+                    phone_number_input.send_keys(payment_info['phone_number'])
+
+                    city_input = page.find_element(By.ID, 'Reservation_City')
+                    city_input.send_keys(payment_info['city'])
+
+                    state_input = page.find_element(By.ID, 'Reservation_StateProvinceCode')
+                    state_input.send_keys(payment_info['state'])
+
+                    postal_code_input = page.find_element(By.ID, 'Reservation_PostalCode')
+                    postal_code_input.send_keys(payment_info['zip_code'])
+
+                    email_input = page.find_element(By.ID, 'Reservation_EmailAddress')
+                    email_input.send_keys(payment_info['email'])
+
+                    confirm_email_input = page.find_element(By.ID, 'Reservation_ConfirmEmailAddress')
+                    confirm_email_input.send_keys(payment_info['email'])
+
+                    card_number_input = page.find_element(By.ID, 'Reservation_CreditCardNumber')
+                    card_number_input.send_keys(payment_info['card_number'])
+
+                    card_type_input = page.find_element(By.ID, 'Reservation_CreditCardType')
+                    Select(card_type_input).select_by_visible_text(payment_info['card_type'])
+
+                    expiry_month = payment_info['expiry_date'][0:2]
+                    expiry_year = '20' + payment_info['expiry_date'][3:]
+                    exp_month_input = page.find_element(By.ID, 'Reservation_CreditCardExpMonth')
+                    Select(exp_month_input).select_by_visible_text(expiry_month)
+
+                    exp_year_input = page.find_element(By.ID, 'Reservation_CreditCardExpYear')
+                    Select(exp_year_input).select_by_visible_text(expiry_year)
+
+                    security_code_input = page.find_element(By.ID, 'Reservation_CreditCardSecurityCode')
+                    security_code_input.send_keys(payment_info['cvc'])
+
+                    terms_agree_checkbox = page.find_element(By.CSS_SELECTOR, "label[for='Reservation_TermsAgree']")
+                    terms_agree_checkbox.click()
+
+                    continue_button = page.find_element(By.ID, 'continueButton')
+                    return True # comment out when actually paying
+                    continue_button.click()
+                    time.sleep(1)
+
+                    page = driver.find_element(By.ID, 'mainContent')
+                    book_button = page.find_element(By.ID, 'bookButtonTop')
+                    book_button.click()
+                    time.sleep(1)
+                    return True  # Return True if the button was successfully clicked
+                except Exception as e:
+                    print(f"Could not click submit button: {e}")
+                    return False  # Return False if there was an error
+        return False
 
     except Exception as e:
         print(f"An error occurred: {e}")
@@ -412,6 +466,7 @@ def main():
         "country": "USA",
         "cardholder_name": "Lebron James",
         "card_number": "2342943844322224",
+        "card_type": "Visa",
         "expiry_date": "01/30",
         "cvc": "1234"
     }

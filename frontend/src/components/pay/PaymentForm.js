@@ -168,6 +168,24 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
       </div>
       <div className='form-row'>
         <div className='form-group'>
+            <label htmlFor='card_type'>Card Type</label>
+            <select 
+            id="card_type" 
+            name="card_type" 
+            className="form-input"
+            value={paymentInfo.card_type} 
+            onChange={handleInputChange} 
+            required
+            >
+            <option value="" disabled>Select Option</option>
+            <option value="Discover Card">Discover Card</option>
+            <option value="MasterCard">MasterCard</option>
+            <option value="Visa">Visa</option>
+            </select>
+        </div>
+      </div>
+      <div className='form-row'>
+        <div className='form-group'>
           <label htmlFor='expiry_date'>Expiry Date</label>
           <input 
             type="text" 

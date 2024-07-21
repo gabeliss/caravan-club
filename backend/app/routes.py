@@ -2,7 +2,7 @@ from app import app
 from app.scrape_helpers.night1and2api import scrape_timberRidge_api, scrape_anchorInn_api, scrape_traverseCityKoa_api
 from app.scrape_helpers.night3and4api import scrape_straightsKoa_api, scrape_cabinsOfMackinaw_api
 from app.scrape_helpers.night5and6api import scrape_uncleducky_api
-from app.payment_helpers.night1and2api_pay import pay_anchorInn_api, pay_timberRidge_api
+from app.payment_helpers.night1and2api_pay import pay_anchorInn_api, pay_timberRidge_api, pay_traverseCityKoa_api
 from app.payment_helpers.night3and4api_pay import pay_cabinsOfMackinaw_api
 from app.payment_helpers.night5and6api_pay import pay_uncleducky_api
 import os, base64
@@ -77,6 +77,7 @@ def process_payment(api_function):
         "country": request.args.get('payment_info[country]', default='', type=str),
         "cardholder_name": request.args.get('payment_info[cardholder_name]', default='', type=str),
         "card_number": request.args.get('payment_info[card_number]', default='', type=str),
+        "card_type": request.args.get('payment_info[card_type]', default='', type=str),
         "expiry_date": request.args.get('payment_info[expiry_date]', default='', type=str),
         "cvc": request.args.get('payment_info[cvc]', default='', type=str)
     }
@@ -125,6 +126,11 @@ def pay_timberRidge():
 @app.route('/api/pay/anchorInn')
 def pay_anchorInn():
     return process_payment(pay_anchorInn_api)
+
+
+@app.route('/api/pay/traverseCityKoa')
+def pay_traverseCityKoa():
+    return process_payment(pay_traverseCityKoa_api)
 
 
 @app.route('/api/pay/cabinsOfMackinaw')
