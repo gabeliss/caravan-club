@@ -1,144 +1,83 @@
-import requests
 from datetime import datetime
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
-import requests 
 from playwright.sync_api import sync_playwright
 import time
+import cloudscraper
 
 
-def scrape_straightsKoa_api(num_travelers, start_date, end_date):
-    check_in_date = f"{start_date[:6]}20{start_date[6:]}"
-    check_out_date = f"{end_date[:6]}20{end_date[6:]}"
-
-
-    webdriver_path = '../chromedriver'
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument(f"executable_path={webdriver_path}")
-    #chrome_options.add_argument('--headless')
-
-    driver = webdriver.Chrome(options=chrome_options)
-
-    # Step 1: Access the main page using Selenium
-    driver.get('https://koa.com/campgrounds/st-ignace/')
-
-    # Retrieve cookies from the browser
-    cookies = driver.get_cookies()
-
-    # Close the browser
-    driver.quit()
-    session = requests.Session()
-    for cookie in cookies:
-        session.cookies.set(cookie['name'], cookie['value'])
-
-    # Check the cookies set by Selenium
-    cookies_main = session.cookies.get_dict()
-    print("Cookies after main page request:", cookies_main)
-
-    # Format cookies as a string to use in the headers
-    cookies_string = '; '.join([f'{key}={value}' for key, value in cookies_main.items()])
-    print("Formatted cookies string:", cookies_string)
-
-    # Step 1: Access the main page to initialize cookies
-    response_main = session.get('https://koa.com/')
-    print("Main page status:", response_main.status_code)
-
-    # Check the cookies set by the main page
-    cookies_main = session.cookies.get_dict()
-    print("Cookies after main page request:", cookies_main)
-
-    # Format cookies as a string to use in the headers
-    cookies_string = '; '.join([f'{key}={value}' for key, value in cookies_main.items()])
-
-    # Step 2: Perform the search request to get redirected to the campground page
-    search_url = 'https://koa.com/campgrounds/st-ignace/'
-    search_headers = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Connection': 'keep-alive',
-        'Cookie': cookies_string,
-        'Host': 'koa.com',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15'
+def scrape_stIgnaceKoa_api(num_travelers, start_date_str, end_date_str):
+    scraper = cloudscraper.create_scraper()
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
     }
 
-    response_search = session.get(search_url, headers=search_headers)
-    print("Search page status:", response_search.status_code)
-
-    # Check cookies set by the server after the search request
-    print("Cookies after search request:", session.cookies.get_dict())
-
-    # Step 3: Access the campground page directly
-    campground_url = 'https://koa.com/campgrounds/st-ignace/'
-    campground_headers = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Referer': 'https://koa.com/',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'same-origin',
-        'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15'
-    }
-
-    response_campground = session.get(campground_url, headers=campground_headers)
-    print("Campground page status:", response_campground.status_code)
-
-    # Print the content of the final page (optional)
-    print(response_campground.text)
+    token_url = "https://koa.com/campgrounds/st-ignace/reserve/"
+    
+    # GET request to fetch the token
+    response = scraper.get(token_url, headers=headers)
+    if response.status_code != 200:
+        return f"Failed to fetch initial page. Status code: {response.status_code}"
 
     soup = BeautifulSoup(response.text, 'html.parser')
-    token = soup.find('input', {'name': '__RequestVerificationToken'})
+    csrf_token = soup.find('input', {'name': '__RequestVerificationToken'})
+    if not csrf_token:
+        return "Failed to retrieve CSRF token"
+    csrf_token = csrf_token['value']
 
-    if token:
-        token = token.get('value')
-    else:
-        raise ValueError("Token not found in HTML. Check if the page structure has changed.")
+    # Convert dates
+    start_date = datetime.strptime(start_date_str, "%m/%d/%y").strftime("%m/%d/%Y")
+    end_date = datetime.strptime(end_date_str, "%m/%d/%y").strftime("%m/%d/%Y")
 
-    post_url = "https://koa.com/campgrounds/st-ignace/reserve/"
-
+    # Prepare POST data
     data = {
         "Reservation.SiteCategory": "A",
-        "Reservation.CheckInDate": check_in_date,
-        "Reservation.CheckOutDate": check_out_date,
+        "Reservation.CheckInDate": start_date,
+        "Reservation.CheckOutDate": end_date,
         "Reservation.Adults": str(num_travelers),
         "Reservation.Kids": "0",
         "Reservation.Free": "0",
         "Reservation.Pets": "No",
         "Reservation.EquipmentType": "A",
         "Reservation.EquipmentLength": "0",
-        "__RequestVerificationToken": token
+        "__RequestVerificationToken": csrf_token
     }
 
-    post_response = session.post(post_url, headers=headers, data=data)
+    # Add referer to headers
+    headers["Referer"] = token_url
 
-    if post_response.status_code == 200 and post_response.text:
-        soup = BeautifulSoup(post_response.text, 'html.parser')
-        containers = soup.find_all('div', class_='reserve-sitetype-main-row')
-        available = False
-        cheapest_price = 1000000
-        cheapest_name = "placeholder"
-        for container in containers:
-            name = container.find('h4', class_='reserve-sitetype-title').text
-            price_container = container.find('div', class_='reserve-quote-per-night')
-            if price_container:
-                price = float(price_container.find('strong').find('span').text.lstrip('$').split(' ')[0])
-                if price < cheapest_price:
+    # POST request
+    response = scraper.post(token_url, data=data, headers=headers)
+    
+    if response.status_code == 200:
+        # Process the response as before
+        soup = BeautifulSoup(response.text, 'html.parser')
+        rows = soup.find_all('div', class_='row reserve-sitetype-main-row')
+        results = []
+        cheapest_price = float('inf')
+        cheapest_name = None
+        for row in rows:
+            title = row.find('h4', class_='reserve-sitetype-title').text.strip()
+            price_span_element = row.find('div', class_='reserve-quote-per-night')
+            if price_span_element and price_span_element.find('strong').find('span'):
+                price = price_span_element.find('span').text.strip().lstrip('$')
+                if cheapest_price == 'Unavailable' or float(price) < float(cheapest_price):
                     cheapest_price = price
-                    available = True
-                    cheapest_name = name
+                    cheapest_name = title
             else:
-                break
-        
-        if available:
-            return {"available": True, "price": cheapest_price, "message": "Available: $" + str(cheapest_price) + " per night"}
+                price = 'Unavailable'
+            results.append((title, price))
+
+        if cheapest_price == float('inf'):
+            return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
         else:
-            return {"available": False, "price": None, "message": "Not available for selected dates."} 
+            return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "Available: $" + str(cheapest_price) + " per night"}
+    else:
+        return f"Failed to fetch data: {response.status_code}, Reason: {response.reason}"
         
 
 
@@ -235,10 +174,10 @@ def scrape_cabinsOfMackinaw_api(num_travelers, start_date, end_date):
 
 
 def main():
-    # straightsKoaData = scrape_straightsKoa_api(4, '07/26/24', '07/28/24')
-    # print(straightsKoaData)
-    cabinsofmackinawData = scrape_cabinsOfMackinaw_api(2, '07/18/24', '07/20/24')
-    print(cabinsofmackinawData)
+    stIgnaceKoaData = scrape_stIgnaceKoa_api(4, '08/20/24', '08/22/24')
+    print(stIgnaceKoaData)
+    # cabinsofmackinawData = scrape_cabinsOfMackinaw_api(2, '07/18/24', '07/20/24')
+    # print(cabinsofmackinawData)
 
 if __name__ == '__main__':
     main()

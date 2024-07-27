@@ -1,11 +1,6 @@
 from datetime import datetime
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, expect
 import time
-import undetected_chromedriver as uc
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait, Select
-from selenium.webdriver.support import expected_conditions as EC
-import traceback
 
 
 def pay_timberRidge_api(num_travelers, start_date, end_date, place_name, payment_info):
@@ -300,140 +295,116 @@ def pay_traverseCityKoa_api(num_travelers, start_date, end_date, place_name, pay
     }
 
     url = "https://koa.com/campgrounds/traverse-city/reserve/"
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto(url)
+        time.sleep(1)
 
-    options = uc.ChromeOptions()
-    options.headless = True
-    ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36'
-    options.add_argument(f'--user-agent={ua}')
-    driver = uc.Chrome(options=options)
-
-    driver.get(url)
-    time.sleep(1)
-
-    try:
         try:
-            cookie_notice = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, "close-cookie-notice")))
-            cookie_notice.click()
-            WebDriverWait(driver, 10).until(EC.invisibility_of_element(cookie_notice))
+            cookie_notice = page.locator('.close-cookie-notice')
+            if cookie_notice.is_visible():
+                cookie_notice.click()
+                expect(cookie_notice).not_to_be_visible()
         except Exception as e:
             print(f"No cookie notice to close or error closing it: {e}")
-        select_site_category = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'Reservation_SiteCategory'))))
-        select_site_category.select_by_value('A')
 
-        check_in_date_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'Reservation_CheckInDate')))
-        check_in_date_input.click()
+        page.select_option('#Reservation_SiteCategory', 'A')
+
+        page.click('#Reservation_CheckInDate')
 
         start_month = start_date[0:2]
         start_day = start_date[3:5]
         start_year = '20' + start_date[6:10]
 
-        select_month = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'ui-datepicker-month'))))
-        select_month.select_by_visible_text(months_dict[start_month])
+        page.select_option('.ui-datepicker-month', months_dict[start_month])
+        page.select_option('.ui-datepicker-year', start_year)
+        page.click(f'a.ui-state-default[data-date="{int(start_day)}"]')
 
-        select_year = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'ui-datepicker-year'))))
-        select_year.select_by_visible_text(start_year)
-
-        day_selector = f'a.ui-state-default[data-date="{int(start_day)}"]'
-        select_day = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, day_selector)))
-        select_day.click()
-
-        check_out_date_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'Reservation_CheckOutDate')))
-        check_out_date_input.click()
+        page.click('#Reservation_CheckOutDate')
 
         end_month = end_date[0:2]
         end_day = end_date[3:5]
         end_year = '20' + end_date[6:10]
 
-        select_month = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'ui-datepicker-month'))))
-        select_month.select_by_visible_text(months_dict[end_month])
+        page.select_option('.ui-datepicker-month', months_dict[end_month])
+        page.select_option('.ui-datepicker-year', end_year)
+        page.click(f'a.ui-state-default[data-date="{int(end_day)}"]')
 
-        select_year = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'ui-datepicker-year'))))
-        select_year.select_by_visible_text(end_year)
+        page.fill('#Reservation_Adults', str(num_travelers))
 
-        day_selector = f'a.ui-state-default[data-date="{int(end_day)}"]'
-        select_day = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, day_selector)))
-        select_day.click()
-
-        adults_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'Reservation_Adults')))
-        driver.execute_script("arguments[0].value = '';", adults_input)  # Clear the input field using JavaScript
-        adults_input.send_keys(str(num_travelers))
-
-        pets_group = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'Reservation_Pets_Group')))
-        second_label = pets_group.find_elements(By.TAG_NAME, 'label')[1]
+        pets_group = page.locator('#Reservation_Pets_Group')
+        second_label = pets_group.locator('label').nth(1)
         second_label.click()
 
-        equipment_type = Select(WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'Reservation_EquipmentType'))))
-        equipment_type.select_by_value('A')
+        page.select_option('#Reservation_EquipmentType', 'A')
 
-        next_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'nextButton')))
-        next_button.click()
-
+        page.click('#nextButton')
         time.sleep(1)
 
-        rows = driver.find_elements(By.CSS_SELECTOR, 'div.row.reserve-sitetype-main-row')
+        rows = page.locator('div.row.reserve-sitetype-main-row')
 
-        for row in rows:
-            title = row.find_element(By.CSS_SELECTOR, 'h4.reserve-sitetype-title').text.strip()
+        for row in rows.element_handles():
+            title = row.query_selector('h4.reserve-sitetype-title').inner_text().strip()
             if title == place_name:
                 try:
-                    submit_button = row.find_element(By.CSS_SELECTOR, 'button.koa-red-bg')
+                    submit_button = row.query_selector('button.koa-red-bg')
                     submit_button.click()
 
-                    page = driver.find_element(By.ID, 'mainContent')
-                    first_name_input = page.find_element(By.ID, 'Reservation_FirstName')
-                    first_name_input.send_keys(payment_info['first_name'])
+                    first_name_input = page.locator('#Reservation_FirstName')
+                    first_name_input.fill(payment_info['first_name'])
 
-                    last_name_input = page.find_element(By.ID, 'Reservation_LastName')
-                    last_name_input.send_keys(payment_info['last_name'])
+                    last_name_input = page.locator('#Reservation_LastName')
+                    last_name_input.fill(payment_info['last_name'])
 
-                    last_name_input = page.find_element(By.ID, 'Reservation_Address1')
-                    last_name_input.send_keys(payment_info['street_address'])
+                    address_input = page.locator('#Reservation_Address1')
+                    address_input.fill(payment_info['street_address'])
 
-                    phone_number_input = page.find_element(By.ID, 'Reservation_PhoneNumber')
-                    phone_number_input.send_keys(payment_info['phone_number'])
+                    phone_number_input = page.locator('#Reservation_PhoneNumber')
+                    phone_number_input.fill(payment_info['phone_number'])
 
-                    city_input = page.find_element(By.ID, 'Reservation_City')
-                    city_input.send_keys(payment_info['city'])
+                    city_input = page.locator('#Reservation_City')
+                    city_input.fill(payment_info['city'])
 
-                    state_input = page.find_element(By.ID, 'Reservation_StateProvinceCode')
-                    state_input.send_keys(payment_info['state'])
+                    state_input = page.locator('#Reservation_StateProvinceCode')
+                    state_input.fill(payment_info['state'])
 
-                    postal_code_input = page.find_element(By.ID, 'Reservation_PostalCode')
-                    postal_code_input.send_keys(payment_info['zip_code'])
+                    postal_code_input = page.locator('#Reservation_PostalCode')
+                    postal_code_input.fill(payment_info['zip_code'])
 
-                    email_input = page.find_element(By.ID, 'Reservation_EmailAddress')
-                    email_input.send_keys(payment_info['email'])
+                    email_input = page.locator('#Reservation_EmailAddress')
+                    email_input.fill(payment_info['email'])
 
-                    confirm_email_input = page.find_element(By.ID, 'Reservation_ConfirmEmailAddress')
-                    confirm_email_input.send_keys(payment_info['email'])
+                    confirm_email_input = page.locator('#Reservation_ConfirmEmailAddress')
+                    confirm_email_input.fill(payment_info['email'])
 
-                    card_number_input = page.find_element(By.ID, 'Reservation_CreditCardNumber')
-                    card_number_input.send_keys(payment_info['card_number'])
+                    card_number_input = page.locator('#Reservation_CreditCardNumber')
+                    card_number_input.fill(payment_info['card_number'])
 
-                    card_type_input = page.find_element(By.ID, 'Reservation_CreditCardType')
-                    Select(card_type_input).select_by_visible_text(payment_info['card_type'])
+                    card_type_input = page.locator('#Reservation_CreditCardType')
+                    card_type_input.select_option(payment_info['card_type'])
 
                     expiry_month = payment_info['expiry_date'][0:2]
                     expiry_year = '20' + payment_info['expiry_date'][3:]
-                    exp_month_input = page.find_element(By.ID, 'Reservation_CreditCardExpMonth')
-                    Select(exp_month_input).select_by_visible_text(expiry_month)
+                    exp_month_input = page.locator('#Reservation_CreditCardExpMonth')
+                    exp_month_input.select_option(expiry_month)
 
-                    exp_year_input = page.find_element(By.ID, 'Reservation_CreditCardExpYear')
-                    Select(exp_year_input).select_by_visible_text(expiry_year)
+                    exp_year_input = page.locator('#Reservation_CreditCardExpYear')
+                    exp_year_input.select_option(expiry_year)
 
-                    security_code_input = page.find_element(By.ID, 'Reservation_CreditCardSecurityCode')
-                    security_code_input.send_keys(payment_info['cvc'])
+                    security_code_input = page.locator('#Reservation_CreditCardSecurityCode')
+                    security_code_input.fill(payment_info['cvc'])
 
-                    terms_agree_checkbox = page.find_element(By.CSS_SELECTOR, "label[for='Reservation_TermsAgree']")
+                    terms_agree_checkbox = page.locator("label[for='Reservation_TermsAgree']")
                     terms_agree_checkbox.click()
 
-                    continue_button = page.find_element(By.ID, 'continueButton')
-                    return True # comment out when actually paying
+                    continue_button = page.locator('#continueButton')
+                    return True  # Uncomment when actually paying
                     continue_button.click()
                     time.sleep(1)
 
-                    page = driver.find_element(By.ID, 'mainContent')
-                    book_button = page.find_element(By.ID, 'bookButtonTop')
+                    book_button = page.locator('#bookButtonTop')
                     book_button.click()
                     time.sleep(1)
                     return True  # Return True if the button was successfully clicked
@@ -441,16 +412,6 @@ def pay_traverseCityKoa_api(num_travelers, start_date, end_date, place_name, pay
                     print(f"Could not click submit button: {e}")
                     return False  # Return False if there was an error
         return False
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        print("Traceback:")
-        print(traceback.format_exc())
-        driver.save_screenshot('error_screenshot.png')
-        return False
-
-    finally:
-        driver.quit()
 
 
 def main():

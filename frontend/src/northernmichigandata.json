@@ -65,13 +65,13 @@
       "taxRate": 0.11,
       "message": "Unavailable"
     },
-    "stIgnace": {
+    "stIgnaceKoa": {
       "title": "St Ignace / Mackinac Island KOA",
       "content": "Mackinaw City KOA is an ideal retreat for those seeking a cozy stay in a tent or cabin, conveniently located just 6 minutes from the Mackinac Island port. While it's not directly situated on the beach, the campground offers a short and pleasant walk to the shore. Embrace the scenic surroundings as you enjoy the close proximity to the water, providing a serene and picturesque setting. Whether you prefer the charm of a tent or the comfort of a cabin, Mackinaw City KOA ensures a delightful stay with its strategic location and easy access to both natural beauty and the gateway to Mackinac Island.",
       "available": false,
       "price": 0,
       "name": "",
-      "taxRate": 0,
+      "taxRate": 0.11,
       "message": "Unavailable"
     }
   },
@@ -120,7 +120,7 @@
       "available": false,
       "price": 0,
       "name": "",
-      "taxRate": 0,
+      "taxRate": 0.11,
       "message": "Unavailable"
     }
   }

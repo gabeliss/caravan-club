@@ -65,18 +65,21 @@ function BookNorthernMichiganPage() {
                     fetchAccommodationDetails('timberRidge', numTravelers, night1and2StartDate, night1and2EndDate),
                     fetchAccommodationDetails('anchorInn', numTravelers, night1and2StartDate, night1and2EndDate),
                     fetchAccommodationDetails('traverseCityKoa', numTravelers, night1and2StartDate, night1and2EndDate),
-                    // fetchAccommodationDetails('straightsKoa', numTravelers, night3and4StartDate, night3and4EndDate),
+                    fetchAccommodationDetails('stIgnaceKoa', numTravelers, night3and4StartDate, night3and4EndDate),
                     fetchAccommodationDetails('cabinsOfMackinaw', numTravelers, night3and4StartDate, night3and4EndDate),
                     fetchAccommodationDetails('uncleDucky', numTravelers, night5and6StartDate, night5and6EndDate),
+                    fetchAccommodationDetails('picturedRocksKoa', numTravelers, night5and6StartDate, night5and6EndDate),
                 ]);
 
-                const [timberRidgeDetails, anchorInnDetails, traverseCityKoaDetails, cabinsOfMackinawDetails, uncleDuckyDetails] = responses;
+                const [timberRidgeDetails, anchorInnDetails, traverseCityKoaDetails, stIgnaceKoaDetails, 
+                       cabinsOfMackinawDetails, uncleDuckyDetails, picturedRocksKoaDetails] = responses;
                 updateAccommodationsState('timberRidge', timberRidgeDetails, 'night1and2');
-                updateAccommodationsState('anchorInn', anchorInnDetails, 'night1and2')
-                updateAccommodationsState('traverseCityKoa', traverseCityKoaDetails, 'night1and2')
-                // updateAccommodationsState('stIgnace', straightsKoaDetails, 'night3and4')
-                updateAccommodationsState('cabinsOfMackinaw', cabinsOfMackinawDetails, 'night3and4')
+                updateAccommodationsState('anchorInn', anchorInnDetails, 'night1and2');
+                updateAccommodationsState('traverseCityKoa', traverseCityKoaDetails, 'night1and2');
+                updateAccommodationsState('stIgnaceKoa', stIgnaceKoaDetails, 'night3and4');
+                updateAccommodationsState('cabinsOfMackinaw', cabinsOfMackinawDetails, 'night3and4');
                 updateAccommodationsState('uncleDucky', uncleDuckyDetails, 'night5and6');
+                updateAccommodationsState('picturedRocksKoa', picturedRocksKoaDetails, 'night5and6');
 
             } catch (error) {
                 console.error('Error in fetching details:', error);
@@ -96,7 +99,6 @@ function BookNorthernMichiganPage() {
             ...details
         };
         
-        console.log("updatedPlaceDetails", updatedPlaceDetails)
         setPlaceDetails(updatedPlaceDetails);
         localStorage.setItem('placeDetails', JSON.stringify(updatedPlaceDetails));
     }
