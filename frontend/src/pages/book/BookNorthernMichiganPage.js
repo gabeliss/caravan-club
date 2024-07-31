@@ -62,6 +62,7 @@ function BookNorthernMichiganPage() {
 
             try {
                 const responses = await Promise.all([
+                    fetchAccommodationDetails('traverseCityStatePark', numTravelers, night1and2StartDate, night1and2EndDate),
                     fetchAccommodationDetails('timberRidge', numTravelers, night1and2StartDate, night1and2EndDate),
                     fetchAccommodationDetails('anchorInn', numTravelers, night1and2StartDate, night1and2EndDate),
                     fetchAccommodationDetails('traverseCityKoa', numTravelers, night1and2StartDate, night1and2EndDate),
@@ -71,8 +72,9 @@ function BookNorthernMichiganPage() {
                     fetchAccommodationDetails('picturedRocksKoa', numTravelers, night5and6StartDate, night5and6EndDate),
                 ]);
 
-                const [timberRidgeDetails, anchorInnDetails, traverseCityKoaDetails, stIgnaceKoaDetails, 
+                const [traverseCityStateParkDetails, timberRidgeDetails, anchorInnDetails, traverseCityKoaDetails, stIgnaceKoaDetails, 
                        cabinsOfMackinawDetails, uncleDuckyDetails, picturedRocksKoaDetails] = responses;
+                updateAccommodationsState('traverseCityStatePark', traverseCityStateParkDetails, 'night1and2');
                 updateAccommodationsState('timberRidge', timberRidgeDetails, 'night1and2');
                 updateAccommodationsState('anchorInn', anchorInnDetails, 'night1and2');
                 updateAccommodationsState('traverseCityKoa', traverseCityKoaDetails, 'night1and2');

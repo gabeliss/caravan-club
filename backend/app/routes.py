@@ -1,5 +1,5 @@
 from app import app
-from app.scrape_helpers.night1and2api import scrape_timberRidge_api, scrape_anchorInn_api, scrape_traverseCityKoa_api
+from app.scrape_helpers.night1and2api import scrape_traverseCityStatePark_api, scrape_timberRidge_api, scrape_anchorInn_api, scrape_traverseCityKoa_api
 from app.scrape_helpers.night3and4api import scrape_stIgnaceKoa_api, scrape_cabinsOfMackinaw_api
 from app.scrape_helpers.night5and6api import scrape_uncleducky_api, scrape_picturedRocksKoa_api
 from app.payment_helpers.night1and2api_pay import pay_anchorInn_api, pay_timberRidge_api, pay_traverseCityKoa_api
@@ -86,6 +86,9 @@ def process_payment(api_function):
     return jsonify(success=result)
 
 #### SCRAPES ###
+@app.route('/api/scrape/traverseCityStatePark')
+def get_traverseCityStatePark_price():
+    return get_price('Traverse City State Park', 1, 6, scrape_traverseCityStatePark_api)
 
 @app.route('/api/scrape/timberRidge')
 def get_timberRidge_price():
