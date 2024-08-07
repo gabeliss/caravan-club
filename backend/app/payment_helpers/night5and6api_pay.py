@@ -1,5 +1,7 @@
 from playwright.sync_api import sync_playwright
 import time
+from datetime import datetime
+
 
 def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_info):
     url = 'https://paddlersvillage.checkfront.com/reserve/?inline=1&category_id=3%2C2%2C4%2C9&provider=droplet&ssl=1&src=https%3A%2F%2Fwww.paddlingmichigan.com&1704390232826'
@@ -112,6 +114,98 @@ def pay_uncleducky_api(num_travelers, start_date, end_date, place_name, payment_
     return False
 
 
+def pay_fortSuperior_api(num_travelers, start_date, end_date, place_name, payment_info):
+    start_timestamp = int(datetime.strptime(start_date, '%m/%d/%y').timestamp() * 1000)
+    end_timestamp = int(datetime.strptime(end_date, '%m/%d/%y').timestamp() * 1000)
+
+    url = f"https://www.fortsuperiorcampground.com/campsites/rooms/%3FcheckIn%3D{start_timestamp}%26checkOut%3D{end_timestamp}%26adults%3D{num_travelers}"
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context()
+        page = context.new_page()
+
+        try:
+            page.goto(url)
+            page.wait_for_load_state("networkidle")
+
+            page.wait_for_selector("#SITE_CONTAINER", timeout=10000)
+
+            iframe_element = page.query_selector("iframe[title='Book a Room']")
+            if not iframe_element:
+                raise Exception("Could not find iframe with title 'Book a Room'")
+
+            iframe = iframe_element.content_frame()
+            if not iframe:
+                raise Exception("Could not get content frame from iframe")
+
+            iframe.wait_for_load_state("domcontentloaded")
+            iframe.wait_for_selector("ul.list", state="attached", timeout=30000)
+
+            ul_list = iframe.query_selector("ul.list")
+            if not ul_list:
+                raise Exception("Could not find ul.list element")
+
+            li_elements = ul_list.query_selector_all("li.room")
+
+            for li in li_elements:
+                site_name_element = li.query_selector("h3 a span.strans")
+                if not site_name_element:
+                    continue
+                site_name = site_name_element.inner_text()
+                if site_name == place_name:
+                    book_now_button = li.query_selector("button.fancy-btn.s-button.button")
+                    book_now_button.click()
+                    time.sleep(1)
+
+                    details_form = page.wait_for_selector("form[name='detailsForm']", timeout=10000)
+
+                    first_name_input = details_form.query_selector("input#firstName")
+                    first_name_input.fill(payment_info['first_name'])
+
+                    last_name_input = details_form.query_selector("input#lastName")
+                    last_name_input.fill(payment_info['last_name'])
+
+                    email_input = details_form.query_selector("input#email")
+                    email_input.fill(payment_info['email'])
+
+                    phone_input = details_form.query_selector("input#phone")
+                    phone_input.fill(payment_info['phone_number'])
+
+                    country_select = details_form.query_selector("select#country")
+                    country_select.select_option(value='string:us')
+
+                    continue_button = details_form.query_selector("button.pay-now")
+                    continue_button.click()
+                    time.sleep(1)
+
+                    form_details = page.wait_for_selector("div#form-details", timeout=10000)
+
+                    # Switch to the iframe with title='Credit / Debit Card'
+                    iframe = page.wait_for_selector("iframe[title='Credit / Debit Card']", timeout=10000)
+                    iframe_content = iframe.content_frame()
+
+                    # Fill out the card details within the iframe
+                    iframe_content.fill("input#cardNumber", payment_info['card_number'])
+                    iframe_content.fill("input#cardExpiration", payment_info['expiry_date'])
+                    iframe_content.fill("input#cardCvv", payment_info['cvc'])
+                    iframe_content.fill("input#cardHolderName", payment_info['cardholder_name'])
+
+                    # Continue with submitting the payment if necessary
+                    complete_checkout_button = form_details.query_selector("button[data-hook='cashier-payments-method-pay-button']")
+                    # complete_checkout_button.click() #uncomment to pay
+                    return True
+
+            
+            return False
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
+
+        finally:
+            browser.close()
+
 def main():
     payment_info = {
         "first_name": "Lebron",
@@ -128,8 +222,10 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
-    uncleDuckyData = pay_uncleducky_api(4, '09/01/24', '09/03/24', '#31 Yurt: Moose (Paddlers Village)', payment_info)
-    print(uncleDuckyData)
+    # uncleDuckyData = pay_uncleducky_api(4, '09/01/24', '09/03/24', '#31 Yurt: Moose (Paddlers Village)', payment_info)
+    # print(uncleDuckyData)
+    fortSuperiorData = pay_fortSuperior_api(2, '08/24/24', '08/26/24', 'Campsite 4', payment_info)
+    print(fortSuperiorData)
 
 
 if __name__ == '__main__':

@@ -173,6 +173,118 @@ def scrape_cabinsOfMackinaw_api(num_travelers, start_date, end_date):
             browser.close()
 
 
+def scrape_traverseCityStatePark_api(num_travelers, start_date, end_date):
+    url = 'https://midnrreservations.com/create-booking'
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto(url)
+        page.wait_for_selector('#park-autocomplete', timeout=10000)
+
+        try:
+            consent_button = page.query_selector('#consentButton')
+            if consent_button:
+                consent_button.click()
+            # Fill in the park name
+            park_input = page.query_selector('#park-autocomplete')
+            park_input.fill('Straits')
+            park_input.press('Enter')
+
+            # Click the arrival date input field
+            arrival_date_input = page.query_selector('#arrival-date-field')
+            arrival_date_input.click()
+            # Click the month dropdown picker
+            month_dropdown_picker = page.query_selector('#monthDropdownPicker')
+            month_dropdown_picker.click()
+
+            # Select the correct month
+            start_date_obj = datetime.strptime(start_date, '%m/%d/%y')
+            month_name = start_date_obj.strftime('%b')
+            year = start_date_obj.strftime('%Y')
+            aria_label = f'{month_name} {year}'
+
+            calendar_buttons = page.query_selector_all('.mat-calendar-body-cell')
+            for button in calendar_buttons:
+                if button.get_attribute('aria-label') == aria_label:
+                    button.click()
+                    break
+
+            day = start_date_obj.strftime('%-d')  # Using %-d to strip leading zeroes
+            day_buttons = page.query_selector_all('.mat-calendar-body-cell-content.mat-focus-indicator')
+            for day_button in day_buttons:
+                if day_button.text_content().strip() == day:
+                    day_button.click()
+                    break
+            
+            end_date_obj = datetime.strptime(end_date, '%m/%d/%y')
+            if end_date_obj.month != start_date_obj.month:
+                next_month_button = page.query_selector('#nextYearButton')
+                next_month_button.click()
+
+            # Select the correct day for the end date
+            end_day = end_date_obj.strftime('%-d')  # Using %-d to strip leading zeroes
+            day_buttons = page.query_selector_all('.mat-calendar-body-cell-content.mat-focus-indicator')
+            for day_button in day_buttons:
+                if day_button.text_content().strip() == end_day:
+                    day_button.click()
+                    break
+
+            party_size_input = page.query_selector('#party-size-field')
+            party_size_input.click()
+            party_size_input.fill(str(num_travelers))
+
+            accommodation_select = page.query_selector('#mat-select-value-1')
+            accommodation_select.click()
+
+            tents_option = page.query_selector('#mat-option-0')
+            tents_option.click()
+
+            search_button = page.query_selector('#actionSearch')
+            search_button.click()
+            time.sleep(1)
+
+            page.wait_for_selector('#list-view-button', timeout=10000)
+            list_view_button = page.query_selector('#list-view-button')
+            list_view_button.click()
+            time.sleep(2)
+
+            result = page.wait_for_selector('h2:has-text("No Available Sites"), #mapLink-button-0', timeout=10000)
+            # Click the map link button
+            if result.get_attribute('id') == 'mapLink-button-0':
+                result.click()
+            else:
+                print("No Available Sites message found")
+                return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
+
+            # Click the first item in the list view results
+            time.sleep(1)
+            page.wait_for_selector('.list-view-results.ng-star-inserted', timeout=10000)
+            first_item = page.wait_for_selector('.list-view-results.ng-star-inserted mat-expansion-panel', timeout=10000)
+            first_item.click()
+
+            # Retrieve the h2 tag with the title
+            title_h2 = first_item.wait_for_selector('h2#resourceName', timeout=10000)
+            title = title_h2.text_content().strip() if title_h2 else "Title not found"
+
+            # Retrieve the span with the price
+            price_span = first_item.wait_for_selector('.ng-star-inserted .bold', timeout=10000)
+            price = price_span.text_content().replace('$', '').strip() if price_span else "Price not found"
+            
+            if title != "Title not found":
+                return {"available": True, "name": title, "price": float(price), "message": "Available: $" + price + " per night"}
+            else:
+                return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
+
+        finally:
+            browser.close()
+
+
 def main():
     stIgnaceKoaData = scrape_stIgnaceKoa_api(4, '08/20/24', '08/22/24')
     print(stIgnaceKoaData)

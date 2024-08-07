@@ -296,7 +296,7 @@ def pay_traverseCityKoa_api(num_travelers, start_date, end_date, place_name, pay
 
     url = "https://koa.com/campgrounds/traverse-city/reserve/"
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         context = browser.new_context()
         page = context.new_page()
         page.goto(url)

@@ -213,7 +213,7 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
       </div>
       <div className='form-group center'>
         <h2>Caravan Club Fee: ${caravanFee}</h2>
-        <h2>Total Price: ${(parseFloat(totalPrice) + caravanFee).toString()}</h2>
+        <h2>Total Price: ${(parseFloat(totalPrice) + caravanFee).toFixed(2).toString()}</h2>
         <div className='buttons'>
           <button className="button" type="button" onClick={handleBack}>Back</button>
           <button className="button" type="submit">Submit Payment</button>

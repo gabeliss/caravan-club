@@ -50,18 +50,18 @@ function BookNorthernMichiganPage() {
     const handleDetailsSubmit = async (event) => {
         event.preventDefault();
         if (validateDetails()) {
-            setDetailsSubmitted(true)
-            let night1and2StartDate = convertDateFormat(startDate)
-            let night1and2EndDate = convertDateFormat(adjustDate(startDate, 2))
-            let night3and4StartDate = convertDateFormat(startDate, 2)
-            let night3and4EndDate = convertDateFormat(adjustDate(startDate, 4))
-            let night5and6StartDate = convertDateFormat(adjustDate(startDate, 4))
-            let night5and6EndDate = convertDateFormat(endDate)
-
+            setDetailsSubmitted(true);
+            let night1and2StartDate = convertDateFormat(startDate);
+            let night1and2EndDate = convertDateFormat(adjustDate(startDate, 2));
+            let night3and4StartDate = convertDateFormat(startDate, 2);
+            let night3and4EndDate = convertDateFormat(adjustDate(startDate, 4));
+            let night5and6StartDate = convertDateFormat(adjustDate(startDate, 4));
+            let night5and6EndDate = convertDateFormat(endDate);
+    
             setIsLoading(true);
-
+    
             try {
-                const responses = await Promise.all([
+                const responses = await Promise.allSettled([
                     fetchAccommodationDetails('traverseCityStatePark', numTravelers, night1and2StartDate, night1and2EndDate),
                     fetchAccommodationDetails('timberRidge', numTravelers, night1and2StartDate, night1and2EndDate),
                     fetchAccommodationDetails('anchorInn', numTravelers, night1and2StartDate, night1and2EndDate),
@@ -70,27 +70,54 @@ function BookNorthernMichiganPage() {
                     fetchAccommodationDetails('cabinsOfMackinaw', numTravelers, night3and4StartDate, night3and4EndDate),
                     fetchAccommodationDetails('uncleDucky', numTravelers, night5and6StartDate, night5and6EndDate),
                     fetchAccommodationDetails('picturedRocksKoa', numTravelers, night5and6StartDate, night5and6EndDate),
+                    fetchAccommodationDetails('fortSuperior', numTravelers, night5and6StartDate, night5and6EndDate),
                 ]);
-
-                const [traverseCityStateParkDetails, timberRidgeDetails, anchorInnDetails, traverseCityKoaDetails, stIgnaceKoaDetails, 
-                       cabinsOfMackinawDetails, uncleDuckyDetails, picturedRocksKoaDetails] = responses;
-                updateAccommodationsState('traverseCityStatePark', traverseCityStateParkDetails, 'night1and2');
-                updateAccommodationsState('timberRidge', timberRidgeDetails, 'night1and2');
-                updateAccommodationsState('anchorInn', anchorInnDetails, 'night1and2');
-                updateAccommodationsState('traverseCityKoa', traverseCityKoaDetails, 'night1and2');
-                updateAccommodationsState('stIgnaceKoa', stIgnaceKoaDetails, 'night3and4');
-                updateAccommodationsState('cabinsOfMackinaw', cabinsOfMackinawDetails, 'night3and4');
-                updateAccommodationsState('uncleDucky', uncleDuckyDetails, 'night5and6');
-                updateAccommodationsState('picturedRocksKoa', picturedRocksKoaDetails, 'night5and6');
-
+    
+                responses.forEach((result, index) => {
+                    if (result.status === 'fulfilled') {
+                        const details = result.value;
+                        switch (index) {
+                            case 0:
+                                updateAccommodationsState('traverseCityStatePark', details, 'night1and2');
+                                break;
+                            case 1:
+                                updateAccommodationsState('timberRidge', details, 'night1and2');
+                                break;
+                            case 2:
+                                updateAccommodationsState('anchorInn', details, 'night1and2');
+                                break;
+                            case 3:
+                                updateAccommodationsState('traverseCityKoa', details, 'night1and2');
+                                break;
+                            case 4:
+                                updateAccommodationsState('stIgnaceKoa', details, 'night3and4');
+                                break;
+                            case 5:
+                                updateAccommodationsState('cabinsOfMackinaw', details, 'night3and4');
+                                break;
+                            case 6:
+                                updateAccommodationsState('uncleDucky', details, 'night5and6');
+                                break;
+                            case 7:
+                                updateAccommodationsState('picturedRocksKoa', details, 'night5and6');
+                                break;
+                            case 8:
+                                updateAccommodationsState('fortSuperior', details, 'night5and6');
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        console.error('Error in fetching details:', result.reason);
+                    }
+                });
             } catch (error) {
-                console.error('Error in fetching details:', error);
-
+                console.error('Unexpected error:', error);
             } finally {
                 setIsLoading(false);
             }
         }
-      };
+    };
 
 
       function updateAccommodationsState(place, details, nightXandY) {

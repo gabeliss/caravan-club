@@ -2,6 +2,7 @@ import requests
 from datetime import datetime
 from bs4 import BeautifulSoup
 import cloudscraper
+from playwright.sync_api import sync_playwright
 
 def scrape_uncleducky_api(num_travelers, start_date_str, end_date_str):
 
@@ -166,11 +167,71 @@ def scrape_picturedRocksKoa_api(num_travelers, start_date_str, end_date_str):
         return f"Failed to fetch data: {response.status_code}, Reason: {response.reason}"
 
 
+def scrape_fortSuperior_api(num_travelers, start_date, end_date):
+    start_timestamp = int(datetime.strptime(start_date, '%m/%d/%y').timestamp() * 1000)
+    end_timestamp = int(datetime.strptime(end_date, '%m/%d/%y').timestamp() * 1000)
+
+    url = f"https://www.fortsuperiorcampground.com/campsites/rooms/%3FcheckIn%3D{start_timestamp}%26checkOut%3D{end_timestamp}%26adults%3D{num_travelers}"
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context()
+        page = context.new_page()
+
+        try:
+            page.goto(url)
+            page.wait_for_load_state("networkidle")
+
+            page.wait_for_selector("#SITE_CONTAINER", timeout=10000)
+
+            iframe_element = page.query_selector("iframe[title='Book a Room']")
+            if not iframe_element:
+                raise Exception("Could not find iframe with title 'Book a Room'")
+
+            iframe = iframe_element.content_frame()
+            if not iframe:
+                raise Exception("Could not get content frame from iframe")
+
+            iframe.wait_for_load_state("domcontentloaded")
+            iframe.wait_for_selector("ul.list", state="attached", timeout=30000)
+
+            ul_list = iframe.query_selector("ul.list")
+            if not ul_list:
+                raise Exception("Could not find ul.list element")
+
+            li_elements = ul_list.query_selector_all("li.room")
+
+            for li in li_elements:
+                site_name_element = li.query_selector("h3 a span.strans")
+                if not site_name_element:
+                    continue
+                site_name = site_name_element.inner_text()
+                if "Canvas Tent Barrack" not in site_name:
+                    price_element = li.query_selector("div.price span.value")
+                    if not price_element:
+                        continue
+                    price_text = price_element.inner_text()
+                    price = float(price_text.replace("$", ""))
+                    return {"available": True, "name": site_name, "price": price, "message": f"Available: ${price} per night"}
+            
+            return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
+
+        finally:
+            browser.close()
+
+
+
 def main():
     # uncleDuckyData = scrape_uncleducky_api(5, '09/18/24', '09/20/24')
     # print(uncleDuckyData)
-    picturedRocksKoaData = scrape_picturedRocksKoa_api(4, '09/18/24', '09/20/24')
-    print(picturedRocksKoaData)
+    # picturedRocksKoaData = scrape_picturedRocksKoa_api(2, '08/24/24', '08/26/24')
+    # print(picturedRocksKoaData)
+    fortSuperiorData = scrape_fortSuperior_api(2, '08/24/24', '08/26/24')
+    print(fortSuperiorData)
 
 
 if __name__ == '__main__':
