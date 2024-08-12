@@ -209,6 +209,7 @@ def pay_anchorInn_api(num_travelers, start_date, end_date, place_name, payment_i
             time.sleep(1)
 
             # find correct place and click 'Add to reservation'
+            page.wait_for_selector('.unit-option-inner-wrapper', timeout=10000)
             units = page.query_selector_all('.unit-option-inner-wrapper')
             for unit in units:
                 unit_name = unit.query_selector('h2.unit-name').inner_text()
@@ -296,7 +297,7 @@ def pay_traverseCityKoa_api(num_travelers, start_date, end_date, place_name, pay
 
     url = "https://koa.com/campgrounds/traverse-city/reserve/"
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(headless=False)
         context = browser.new_context()
         page = context.new_page()
         page.goto(url)
@@ -433,7 +434,7 @@ def main():
     }
     # timberRidgeData = pay_timberRidge_api(4, '08/20/24', '08/23/24', 'Cottage (Sleeps 5)', payment_info)
     # print(timberRidgeData)
-    # anchorInnData = pay_anchorInn_api(4, '08/21/24', '08/23/24', '1 Bedroom with Kitchenette', payment_info)
+    # anchorInnData = pay_anchorInn_api(2, '09/10/24', '09/12/24', 'Single Queen Room', payment_info)
     # print(anchorInnData)
     traverseCityKoaData = pay_traverseCityKoa_api(4, '08/20/24', '08/23/24', 'Camping Cabin (No Bathroom)', payment_info)
     print(traverseCityKoaData)

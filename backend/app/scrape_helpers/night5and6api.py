@@ -3,6 +3,8 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import cloudscraper
 from playwright.sync_api import sync_playwright
+import time
+import json
 
 def scrape_uncleducky_api(num_travelers, start_date_str, end_date_str):
 
@@ -224,14 +226,74 @@ def scrape_fortSuperior_api(num_travelers, start_date, end_date):
             browser.close()
 
 
+def scrape_touristPark_api(num_travelers, start_date, end_date):
+    start_date_formatted = datetime.strptime(start_date, '%m/%d/%y').strftime('%Y-%m-%d')
+    end_date_formatted = datetime.strptime(end_date, '%m/%d/%y').strftime('%Y-%m-%d')
+    
+    url = f"https://www.campspot.com/book/munisingtouristparkcampground/search/{start_date_formatted}/{end_date_formatted}/guests0,{num_travelers},0/list"
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context()
+        context.set_extra_http_headers({
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+            'sec-ch-ua': '"Chromium";v="125", "Not.A/Brand";v="24"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"macOS"',
+        })
+        page = context.new_page()
+
+        try:
+            page.goto(url)
+            time.sleep(2)
+            page.wait_for_selector('div.search-results', timeout=10000)
+
+            no_availability_div = page.query_selector('div.search-results-none')
+            if no_availability_div:
+                return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
+            
+            li_elements = page.query_selector_all('ul.search-results-list li')
+
+            for li in li_elements:
+                a_tag = li.query_selector('a.search-results-site-link[aria-label="Waterfront Rustic Tent Site"]')
+                if a_tag:
+                    span = li.query_selector('span.app-average-per-night-price')
+                    if span:
+                        price_text = span.inner_text().strip().replace('$', '')
+                        price = float(price_text)
+                        return {"available": True, "name": "Waterfront Rustic Tent Site", "price": price, "message": f"Available: ${price} per night"}
+            
+            for li in li_elements:
+                a_tag = li.query_selector('a.search-results-site-link[aria-label="Rustic Tent Site"]')
+                if a_tag:
+                    span = li.query_selector('span.app-average-per-night-price')
+                    if span:
+                        price_text = span.inner_text().strip().replace('$', '')
+                        price = float(price_text)
+                        return {"available": True, "name": "Rustic Tent Site", "price": price, "message": f"Available: ${price} per night"}
+            
+            return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
+
+        except Exception as e:
+            screenshot_path = 'error_screenshot.png'
+            page.screenshot(path=screenshot_path)
+            print(f"An error occurred: {e}")
+            print(f"Screenshot saved to {screenshot_path}")
+            return False
+
+        finally:
+            browser.close()
+
 
 def main():
     # uncleDuckyData = scrape_uncleducky_api(5, '09/18/24', '09/20/24')
     # print(uncleDuckyData)
     # picturedRocksKoaData = scrape_picturedRocksKoa_api(2, '08/24/24', '08/26/24')
     # print(picturedRocksKoaData)
-    fortSuperiorData = scrape_fortSuperior_api(2, '08/24/24', '08/26/24')
-    print(fortSuperiorData)
+    # fortSuperiorData = scrape_fortSuperior_api(2, '08/24/24', '08/26/24')
+    # print(fortSuperiorData)
+    touristParkData = scrape_touristPark_api(2, '09/14/24', '09/16/24')
+    print(touristParkData)
 
 
 if __name__ == '__main__':

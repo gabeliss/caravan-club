@@ -1,7 +1,7 @@
 from app import app
 from app.scrape_helpers.night1and2api import scrape_traverseCityStatePark_api, scrape_timberRidge_api, scrape_anchorInn_api, scrape_traverseCityKoa_api
 from app.scrape_helpers.night3and4api import scrape_stIgnaceKoa_api, scrape_cabinsOfMackinaw_api
-from app.scrape_helpers.night5and6api import scrape_uncleducky_api, scrape_picturedRocksKoa_api, scrape_fortSuperior_api
+from app.scrape_helpers.night5and6api import scrape_uncleducky_api, scrape_picturedRocksKoa_api, scrape_fortSuperior_api, scrape_touristPark_api
 from app.payment_helpers.night1and2api_pay import pay_anchorInn_api, pay_timberRidge_api, pay_traverseCityKoa_api
 from app.payment_helpers.night3and4api_pay import pay_cabinsOfMackinaw_api
 from app.payment_helpers.night5and6api_pay import pay_uncleducky_api, pay_fortSuperior_api
@@ -124,9 +124,15 @@ def get_uncleducky_price():
 def get_picturedRocksKoa_price():
     return get_price('Pictured Rocks Koa', 1, 8, scrape_picturedRocksKoa_api)
 
+
 @app.route('/api/scrape/fortSuperior')
 def get_fortSuperior_price():
     return get_price('Fort Superior', 1, 6, scrape_fortSuperior_api)
+
+
+@app.route('/api/scrape/touristPark')
+def get_touristPark_price():
+    return get_price('Tourist Park', 1, 6, scrape_touristPark_api)
 
 
 ### PAYMENTS ###

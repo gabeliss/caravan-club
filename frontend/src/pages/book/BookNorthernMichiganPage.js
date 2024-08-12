@@ -71,6 +71,7 @@ function BookNorthernMichiganPage() {
                     fetchAccommodationDetails('uncleDucky', numTravelers, night5and6StartDate, night5and6EndDate),
                     fetchAccommodationDetails('picturedRocksKoa', numTravelers, night5and6StartDate, night5and6EndDate),
                     fetchAccommodationDetails('fortSuperior', numTravelers, night5and6StartDate, night5and6EndDate),
+                    fetchAccommodationDetails('touristPark', numTravelers, night5and6StartDate, night5and6EndDate),
                 ]);
     
                 responses.forEach((result, index) => {
@@ -103,6 +104,9 @@ function BookNorthernMichiganPage() {
                                 break;
                             case 8:
                                 updateAccommodationsState('fortSuperior', details, 'night5and6');
+                                break;
+                            case 9:
+                                updateAccommodationsState('touristPark', details, 'night5and6');
                                 break;
                             default:
                                 break;

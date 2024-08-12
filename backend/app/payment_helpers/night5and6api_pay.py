@@ -206,6 +206,60 @@ def pay_fortSuperior_api(num_travelers, start_date, end_date, place_name, paymen
         finally:
             browser.close()
 
+
+def pay_touristPark_api(num_travelers, start_date, end_date, place_name, payment_info):
+    start_date_formatted = datetime.strptime(start_date, '%m/%d/%y').strftime('%Y-%m-%d')
+    end_date_formatted = datetime.strptime(end_date, '%m/%d/%y').strftime('%Y-%m-%d')
+    
+    url = f"https://www.campspot.com/book/munisingtouristparkcampground/search/{start_date_formatted}/{end_date_formatted}/guests0,{num_travelers},0/list"
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context()
+        context.set_extra_http_headers({
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+            'sec-ch-ua': '"Chromium";v="125", "Not.A/Brand";v="24"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"macOS"',
+        })
+        page = context.new_page()
+
+        try:
+            page.goto(url)
+            time.sleep(2)
+            page.wait_for_selector('div.search-results', timeout=10000)
+
+            no_availability_div = page.query_selector('div.search-results-none')
+            if no_availability_div:
+                print('This should never happen. Investigate')
+                return False
+        
+            tent_site_general = page.query_selector(f'a.search-results-site-link[aria-label="{place_name}"]')
+            tent_site_general.click()
+
+            page.wait_for_selector("section.site-content")
+
+            site_info = page.query_selector("div.site-info")
+
+            first_select_button = site_info.query_selector("table.site-locations-table > tr.site-locations-table-site .site-locations-table-site-select-button")
+            first_select_button.click()
+
+            site_booking = page.query_selector("div.site-booking")
+            add_to_cart_button = site_booking.query_selector("div.mobile-modal-add-to-cart")
+            add_to_cart_button.click()
+            time.sleep(1)
+            return True
+        
+        except Exception as e:
+            screenshot_path = 'error_screenshot.png'
+            page.screenshot(path=screenshot_path)
+            print(f"An error occurred: {e}")
+            print(f"Screenshot saved to {screenshot_path}")
+            return False
+
+        finally:
+            browser.close()
+
 def main():
     payment_info = {
         "first_name": "Lebron",
@@ -224,8 +278,10 @@ def main():
     }
     # uncleDuckyData = pay_uncleducky_api(4, '09/01/24', '09/03/24', '#31 Yurt: Moose (Paddlers Village)', payment_info)
     # print(uncleDuckyData)
-    fortSuperiorData = pay_fortSuperior_api(2, '08/24/24', '08/26/24', 'Campsite 4', payment_info)
-    print(fortSuperiorData)
+    # fortSuperiorData = pay_fortSuperior_api(2, '08/24/24', '08/26/24', 'Campsite 4', payment_info)
+    # print(fortSuperiorData)
+    touristParkData = pay_touristPark_api(2, '09/14/24', '09/16/24', 'Waterfront Rustic Tent Site', payment_info)
+    print(touristParkData)
 
 
 if __name__ == '__main__':

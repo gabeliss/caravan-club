@@ -7,6 +7,8 @@ import cloudscraper
 
 
 def scrape_traverseCityStatePark_api(num_travelers, start_date, end_date):
+    print("Traverse City State Park doesn't work")
+    return False
     url = 'https://midnrreservations.com/create-booking'
 
     with sync_playwright() as p:
