@@ -214,7 +214,7 @@ def pay_touristPark_api(num_travelers, start_date, end_date, place_name, payment
     url = f"https://www.campspot.com/book/munisingtouristparkcampground/search/{start_date_formatted}/{end_date_formatted}/guests0,{num_travelers},0/list"
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         context = browser.new_context()
         context.set_extra_http_headers({
             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
@@ -248,6 +248,56 @@ def pay_touristPark_api(num_travelers, start_date, end_date, place_name, payment
             add_to_cart_button = site_booking.query_selector("div.mobile-modal-add-to-cart")
             add_to_cart_button.click()
             time.sleep(1)
+
+            cart_confirmation_section = page.wait_for_selector("section.cart-confirmation")
+            review_cart_button = cart_confirmation_section.wait_for_selector("a.cart-confirmation-item-actions-button.app-view-cart-button", state="visible", timeout=10000)
+            review_cart_button.click()
+
+            cart_content_section = page.wait_for_selector("section.cart-content")
+            proceed_to_checkout_button = cart_content_section.query_selector("a.cart-summary-checkout-button.app-cart-checkout-button")
+            proceed_to_checkout_button.click()
+            time.sleep(1)
+
+            checkout_div = page.wait_for_selector("div.checkout")
+
+            guest_full_name_input = checkout_div.wait_for_selector("input#guest-full-name-input", timeout=10000)
+            guest_full_name_input.fill(payment_info['first_name'] + ' ' + payment_info['last_name'])
+
+            guest_address_input = checkout_div.query_selector("input#guest-address-line-1")
+            guest_address_input.fill(payment_info['street_address'])
+
+            guest_postal_code_input = checkout_div.query_selector("input#guest-postal-code-input")
+            guest_postal_code_input.fill(payment_info['zip_code'])
+            guest_email_input = checkout_div.query_selector("input#guest-email-input")
+            guest_email_input.fill(payment_info['email'])
+
+            guest_phone_input = checkout_div.query_selector("input#guest-phone-number-input")
+            guest_phone_input.fill(payment_info['phone_number'])
+
+            continue_to_payment_button = checkout_div.wait_for_selector("button.checkout-form-submit-button.app-checkout-continue-to-payment-amount-button", state="visible", timeout=10000)
+            continue_to_payment_button.scroll_into_view_if_needed()
+            page.wait_for_timeout(500)  # Adding a small delay to ensure it registers
+            continue_to_payment_button.click()
+
+            continue_to_payment_method_button = checkout_div.wait_for_selector("button.checkout-form-submit-button.app-checkout-continue-to-payment-info-button", state="visible", timeout=10000)
+            continue_to_payment_method_button.scroll_into_view_if_needed()
+            page.wait_for_timeout(500)  # Adding a small delay to ensure it registers
+            continue_to_payment_method_button.click()
+
+            iframe_token = page.wait_for_selector("iframe#tokenFrame", timeout=10000)
+            ccnum_frame = iframe_token.content_frame()
+            ccnum_frame.fill("input#ccnumfield", payment_info['card_number'])
+
+            page.fill("input#month", payment_info['expiry_date'].split('/')[0])
+            page.fill("input#year", payment_info['expiry_date'].split('/')[1][-2:])
+
+            page.fill("input#payment-security-code-input", payment_info['cvc'])
+
+            terms_conditions_checkbox = checkout_div.query_selector("input#terms-and-conditions-accept")
+            terms_conditions_checkbox.click()
+
+            place_order_button = checkout_div.query_selector("button.checkout-form-submit-button.mod-place-order.app-checkout-submit")
+            #place_order_button.click()
             return True
         
         except Exception as e:
@@ -269,7 +319,7 @@ def main():
         "street_address": "1234 Rocky Rd",
         "city": "San Francisco",
         "state": "CA",
-        "zip_code": "45445",
+        "zip_code": "45441",
         "country": "USA",
         "cardholder_name": "Kobe Bryant",
         "card_number": "123412345612345",
@@ -280,7 +330,7 @@ def main():
     # print(uncleDuckyData)
     # fortSuperiorData = pay_fortSuperior_api(2, '08/24/24', '08/26/24', 'Campsite 4', payment_info)
     # print(fortSuperiorData)
-    touristParkData = pay_touristPark_api(2, '09/14/24', '09/16/24', 'Waterfront Rustic Tent Site', payment_info)
+    touristParkData = pay_touristPark_api(2, '09/15/24', '09/17/24', 'Waterfront Rustic Tent Site', payment_info)
     print(touristParkData)
 
 

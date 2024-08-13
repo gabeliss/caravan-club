@@ -4,7 +4,7 @@ from app.scrape_helpers.night3and4api import scrape_stIgnaceKoa_api, scrape_cabi
 from app.scrape_helpers.night5and6api import scrape_uncleducky_api, scrape_picturedRocksKoa_api, scrape_fortSuperior_api, scrape_touristPark_api
 from app.payment_helpers.night1and2api_pay import pay_anchorInn_api, pay_timberRidge_api, pay_traverseCityKoa_api
 from app.payment_helpers.night3and4api_pay import pay_cabinsOfMackinaw_api
-from app.payment_helpers.night5and6api_pay import pay_uncleducky_api, pay_fortSuperior_api
+from app.payment_helpers.night5and6api_pay import pay_uncleducky_api, pay_fortSuperior_api, pay_touristPark_api
 import os, base64
 from flask import request, jsonify
 import logging
@@ -160,6 +160,12 @@ def pay_cabinsOfMackinaw():
 def pay_uncleDucky():
     return process_payment(pay_uncleducky_api)
 
+
 @app.route('/api/pay/fortSuperior')
 def pay_fortSuperior():
     return process_payment(pay_fortSuperior_api)
+
+
+@app.route('/api/pay/touristPark')
+def pay_touristPark():
+    return process_payment(pay_touristPark_api)

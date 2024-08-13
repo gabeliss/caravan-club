@@ -108,7 +108,7 @@ function ReviewTripPage() {
                 </>
                 }
             </div>
-            <h4 className='disclaimer'>* Note: Total for Stay includes the rate for 2 nights, plus any added taxes / fees by each website. These totals do not include any fees by Caravan Club.</h4>
+            <h4 className='disclaimer'>* Note: Total for Stay includes the rate for 2 nights, plus any added taxes / fees estimated for each website. These totals do not include any fees by Caravan Club.</h4>
             <div className='reviewtrip-buttons'>
                 <button className='reviewtrip-button' onClick={handleBack}>Back</button>
                 <button className='reviewtrip-button' onClick={handleConfirm}>Confirm</button>
