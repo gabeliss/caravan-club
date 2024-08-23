@@ -1,5 +1,5 @@
 .review-trip-page {
-    background-color: white;
+    background: linear-gradient(to bottom, #f9f9f9, #eaeaea);
     min-height: 75vh;
     display: flex;
     flex-direction: column;
@@ -22,33 +22,38 @@
     flex-direction: column;
     align-items: center;
     background-color: var(--primary-color);
-    width: 50%;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    width: 60%;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0.4, 0.4, 0.4, 0.4);
 }
 
 .disclaimer {
     width: 50%;
+    font-size: 0.9em;
+    color: rgba(86, 84, 84, 0.8);
 }
 
 .stay-disclaimer {
     width: 85%;
     font-size: medium;
+    font-size: 0.9em;
 }
 
 .reviewtrip-buttons {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
-    width: 50%;
+    width: 60%;
 }
 
 .reviewtrip-button  {
-    height: 50px;
+    height: 70px;
     background-color: var(--secondary-color);
     margin-top: 20px;
-    margin-bottom: 30px;
-    width: 40%;
+    margin-bottom: 50px;
+    width: 43%;
     display: flex;
     justify-content: center;
     text-decoration: none;

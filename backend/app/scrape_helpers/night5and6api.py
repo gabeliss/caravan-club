@@ -85,7 +85,7 @@ def scrape_uncleducky_api(num_travelers, start_date_str, end_date_str):
                             cheapest_name = name
                         
             if cheapest_price < 10000:
-                return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "Available: $" + str(cheapest_price) + " per night"}
+                return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "$" + str(cheapest_price) + " per night"}
             else:
                 return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
 
@@ -164,7 +164,7 @@ def scrape_picturedRocksKoa_api(num_travelers, start_date_str, end_date_str):
         if cheapest_price == float('inf'):
             return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
         else:
-            return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "Available: $" + str(cheapest_price) + " per night"}
+            return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "$" + str(cheapest_price) + " per night"}
     else:
         return f"Failed to fetch data: {response.status_code}, Reason: {response.reason}"
 
@@ -181,12 +181,9 @@ def scrape_fortSuperior_api(num_travelers, start_date, end_date):
         page = context.new_page()
 
         try:
-            page.goto(url)
-            page.wait_for_load_state("networkidle")
+            page.goto(url, wait_until="domcontentloaded")
 
-            page.wait_for_selector("#SITE_CONTAINER", timeout=10000)
-
-            iframe_element = page.query_selector("iframe[title='Book a Room']")
+            iframe_element = page.wait_for_selector("iframe[title='Book a Room']", timeout=10000)
             if not iframe_element:
                 raise Exception("Could not find iframe with title 'Book a Room'")
 
@@ -194,27 +191,26 @@ def scrape_fortSuperior_api(num_travelers, start_date, end_date):
             if not iframe:
                 raise Exception("Could not get content frame from iframe")
 
-            iframe.wait_for_load_state("domcontentloaded")
-            iframe.wait_for_selector("ul.list", state="attached", timeout=30000)
+            li_elements = iframe.wait_for_selector("li.room", state="attached", timeout=30000)
+            if not li_elements:
+                raise Exception("Could not find any li.room elements")
 
-            ul_list = iframe.query_selector("ul.list")
-            if not ul_list:
-                raise Exception("Could not find ul.list element")
-
-            li_elements = ul_list.query_selector_all("li.room")
+            li_elements = iframe.query_selector_all("li.room")
 
             for li in li_elements:
                 site_name_element = li.query_selector("h3 a span.strans")
+
                 if not site_name_element:
                     continue
                 site_name = site_name_element.inner_text()
                 if "Canvas Tent Barrack" not in site_name:
                     price_element = li.query_selector("div.price span.value")
+
                     if not price_element:
                         continue
                     price_text = price_element.inner_text()
                     price = float(price_text.replace("$", ""))
-                    return {"available": True, "name": site_name, "price": price, "message": f"Available: ${price} per night"}
+                    return {"available": True, "name": site_name, "price": price, "message": f"${price} per night"}
             
             return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
 
@@ -261,7 +257,7 @@ def scrape_touristPark_api(num_travelers, start_date, end_date):
                     if span:
                         price_text = span.inner_text().strip().replace('$', '')
                         price = float(price_text)
-                        return {"available": True, "name": "Waterfront Rustic Tent Site", "price": price, "message": f"Available: ${price} per night"}
+                        return {"available": True, "name": "Waterfront Rustic Tent Site", "price": price, "message": f"${price} per night"}
             
             for li in li_elements:
                 a_tag = li.query_selector('a.search-results-site-link[aria-label="Rustic Tent Site"]')
@@ -270,7 +266,7 @@ def scrape_touristPark_api(num_travelers, start_date, end_date):
                     if span:
                         price_text = span.inner_text().strip().replace('$', '')
                         price = float(price_text)
-                        return {"available": True, "name": "Rustic Tent Site", "price": price, "message": f"Available: ${price} per night"}
+                        return {"available": True, "name": "Rustic Tent Site", "price": price, "message": f"${price} per night"}
             
             return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
 
@@ -290,10 +286,10 @@ def main():
     # print(uncleDuckyData)
     # picturedRocksKoaData = scrape_picturedRocksKoa_api(2, '08/24/24', '08/26/24')
     # print(picturedRocksKoaData)
-    # fortSuperiorData = scrape_fortSuperior_api(2, '08/24/24', '08/26/24')
-    # print(fortSuperiorData)
-    touristParkData = scrape_touristPark_api(2, '09/14/24', '09/16/24')
-    print(touristParkData)
+    fortSuperiorData = scrape_fortSuperior_api(2, '08/30/24', '09/01/24')
+    print(fortSuperiorData)
+    # touristParkData = scrape_touristPark_api(2, '09/14/24', '09/16/24')
+    # print(touristParkData)
 
 
 if __name__ == '__main__':

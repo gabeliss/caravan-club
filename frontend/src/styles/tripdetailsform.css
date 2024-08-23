@@ -1,0 +1,43 @@
+.form-horizontal {
+    display: flex;
+    justify-content: flex-start; /* Align items to the start */
+    align-items: center; /* Align the form fields and button to the center */
+    width: 100%;
+    max-width: 800px; /* Limit the width of the form */
+    margin-top: 20px; /* Add some space above the form */
+    gap: 20px; /* Ensure consistent spacing between all fields */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column; /* Keep label and input vertically aligned */
+}
+
+.form-group label {
+    margin-bottom: 5px; /* Add some space between label and input */
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.form-group input,
+.form-group select {
+    height: 40px; /* Ensure consistent height for inputs and selects */
+}
+
+.submit-button {
+    height: 40px;
+    background-color: #333333; /* Button styling */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0 20px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 20px; /* Ensure some space between the last input field and the button */
+    align-self: flex-start; /* Align the button with the top of the form */
+}
+
+.submit-button:hover {
+    background-color: #555555; /* Hover effect */
+}

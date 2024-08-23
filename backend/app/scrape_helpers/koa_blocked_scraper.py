@@ -89,6 +89,6 @@ def scrape_traverseCityKoa_api(num_travelers, start_date_str, end_date_str):
         if cheapest_price == float('inf'):
             return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
         else:
-            return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "Available: $" + str(cheapest_price) + " per night"}
+            return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "$" + str(cheapest_price) + " per night"}
     else:
         return f"Failed to fetch data: {response.status_code}, Reason: {response.reason}"

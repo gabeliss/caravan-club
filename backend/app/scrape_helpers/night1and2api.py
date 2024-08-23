@@ -108,7 +108,7 @@ def scrape_traverseCityStatePark_api(num_travelers, start_date, end_date):
             price = price_span.text_content().replace('$', '').strip() if price_span else "Price not found"
             
             if title != "Title not found":
-                return {"available": True, "name": title, "price": float(price), "message": "Available: $" + price + " per night"}
+                return {"available": True, "name": title, "price": float(price), "message": "$" + price + " per night"}
             else:
                 return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
 
@@ -251,7 +251,7 @@ def scrape_timberRidge_api(num_travelers, start_date_str, end_date_str):
                 price = None                                  
 
         if available:
-            return {"available": True, "name": name, "price": price, "message": "Available: $" + price + " per night"}
+            return {"available": True, "name": name, "price": price, "message": "$" + price + " per night"}
         else:
             return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
 
@@ -300,7 +300,7 @@ def get_available_stay_anchorInn_helper(stays, num_travelers):
         available = False
 
     if available:
-        return {"available": True, "name": name, "price": price, "message": "Available: $" + str(price) + " per night"}
+        return {"available": True, "name": name, "price": price, "message": "$" + str(price) + " per night"}
     else:
         return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
 
@@ -419,21 +419,21 @@ def scrape_traverseCityKoa_api(num_travelers, start_date_str, end_date_str):
         if cheapest_price == float('inf'):
             return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
         else:
-            return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "Available: $" + str(cheapest_price) + " per night"}
+            return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "$" + str(cheapest_price) + " per night"}
     else:
         return f"Failed to fetch data: {response.status_code}, Reason: {response.reason}"
 
     
 
 def main():
-    traverseCityStateParkData = scrape_traverseCityStatePark_api(2, '08/20/24', '08/22/24')
-    print(traverseCityStateParkData)
+    # traverseCityStateParkData = scrape_traverseCityStatePark_api(2, '08/20/24', '08/22/24')
+    # print(traverseCityStateParkData)
     # timberRidgeData = scrape_timberRidge_api(4, '08/20/24', '08/23/24')
     # print(timberRidgeData)
     # anchorInnData = scrape_anchorInn_api(4, '08/20/24', '08/22/24')
     # print(anchorInnData)
-    # traverseCityKoaData = scrape_traverseCityKoa_api(4, '08/20/24', '08/22/24')
-    # print(traverseCityKoaData)
+    traverseCityKoaData = scrape_traverseCityKoa_api(4, '08/20/24', '08/22/24')
+    print(traverseCityKoaData)
 
 if __name__ == '__main__':
     main()

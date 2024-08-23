@@ -1,5 +1,6 @@
 from datetime import datetime
 from playwright.sync_api import sync_playwright, expect
+from playwright_stealth import stealth_sync
 import time
 
 
@@ -295,11 +296,13 @@ def pay_traverseCityKoa_api(num_travelers, start_date, end_date, place_name, pay
         "07": "Jul", "08": "Aug", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec",
     }
 
-    url = "https://koa.com/campgrounds/traverse-city/reserve/"
+    url = "https://koa.com"
+    url1 = "https://koa.com/campgrounds/traverse-city/reserve/"
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
         context = browser.new_context()
         page = context.new_page()
+        stealth_sync(page)
         page.goto(url)
         time.sleep(1)
 

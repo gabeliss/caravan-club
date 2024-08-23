@@ -169,7 +169,6 @@ function BookNorthernMichiganPage() {
                     <h1>Northern Michigan</h1>
                     <h2>5-Day Road Trip</h2>
                 </div>
-                <h1>Let's Get Started</h1>
                 <TripDetailsForm
                     numTravelers={numTravelers}
                     setNumTravelers={setNumTravelers}

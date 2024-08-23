@@ -126,12 +126,9 @@ def pay_fortSuperior_api(num_travelers, start_date, end_date, place_name, paymen
         page = context.new_page()
 
         try:
-            page.goto(url)
-            page.wait_for_load_state("networkidle")
+            page.goto(url, wait_until="domcontentloaded")
 
-            page.wait_for_selector("#SITE_CONTAINER", timeout=10000)
-
-            iframe_element = page.query_selector("iframe[title='Book a Room']")
+            iframe_element = page.wait_for_selector("iframe[title='Book a Room']", timeout=10000)
             if not iframe_element:
                 raise Exception("Could not find iframe with title 'Book a Room'")
 
@@ -139,14 +136,11 @@ def pay_fortSuperior_api(num_travelers, start_date, end_date, place_name, paymen
             if not iframe:
                 raise Exception("Could not get content frame from iframe")
 
-            iframe.wait_for_load_state("domcontentloaded")
-            iframe.wait_for_selector("ul.list", state="attached", timeout=30000)
+            li_elements = iframe.wait_for_selector("li.room", state="attached", timeout=30000)
+            if not li_elements:
+                raise Exception("Could not find any li.room elements")
 
-            ul_list = iframe.query_selector("ul.list")
-            if not ul_list:
-                raise Exception("Could not find ul.list element")
-
-            li_elements = ul_list.query_selector_all("li.room")
+            li_elements = iframe.query_selector_all("li.room")
 
             for li in li_elements:
                 site_name_element = li.query_selector("h3 a span.strans")

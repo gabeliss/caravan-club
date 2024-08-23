@@ -75,7 +75,7 @@ def scrape_stIgnaceKoa_api(num_travelers, start_date_str, end_date_str):
         if cheapest_price == float('inf'):
             return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
         else:
-            return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "Available: $" + str(cheapest_price) + " per night"}
+            return {"available": True, "name": cheapest_name, "price": cheapest_price, "message": "$" + str(cheapest_price) + " per night"}
     else:
         return f"Failed to fetch data: {response.status_code}, Reason: {response.reason}"
         
@@ -161,7 +161,7 @@ def scrape_cabinsOfMackinaw_api(num_travelers, start_date, end_date):
 
             if available:
                 price = price.strip("$")
-                return {"available": True, "name": name, "price": price, "message": "Available: $" + price + " per night"}
+                return {"available": True, "name": name, "price": price, "message": "$" + price + " per night"}
             else:
                 return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}              
 
@@ -173,7 +173,7 @@ def scrape_cabinsOfMackinaw_api(num_travelers, start_date, end_date):
             browser.close()
 
 
-def scrape_traverseCityStatePark_api(num_travelers, start_date, end_date):
+def scrape_straitsStatePark_api(num_travelers, start_date, end_date):
     url = 'https://midnrreservations.com/create-booking'
 
     with sync_playwright() as p:
@@ -273,7 +273,7 @@ def scrape_traverseCityStatePark_api(num_travelers, start_date, end_date):
             price = price_span.text_content().replace('$', '').strip() if price_span else "Price not found"
             
             if title != "Title not found":
-                return {"available": True, "name": title, "price": float(price), "message": "Available: $" + price + " per night"}
+                return {"available": True, "name": title, "price": float(price), "message": "$" + price + " per night"}
             else:
                 return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
 
