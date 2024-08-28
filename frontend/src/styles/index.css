@@ -7,20 +7,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+@import url(https://db.onlinewebfonts.com/c/2aea0ac500c896188f9ad191c231029c?family=Orpheus+Pro);
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
 :root {
-  --primary-color: rgb(5, 89, 26);
-  --secondary-color: rgb(238, 230, 206);
+  --primary-color: rgb(62, 98, 79);
+  --secondary-color: rgb(247, 236, 214);
   --light-color: rgb(247, 111, 131);
   --text-light: white;
   --text-dark: black;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Orpheus Pro", New Century Schoolbook, TeX Gyre Schola, serif;
   font-weight: lighter;
 }
 

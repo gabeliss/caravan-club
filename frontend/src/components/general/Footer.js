@@ -1,18 +1,21 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function Footer() {
   return (
     <footer>
       <div className="footer-left">
-        <a href="https://www.squarespace.com">email@example.com</a>
-        <a href="https://www.squarespace.com">(555) 555-5555</a>
+        <a href="mailto:email@example.com">email@example.com</a>
+        <a href="tel:+15555555555">(555) 555-5555</a>
       </div>
       <div className="footer-center">
-        <h1>Caravan Club</h1>
+        <Link to="/">
+          <img src="/images/header/CaravanClub.png" alt="Caravan Club Logo" />
+        </Link>
       </div>
       <div className="footer-right">
-        <a href="https://www.squarespace.com">Facebook</a>
-        <a href="https://www.squarespace.com">Instagram</a>
+        <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a>
+        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
       </div>
     </footer>
   );
