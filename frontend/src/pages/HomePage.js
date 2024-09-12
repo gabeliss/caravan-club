@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
 import Gallery from './../components/general/Gallery';
 import LandingQuestions from '../components/general/LandingQuestions';
+import tripMapping from '../tripmapping.json';
+import TripPlanner from '../components/general/TripPlanner';
 
 function HomePage() {
   const [destination, setDestination] = useState('');
@@ -10,6 +11,63 @@ function HomePage() {
   const [endDate, setEndDate] = useState('');
   const [adults, setAdults] = useState(0);
   const [kids, setKids] = useState(0);
+  const [maxNights, setMaxNights] = useState(0);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const calendarRef = useRef(null);
+
+  useEffect(() => {
+    if (destination && tripMapping[destination]) {
+      setMaxNights(tripMapping[destination].maxNights || 0);
+      setNights('');
+      setStartDate('');
+      setEndDate('');
+    } else {
+      setMaxNights(0);
+      setNights('');
+      setStartDate('');
+      setEndDate('');
+    }
+  }, [destination]);
+
+  useEffect(() => {
+    setStartDate('');
+    setEndDate('');
+  }, [nights]);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+        setShowCalendar(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [calendarRef]);
+
+  const handleStartDateChange = (newStartDate) => {
+    setStartDate(newStartDate);
+    
+    if (newStartDate && nights) {
+      const endDate = new Date(newStartDate);
+      endDate.setDate(endDate.getDate() + parseInt(nights));
+      setEndDate(endDate.toISOString().split('T')[0]);
+    } else {
+      setEndDate('');
+    }
+  };
+
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  const handleStartDateClick = () => {
+    if (nights) {
+      setShowCalendar(true);
+    }
+  };
 
   return (
     <div className='landing-page'>
@@ -20,78 +78,38 @@ function HomePage() {
             Welcome to Caravan Club, the ultimate road trip companion for adventurers seeking
             hassle-free outdoor experiences
           </h2>
-          <div className="trip-planner">
-            <div className="trip-planner-column">
-              <div>
-                <label>I want to go:</label>
-                <select value={destination} onChange={(e) => setDestination(e.target.value)}>
-                  <option value="">Select destination</option>
-                  <option value="arizona">Arizona</option>
-                  <option value="northernmichigan">Northern Michigan</option>
-                  <option value="smokymountains">Smoky Mountains</option>
-                  <option value="southerncalifornia">Southern California</option>
-                  <option value="washington">Washington</option>
-                </select>
-              </div>
-              <div>
-                <label>Nights:</label>
-                <select value={nights} onChange={(e) => setNights(e.target.value)}>
-                  <option value="">Select nights</option>
-                  {[1, 2, 3, 4, 5, 6].map(n => (
-                    <option key={n} value={n}>{n}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="trip-planner-column">
-              <div className="date-group">
-                <div>
-                  <label>Start Date:</label>
-                  <input 
-                    type="date" 
-                    value={startDate} 
-                    onChange={(e) => setStartDate(e.target.value)}
-                    disabled={!nights}
-                  />
-                </div>
-                <div>
-                  <label>End Date:</label>
-                  <input 
-                    type="date" 
-                    value={endDate} 
-                    disabled
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="trip-planner-column">
-              <div className="people-group">
-                <div>
-                  <label>Adults:</label>
-                  <input 
-                    type="number" 
-                    value={adults} 
-                    onChange={(e) => setAdults(parseInt(e.target.value))}
-                    min="0"
-                    placeholder="Adults"
-                  />
-                </div>
-                <div>
-                  <label>Kids:</label>
-                  <input 
-                    type="number" 
-                    value={kids} 
-                    onChange={(e) => setKids(parseInt(e.target.value))}
-                    min="0"
-                    placeholder="Kids"
-                  />
-                </div>
-              </div>
-            </div>
-            <button className="check-availability">Check Availability</button>
+          <TripPlanner />
+        </div>
+      </div>
+
+      {/* Trip Logos */}
+      <div className='trip-logos'>
+        <h2>OUR TRIPS</h2>
+        <div className='logo-container'>
+          <div className='logo-item'>
+            <img src='/images/triplogos/washington.png' alt='Washington' />
+            <p>WASHINGTON</p>
+          </div>
+          <div className='logo-item'>
+            <img src='/images/triplogos/northernmichigan.png' alt='Northern Michigan' />
+            <p>NORTHERN MICHIGAN</p>
+          </div>
+          <div className='logo-item'>
+            <img src='/images/triplogos/arizona.png' alt='Arizona' />
+            <p>ARIZONA</p>
+          </div>
+          <div className='logo-item'>
+            <img src='/images/triplogos/southerncalifornia.png' alt='Southern California' />
+            <p>SOUTHERN CALIFORNIA</p>
+          </div>
+          <div className='logo-item'>
+            <img src='/images/triplogos/smokynationalpark.png' alt='Smoky National Park' />
+            <p>SMOKY NATIONAL PARK</p>
           </div>
         </div>
       </div>
+
+      <div className='landing-separator'></div>
 
       {/* Intro */}
       <div className='landing-intro'>
@@ -104,7 +122,7 @@ function HomePage() {
           </p>
       </div>
 
-      <div className='landing-separator'></div>
+      <div className='landing-separator-reverse'></div>
 
       {/* Info */}
       <div className='landing-info'>

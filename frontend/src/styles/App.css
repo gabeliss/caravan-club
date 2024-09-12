@@ -174,7 +174,8 @@ footer a {
 
 .landing-welcome {
   background: url('/public/images/header/background.jpg') center/cover no-repeat;
-  height: 75vh;
+  height: auto;
+  min-height: 75vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -182,15 +183,17 @@ footer a {
 
 .landing-welcome-content {
   width: 70%;
-  max-width: 1200px; /* Optional: to prevent it from becoming too wide on large screens */
+  max-width: 1200px;
+  height: 100%;
   text-align: center;
-  padding: 20px; /* Add some padding */
-  box-sizing: border-box; /* Include padding in width calculation */
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative; /* Add this */
 }
 
 .landing-welcome-content h2 {
   color: var(--primary-color);
-  font-size: 200%;
+  font-size: 250%;
 }
 
 .landing-welcome-content button {
@@ -271,6 +274,13 @@ footer a {
 .landing-separator {
   width:100vw;
   height: 5vh;
+  background: linear-gradient(to top left, var(--secondary-color) 50%, white 50%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.landing-separator-reverse {
+  width:100vw;
+  height: 5vh;
   background: linear-gradient(to top left, white 50%, var(--secondary-color) 50%);
   clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
 }
@@ -335,97 +345,78 @@ footer a {
   height: auto;
 }
 
-/* Trip Planner Styles */
-.trip-planner {
-  background-color: var(--primary-color);
-  padding: 20px;
-  border-radius: 8px;
-  margin: 20px auto;
-  width: 90%;
-  max-width: 800px;
-  box-sizing: border-box;
+
+.trip-logos {
+  text-align: center;
+  padding: 2rem 0;
+  background-color: white;
 }
 
-.trip-planner-column {
-  flex: 1 1 0;
-  margin-right: 10px;
-  margin-bottom: 10px;
+.trip-logos h2 {
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-weight: normal;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo-item {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  margin: 1.5rem;
+  width: 150px;
 }
 
-.trip-planner-column label {
-  margin-bottom: 5px;
-}
-
-.trip-planner-column input,
-.trip-planner-column select {
-  margin-bottom: 10px;
-}
-
-.trip-planner-column:last-child {
-  margin-right: 0;
-}
-
-.trip-planner label {
-  display: block;
-  color: white;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.trip-planner select,
-.trip-planner input[type="date"],
-.trip-planner input[type="number"] {
-  width: 100%;
-  padding: 8px;
-  border: none;
-  border-radius: 4px;
-  background-color: white;
-  box-sizing: border-box;
-  height: 38px; /* Set a consistent height for all inputs */
-}
-
-.date-group,
-.people-group {
+.logo-item img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 50%;
+  overflow: hidden;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
 }
 
-.date-group > div,
-.people-group > div {
-  width: 48%;
-}
-
-.check-availability {
-  background-color: var(--secondary-color);
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
+.logo-item p {
+  margin-top: 0.5rem;
   font-weight: bold;
-  transition: background-color 0.3s;
-  width: auto;
-  min-width: 150px;
-  margin: 10px auto 0;
-  display: block;
-  white-space: nowrap;
-  flex-basis: 100%;
-  margin-top: 20px;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  text-transform: uppercase;
 }
 
-.check-availability:hover {
-  background-color: #e0e0e0;
+/* Add these new styles */
+.calendar-wrapper {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+.custom-calendar {
+  max-width: 100%;
+  width: 300px;
+  margin: 0 auto;
 }
 
 @media (max-width: 768px) {
-  .trip-planner-column {
-    flex: 1 0 100%;
-    margin-right: 0;
+  .calendar-wrapper {
+    left: 0;
+    transform: none;
+    width: 100%;
   }
 
-  .check-availability {
+  .custom-calendar {
     width: 100%;
-    margin-top: 10px;
   }
 }

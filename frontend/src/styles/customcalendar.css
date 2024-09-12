@@ -1,0 +1,87 @@
+.custom-calendar {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 16px;
+    width: 300px;
+  }
+  
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .calendar-header button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  
+  .calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+  }
+  
+  .calendar-day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+  
+  .valid-day:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .empty-day {
+    cursor: default;
+  }
+  
+  .in-range {
+    background-color: #e6f2ff;
+  }
+  
+  .start-date, .end-date {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .date-input-active {
+    cursor: pointer;
+    background-color: #ffffff;
+  }
+  
+  .date-input-disabled {
+    cursor: not-allowed;
+    background-color: #f0f0f0;
+  }
+  
+  .in-range:hover {
+    background-color: #c9e3ff;
+  }
+  
+  .start-date:hover, .end-date:hover {
+    background-color: #0056b3;
+  }
+  
+  .past-date {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .past-date:hover {
+    background-color: transparent;
+  }

@@ -1,0 +1,75 @@
+{
+    "northernMichigan": {
+        "maxNights": 6,
+        "1night": {
+            "night1": "traverseCity"
+        },
+        "2nights": {
+            "night1": "traverseCity",
+            "night2": "traverseCity"
+        },
+        "3nights": {
+            "night1": "traverseCity",
+            "night2": "traverseCity",
+            "night3": "mackinawCity"
+        },
+        "4nights": {
+            "night1": "traverseCity",
+            "night2": "traverseCity",
+            "night3": "mackinawCity",
+            "night4": "mackinawCity"
+        },
+        "5nights": {
+            "night1": "traverseCity",
+            "night2": "traverseCity",
+            "night3": "mackinawCity",
+            "night4": "munising",
+            "night5": "munising"
+        },
+        "6nights": {
+            "night1": "traverseCity",
+            "night2": "traverseCity",
+            "night3": "mackinawCity",
+            "night4": "mackinawCity",
+            "night5": "munising",
+            "night6": "munising"
+        }
+    },
+    "arizona": {
+        "maxNights": 5,
+        "1night": {
+            "night1": "phoenix"
+        },
+        "2nights": {
+            "night1": "phoenix",
+            "night2": "phoenix"
+        },
+        "3nights": {
+            "night1": "phoenix",
+            "night2": "phoenix",
+            "night3": "grandCanyon"
+        },
+        "4nights": {
+            "night1": "phoenix",
+            "night2": "phoenix",
+            "night3": "grandCanyon",
+            "night4": "grandCanyon"
+        },
+        "5nights": {
+            "night1": "phoenix",
+            "night2": "phoenix",
+            "night3": "grandCanyon",
+            "night4": "grandCanyon",
+            "night5": "grandCanyon"
+        } 
+    },
+    "washington": {
+        "maxNights": 5
+    },
+    "southernCalifornia": {
+        "maxNights": 8
+    },
+    "smokyMountains": {
+        "maxNights": 4
+    }
+}
