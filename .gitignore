@@ -6,6 +6,8 @@ venv/
 # Ignore binary files
 chromedriver
 
+compress_images.py
+
 backend/node_modules/
 frontend/node_modules/
 
