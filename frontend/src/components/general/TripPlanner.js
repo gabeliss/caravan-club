@@ -74,12 +74,13 @@ function TripPlanner() {
       <div className="trip-planner-row">
         <div className="trip-planner-column">
           <label>I want to go:</label>
-          <select value={destination} onChange={(e) => setDestination(e.target.value)}>
+          <select className="destination-select" value={destination} onChange={(e) => setDestination(e.target.value)}>
             <option value="">Select destination</option>
             {Object.keys(tripMapping).map(key => (
               <option key={key} value={key}>{capitalizeFirstLetter(key.replace(/([A-Z])/g, ' $1').trim())}</option>
             ))}
           </select>
+          <select className="hidden-select" style={{ visibility: 'hidden' }}></select>
         </div>
 
         <div className="trip-planner-column">
@@ -88,12 +89,14 @@ function TripPlanner() {
             value={nights} 
             onChange={(e) => setNights(e.target.value)}
             disabled={!destination}
+            className="nights-select"
           >
-            <option value="">Select nights</option>
+            <option value="">0</option>
             {[...Array(maxNights)].map((_, i) => (
               <option key={i+1} value={i+1}>{i+1}</option>
             ))}
           </select>
+          <select className="hidden-select" style={{ visibility: 'hidden' }}></select>
         </div>
 
         <div className="trip-planner-column">
@@ -129,11 +132,12 @@ function TripPlanner() {
           />
         </div>
 
-        <div className="trip-planner-column">
-          <label>With:</label>
+        <div className="trip-planner-column trip-planner-column-with">
+          <label className="trip-planner-column-with">With:</label>
           <select 
             value={adults} 
             onChange={(e) => setAdults(parseInt(e.target.value))}
+            className="adults-select"
           >
             {[1, 2, 3, 4, 5, 6].map(num => (
               <option key={num} value={num}>{num} Adult{num > 1 ? 's' : ''}</option>
@@ -142,14 +146,17 @@ function TripPlanner() {
           <select 
             value={kids} 
             onChange={(e) => setKids(parseInt(e.target.value))}
+            className="adults-select"
           >
             {[0, 1, 2, 3, 4, 5, 6].map(num => (
               <option key={num} value={num}>{num} Kid{num !== 1 ? 's' : ''}</option>
             ))}
           </select>
         </div>
+        <div className="trip-planner-column">
+          <button className="check-availability">Check Availability</button>
+        </div>
       </div>
-      <button className="check-availability">Check Availability</button>
     </div>
   );
 }
