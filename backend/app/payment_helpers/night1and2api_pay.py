@@ -418,6 +418,41 @@ def pay_traverseCityKoa_api(num_travelers, start_date, end_date, place_name, pay
         return False
 
 
+def pay_leelanauPines_api(num_travelers, start_date, end_date, stayType, place_name, payment_info):
+    start_date = datetime.strptime(start_date, '%m/%d/%y').strftime('%Y-%m-%d')
+    end_date = datetime.strptime(end_date, '%m/%d/%y').strftime('%Y-%m-%d')
+
+    url = f"https://leelanaupinescampresort.com/stay/search?start={start_date}&end={end_date}"
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto(url)
+
+        try:
+            page.wait_for_load_state('networkidle')
+            
+            containers = page.query_selector_all("div[class*='relative'] div[class*='wp-title-2']")
+
+            # Iterate over each container to find the one that matches the place_name
+            for container in containers:
+                title = container.inner_text()
+                if place_name in title:
+                    # This is the matching container. Perform any further actions here.
+                    print(f"Found container for place: {place_name}")
+                    return True  # or any other operation
+
+            print(f"No matching place found for {place_name}")
+            return False
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
+        finally:
+            browser.close()
+
+
 def main():
     payment_info = {
         "first_name": "Lebron",
@@ -439,8 +474,10 @@ def main():
     # print(timberRidgeData)
     # anchorInnData = pay_anchorInn_api(2, '09/10/24', '09/12/24', 'Single Queen Room', payment_info)
     # print(anchorInnData)
-    traverseCityKoaData = pay_traverseCityKoa_api(4, '08/20/24', '08/23/24', 'Camping Cabin (No Bathroom)', payment_info)
-    print(traverseCityKoaData)
+    # traverseCityKoaData = pay_traverseCityKoa_api(4, '08/20/24', '08/23/24', 'Camping Cabin (No Bathroom)', payment_info)
+    # print(traverseCityKoaData)
+    leelanauPinesData = pay_leelanauPines_api(4, '10/15/24', '10/17/24', 'tent', 'RICE CREEK GLAMPING POD',payment_info)
+    print(leelanauPinesData)
 
 
 if __name__ == '__main__':

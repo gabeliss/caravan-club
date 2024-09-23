@@ -9,8 +9,6 @@ function HomePage() {
   const [nights, setNights] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [adults, setAdults] = useState(0);
-  const [kids, setKids] = useState(0);
   const [maxNights, setMaxNights] = useState(0);
   const [showCalendar, setShowCalendar] = useState(false);
   const calendarRef = useRef(null);
@@ -46,28 +44,6 @@ function HomePage() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [calendarRef]);
-
-  const handleStartDateChange = (newStartDate) => {
-    setStartDate(newStartDate);
-    
-    if (newStartDate && nights) {
-      const endDate = new Date(newStartDate);
-      endDate.setDate(endDate.getDate() + parseInt(nights));
-      setEndDate(endDate.toISOString().split('T')[0]);
-    } else {
-      setEndDate('');
-    }
-  };
-
-  const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
-  const handleStartDateClick = () => {
-    if (nights) {
-      setShowCalendar(true);
-    }
-  };
 
   return (
     <div className='landing-page'>
@@ -131,12 +107,6 @@ function HomePage() {
           <LandingQuestions />
         </div>
       </div>
-
-      {/* Gallery */}
-      <div className='landing-gallery-container'>
-        <Gallery />
-      </div>
-
     </div>
   );
 }

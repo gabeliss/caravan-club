@@ -10,11 +10,14 @@ function Header({ isMenuOpen, setIsMenuOpen }) {
   return (
     <header className='flex-between'>
       <div className="header-left flex-center">
+        <Link to="/">
+          <button>Home</button>
+        </Link>
         <Link to="/trips">
           <button>Trips</button>
         </Link>
-        <Link to="/book">
-          <button>Book</button>
+        <Link to="/booknow">
+          <button>Book Now</button>
         </Link>
         <Link to="/media">
           <button>Media</button>

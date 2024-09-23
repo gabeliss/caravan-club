@@ -1,10 +1,4 @@
-/* contains header, footer, landing page styles */
-
-/* header */
-.blur-effect {
-  filter: blur(5px); /* Adjust the blur value as needed */
-}
-
+/* Header Styles */
 header {
   background-color: var(--secondary-color);
   height: 18vh;
@@ -53,11 +47,12 @@ button, .header-right img {
   display: none; /* Hide the menu by default */
 }
 
+/* Header Media Queries */
 @media (max-width: 600px) {
   .header-left, .header-right {
     display: none; /* Hide left and right header parts */
   }
-  
+
   .header-menu {
     position: relative;
     display: flex;
@@ -98,11 +93,11 @@ button, .header-right img {
     top: 100%;
     left: 0;
     background-color: var(--secondary-color);
-    width: 100%; /* Adjust as necessary */
+    width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 100;
   }
-  
+
   .dropdown-menu.open {
     display: flex;
     flex-direction: column;
@@ -116,10 +111,9 @@ button, .header-right img {
   .dropdown-menu a:hover, .dropdown-menu button:hover {
     background-color: rgb(212, 199, 161);
   }
-
 }
 
-/* footer */
+/* Footer Styles */
 footer {
   background-color: var(--secondary-color);
   height: 10vh;
@@ -127,12 +121,12 @@ footer {
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  color:var(--primary-color);
+  color: var(--primary-color);
 }
 
 .footer-left,
-.footer-right,
-.footer-center {
+.footer-center,
+.footer-right {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -153,17 +147,17 @@ footer {
 }
 
 footer a {
-  color: black; /* Change the color to black or any color you prefer */
-  font-size: 14px; /* Adjust the font size as needed */
-  text-decoration: none; /* Remove underlines */
+  color: black;
+  font-size: 14px;
+  text-decoration: none;
 }
 
 .footer-left a:hover,
 .footer-right a:hover {
-  text-decoration: underline; /* Add underline on hover if desired */
+  text-decoration: underline;
 }
 
-/* landing page */
+/* Landing Page Styles */
 .landing-page {
   font-family: New Century Schoolbook, TeX Gyre Schola, serif;
   margin: 0;
@@ -188,7 +182,7 @@ footer a {
   text-align: center;
   padding: 20px;
   box-sizing: border-box;
-  position: relative; /* Add this */
+  position: relative;
 }
 
 .landing-welcome-content h2 {
@@ -196,21 +190,13 @@ footer a {
   font-size: 250%;
 }
 
-.landing-welcome-content button {
-  color: var(--primary-color);
-  background-color: var(--secondary-color);
-  height: 40px;
-  width: 80px;
-  border-radius: 5px;
-}
-
-/* Base styles (mobile view) */
+/* Landing Intro and Info */
 .landing-intro, .landing-info {
-    display: flex;
-    flex-direction: column;
-    padding-top: 10vh;
-    padding-left: 8%;
-    padding-right: 8%;
+  display: flex;
+  flex-direction: column;
+  padding-top: 10vh;
+  padding-left: 8%;
+  padding-right: 8%;
 }
 
 .landing-intro {
@@ -226,65 +212,68 @@ footer a {
 }
 
 .landing-intro h1, .landing-info h1 {
-    text-align: center;
-    width: 100%;
-    font-weight: lighter;
-    font-size: 350%;
+  text-align: center;
+  width: 100%;
+  font-weight: lighter;
+  font-size: 350%;
 }
 
 .landing-info-questions {
-    border-top: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  padding-bottom: 5vh;
 }
 
-/* Styles for screens wider than 768px */
+/* Landing Page Media Queries */
 @media (min-width: 768px) {
-    .landing-intro {
-        flex-direction: row;
-    }
+  .landing-intro {
+    flex-direction: row;
+  }
 
-    .landing-intro h1 {
-        flex: 1; 
-        text-align: left;
-        line-height: 0%;
-    }
+  .landing-intro h1 {
+    flex: 1;
+    text-align: left;
+    line-height: 0%;
+  }
 
-    .landing-intro p {
-        flex: 1;
-        text-align: left;
-    }
+  .landing-intro p {
+    flex: 1;
+    text-align: left;
+  }
 
-    .landing-info {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: space-between;
-    }
+  .landing-info {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
 
-    .landing-info h1 {
-        text-align: left;
-        width: 30%;
-    }
+  .landing-info h1 {
+    text-align: left;
+    width: 30%;
+  }
 
-    .landing-info-questions {
-        width: 60%;
-        padding-top: 10px;
-    }
+  .landing-info-questions {
+    width: 60%;
+    padding-top: 10px;
+  }
 }
 
+/* Landing Separators */
 .landing-separator {
-  width:100vw;
+  width: 100vw;
   height: 5vh;
   background: linear-gradient(to top left, var(--secondary-color) 50%, white 50%);
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 }
 
 .landing-separator-reverse {
-  width:100vw;
+  width: 100vw;
   height: 5vh;
   background: linear-gradient(to top left, white 50%, var(--secondary-color) 50%);
   clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
 }
 
+/* Landing Questions */
 .landing-questions {
   display: flex;
   flex-direction: column;
@@ -304,7 +293,7 @@ footer a {
 }
 
 .landing-toggle {
-  margin-left: auto; 
+  margin-left: auto;
 }
 
 .landing-answer {
@@ -312,12 +301,7 @@ footer a {
   width: 100%;
 }
 
-.landing-gallery-item img {
-  width: 30vw;
-  height: auto;
-  align-items: flex-start;
-}
-
+/* Landing Gallery */
 .landing-gallery-container {
   background-color: white;
 }
@@ -345,7 +329,7 @@ footer a {
   height: auto;
 }
 
-
+/* Logos Section */
 .trip-logos {
   text-align: center;
   padding: 2rem 0;
@@ -394,7 +378,7 @@ footer a {
   text-transform: uppercase;
 }
 
-/* Add these new styles */
+/* Calendar Styles */
 .calendar-wrapper {
   position: absolute;
   top: 100%;
@@ -419,4 +403,9 @@ footer a {
   .custom-calendar {
     width: 100%;
   }
+}
+
+/* Blur Effect */
+.blur-effect {
+  filter: blur(5px); /* Adjust the blur value as needed */
 }

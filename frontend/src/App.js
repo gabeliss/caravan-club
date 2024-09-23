@@ -4,7 +4,7 @@ import Header from './components/general/Header';
 import Footer from './components/general/Footer'
 import HomePage from "./pages/HomePage";
 import TripPage from './pages/TripPage';
-import BookPage from "./pages/BookPage";
+import BookNowPage from "./pages/BookNowPage";
 import MediaPage from "./pages/MediaPage";
 import ExplorePage from './pages/ExplorePage';
 import BookOptionsPage from "./pages/BookOptionsPage";
@@ -28,7 +28,7 @@ function App() {
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/trips" element={<TripPage />} />
-            <Route path="/book" element={<BookPage />} />
+            <Route path="/booknow" element={<BookNowPage />} />
             <Route path="/media" element={<MediaPage />} />
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/bookoptions" element={<BookOptionsPage />} />

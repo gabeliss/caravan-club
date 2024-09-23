@@ -424,6 +424,92 @@ def scrape_traverseCityKoa_api(num_travelers, start_date_str, end_date_str):
         return f"Failed to fetch data: {response.status_code}, Reason: {response.reason}"
 
     
+def scrape_leelanauPines_api(num_travelers, start_date_str, end_date_str, stayType):
+    start_date = datetime.strptime(start_date_str, '%m/%d/%y')
+    end_date = datetime.strptime(end_date_str, '%m/%d/%y')
+    num_nights = (end_date - start_date).days
+
+    start_date = start_date.strftime('%Y-%m-%d')
+    end_date = end_date.strftime('%Y-%m-%d')
+
+    url = f"https://leelanaupinescampresort.com/stay/search?start={start_date}&end={end_date}"
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto(url)
+
+        try:
+            page.wait_for_selector('div:has-text("Ways To Stay")', timeout=10000)
+            if stayType.lower() == 'tent':
+                page.click('div.flex.flex-col.space-y-1 > div:has-text("Tent Sites")')
+                page.wait_for_selector('.mantine-Select-root input[placeholder="Select a sort option"]', timeout=5000)
+                page.click('.mantine-Select-root input[placeholder="Select a sort option"]')
+                page.wait_for_selector('div[role="option"]:has-text("Price (Low - High)")', timeout=5000)
+                page.click('div[role="option"]:has-text("Price (Low - High)")')
+
+                page.wait_for_load_state('networkidle')
+
+                no_results = page.query_selector('div.flex.flex-col.items-center.justify-center.gap-8.rounded-lg.border')
+                if no_results:
+                    return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
+
+                first_option = page.query_selector('div[class*="min-h-"]')
+                if first_option:
+                    name = first_option.query_selector('div[class*="wp-title-2"]').inner_text()
+                    price_element = first_option.query_selector('div[class*="text-xl"][class*="font-bold"][class*="text-primary"]')
+                    price = float(price_element.inner_text().replace('$', '').strip())
+                    return {
+                        "available": True,
+                        "name": name,
+                        "price": price,
+                        "message": f"${price:.2f} per night"
+                    }
+                else:
+                    return {"available": False, "name": None, "price": None, "message": "No options found."}
+            else:
+                page.click('div.flex.flex-col.space-y-1 > div:has-text("Lodging")')
+                page.wait_for_selector('.mantine-Select-root input[placeholder="Select a sort option"]', timeout=5000)
+                page.click('.mantine-Select-root input[placeholder="Select a sort option"]')
+                page.wait_for_selector('div[role="option"]:has-text("Price (Low - High)")', timeout=5000)
+                page.click('div[role="option"]:has-text("Price (Low - High)")')
+
+                page.wait_for_load_state('networkidle')
+
+                no_results = page.query_selector('div.flex.flex-col.items-center.justify-center.gap-8.rounded-lg.border')
+                if no_results:
+                    return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
+
+                target_cabin = "RICE CREEK GLAMPING POD" if num_travelers <= 4 else "WHITE PINE CABIN"
+
+                lodging_options = page.query_selector_all('div[class*="min-h-"]')
+
+                for option in lodging_options:
+                    title_element = option.query_selector('div[class*="wp-title-2"]')
+                    if title_element and title_element.inner_text().strip() == target_cabin:
+                        price_container = option.query_selector('div[class*="min-h-[7rem]"]')
+                        if price_container:
+                            total_price_element = price_container.query_selector('div:has-text("Total*")')
+                            if total_price_element:
+                                total_price_text = total_price_element.inner_text().strip()
+                                total_price = float(total_price_text.split('$')[1].split(' ')[0].replace(',', ''))
+                                average_nightly_rate = round(total_price / num_nights, 2)
+                                return {
+                                    "available": True,
+                                    "name": target_cabin,
+                                    "price": average_nightly_rate,
+                                    "message": f"${average_nightly_rate:.2f} per night"
+                                }
+
+                return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return False
+        finally:
+            browser.close()
+
 
 def main():
     # traverseCityStateParkData = scrape_traverseCityStatePark_api(2, '08/20/24', '08/22/24')
@@ -432,8 +518,10 @@ def main():
     # print(timberRidgeData)
     # anchorInnData = scrape_anchorInn_api(4, '08/20/24', '08/22/24')
     # print(anchorInnData)
-    traverseCityKoaData = scrape_traverseCityKoa_api(4, '08/20/24', '08/22/24')
-    print(traverseCityKoaData)
+    # traverseCityKoaData = scrape_traverseCityKoa_api(4, '08/20/24', '08/22/24')
+    # print(traverseCityKoaData)
+    leelanauPinesData = scrape_leelanauPines_api(5, '10/15/24', '10/17/24', 'lodging')
+    print(leelanauPinesData)
 
 if __name__ == '__main__':
     main()
