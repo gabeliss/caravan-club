@@ -23,6 +23,11 @@
     margin-bottom: 10px;
 }
 
+.book-intro h3 {
+    line-height: 1.5;
+    font-size: 130%;
+}
+
 .book-now-planner {
     display: flex;
     flex-direction: column;
@@ -62,6 +67,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-bottom: 30px;
 }
 
 .one-diagram {
@@ -78,6 +84,8 @@
 
 .one-diagram p {
     text-align: center;
+    font-size: 120%;
+    line-height: 1.5;
 }
 
 @media (min-width: 600px) {
@@ -89,6 +97,7 @@
     .one-diagram {
         padding: 0% 2%;
         height: 310px;
+        margin-bottom: 30px;
     }
 }
 

@@ -202,7 +202,8 @@ footer a {
 .landing-intro {
   background-color: var(--secondary-color);
   min-height: 20vh;
-  padding-bottom: 10%;
+  padding-top: 30px;
+  padding-bottom: 20px;
 }
 
 .landing-info {
@@ -216,6 +217,11 @@ footer a {
   width: 100%;
   font-weight: lighter;
   font-size: 350%;
+}
+
+.landing-intro p {
+  line-height: 1.5;
+  font-size: 150%;
 }
 
 .landing-info-questions {
@@ -290,6 +296,7 @@ footer a {
   align-items: center;
   width: 100%;
   color: black;
+  font-size: 140%;
 }
 
 .landing-toggle {

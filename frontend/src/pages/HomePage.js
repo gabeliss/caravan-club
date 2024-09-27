@@ -64,23 +64,18 @@ function HomePage() {
         <div className='logo-container'>
           <div className='logo-item'>
             <img src='/images/triplogos/washington.png' alt='Washington' />
-            <p>WASHINGTON</p>
           </div>
           <div className='logo-item'>
             <img src='/images/triplogos/northernmichigan.png' alt='Northern Michigan' />
-            <p>NORTHERN MICHIGAN</p>
           </div>
           <div className='logo-item'>
             <img src='/images/triplogos/arizona.png' alt='Arizona' />
-            <p>ARIZONA</p>
           </div>
           <div className='logo-item'>
             <img src='/images/triplogos/southerncalifornia.png' alt='Southern California' />
-            <p>SOUTHERN CALIFORNIA</p>
           </div>
           <div className='logo-item'>
             <img src='/images/triplogos/smokynationalpark.png' alt='Smoky National Park' />
-            <p>SMOKY NATIONAL PARK</p>
           </div>
         </div>
       </div>

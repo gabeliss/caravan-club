@@ -2,6 +2,7 @@
 .trip-planner {
   background-color: var(--primary-color);
   padding: 20px;
+  padding-bottom: 0px;
   margin: 20px auto;
   width: auto;
   max-width: fit-content;
