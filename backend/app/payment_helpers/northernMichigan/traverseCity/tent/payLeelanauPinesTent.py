@@ -14,7 +14,7 @@ state_mapping = {
         'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
     }
 
-def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids, payment_info):
+def pay_leelanauPinesTent(start_date, end_date, num_adults, num_kids, payment_info):
     start_date = datetime.strptime(start_date, '%m/%d/%y').strftime('%Y-%m-%d')
     end_date = datetime.strptime(end_date, '%m/%d/%y').strftime('%Y-%m-%d')
 
@@ -69,9 +69,7 @@ def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids, payment
 
             first_option = page.query_selector('div[class*="min-h-"]')
             if first_option:
-                name = first_option.query_selector('div[class*="wp-title-2"]').inner_text()
                 price_element = first_option.query_selector('div[class*="text-xl"][class*="font-bold"][class*="text-primary"]')
-                price = round(float(price_element.inner_text().replace('$', '').strip()), 2)
                 price_element.click()
 
                 page.wait_for_selector('div.font-title.text-2xl:has-text("Choose Your Site")', timeout=5000)
@@ -178,7 +176,7 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
-    leelanauPinesData = scrape_leelanauPinesTent('10/15/24', '10/17/24', 5, 1, payment_info)
+    leelanauPinesData = pay_leelanauPinesTent('10/15/24', '10/17/24', 5, 1, payment_info)
     print(leelanauPinesData)
 
 if __name__ == '__main__':

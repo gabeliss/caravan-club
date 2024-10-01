@@ -52,25 +52,23 @@ def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
 
             no_results = page.query_selector('div.flex.flex-col.items-center.justify-center.gap-8.rounded-lg.border')
             if no_results:
-                return {"available": False, "name": None, "price": None, "message": "Not available for selected dates."}
+                return {"available": False, "price": None, "message": "Not available for selected dates."}
 
             first_option = page.query_selector('div[class*="min-h-"]')
             if first_option:
-                name = first_option.query_selector('div[class*="wp-title-2"]').inner_text()
                 price_element = first_option.query_selector('div[class*="text-xl"][class*="font-bold"][class*="text-primary"]')
                 price = round(float(price_element.inner_text().replace('$', '').strip()), 2)
                 return {
                     "available": True,
-                    "name": name,
                     "price": price,
                     "message": f"${price:.2f} per night"
                 }
             else:
-                return {"available": False, "name": None, "price": None, "message": "No options found."}
+                return {"available": False, "price": None, "message": "No options found."}
 
         except Exception as e:
             print(f"An error occurred: {e}")
-            return False
+            return {"available": False, "price": None, "message": f"Error: {str(e)}"}
         finally:
             browser.close()
 
