@@ -3,12 +3,12 @@ from playwright.sync_api import sync_playwright
 import time
 
 
-def scrape_indianRiverTent(start_date, end_date, num_adults, num_kids):
+def scrape_touristParkTent(start_date, end_date, num_adults, num_kids):
     # Convert dates to the required format (YYYY-MM-DD)
     start_date_formatted = datetime.strptime(start_date, "%m/%d/%y").strftime("%Y-%m-%d")
     end_date_formatted = datetime.strptime(end_date, "%m/%d/%y").strftime("%Y-%m-%d")
 
-    url = f"https://www.campspot.com/book/indianriverrv/search/{start_date_formatted}/{end_date_formatted}/guests{num_kids},{num_adults},0/list?campsiteCategory=Tent%20Sites"
+    url = f"https://www.campspot.com/book/munisingtouristparkcampground/search/{start_date_formatted}/{end_date_formatted}/guests{num_kids},{num_adults},0/list?campsiteCategory=Tent%20Sites"
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -30,7 +30,24 @@ def scrape_indianRiverTent(start_date, end_date, num_adults, num_kids):
             if no_availability_div:
                 return {"available": False, "price": None, "message": "Not available for selected dates."}
             
-            place_container = page.query_selector_all('ul.search-results-list li')[0]
+            place_containers = page.query_selector_all('ul.search-results-list li')
+            place_container = None
+            for container in place_containers:
+                if 'search-results-ad' in container.get_attribute('class'):
+                    continue
+                site_name = container.query_selector('.search-results-site-title').inner_text().strip()
+                if site_name == 'Waterfront Rustic Tent Site':
+                    place_container = container
+                    break
+            
+            if not place_container:
+                for container in place_containers:
+                    if 'search-results-ad' in container.get_attribute('class'):
+                        continue
+                    site_name = container.query_selector('.search-results-site-title').inner_text().strip()
+                    if site_name == 'Rustic Tent Site':
+                        place_container = container
+                        break
 
             if place_container:
                 price_span = place_container.query_selector('span.app-average-per-night-price')
@@ -53,10 +70,8 @@ def scrape_indianRiverTent(start_date, end_date, num_adults, num_kids):
             browser.close()
 
 def main():
-    # indianRiverData = scrape_indianRiverTent('11/07/24', '11/09/24', 2, 1)
-    # print(indianRiverData)
-    indianRiverData = scrape_indianRiverTent('05/07/25', '05/09/25', 2, 1)
-    print(indianRiverData)
+    touristParkData = scrape_touristParkTent('10/15/24', '10/17/24', 2, 1)
+    print(touristParkData)
 
 if __name__ == '__main__':
     main()

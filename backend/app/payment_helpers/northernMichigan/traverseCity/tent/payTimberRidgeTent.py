@@ -113,7 +113,7 @@ def pay_timberRidgeTent(start_date, end_date, num_adults, num_kids, payment_info
 
         except Exception as e:
             print(f"An error occurred: {e}")
-            return {"available": False, "price": None, "message": f"Error: {str(e)}"}
+            return False
 
         finally:
             browser.close()

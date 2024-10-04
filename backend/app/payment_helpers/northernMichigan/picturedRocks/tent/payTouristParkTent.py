@@ -1,5 +1,4 @@
 from datetime import datetime
-import playwright
 from playwright.sync_api import sync_playwright
 import time
 
@@ -16,12 +15,12 @@ state_mapping = {
         'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
     }
 
-def pay_indianRiverTent(start_date, end_date, num_adults, num_kids, payment_info):
+def pay_touristParkTent(start_date, end_date, num_adults, num_kids, payment_info):
     # Convert dates to the required format (YYYY-MM-DD)
     start_date_formatted = datetime.strptime(start_date, "%m/%d/%y").strftime("%Y-%m-%d")
     end_date_formatted = datetime.strptime(end_date, "%m/%d/%y").strftime("%Y-%m-%d")
 
-    url = f"https://www.campspot.com/book/indianriverrv/search/{start_date_formatted}/{end_date_formatted}/guests{num_kids},{num_adults},0/list?campsiteCategory=Tent%20Sites"
+    url = f"https://www.campspot.com/book/munisingtouristparkcampground/search/{start_date_formatted}/{end_date_formatted}/guests{num_kids},{num_adults},0/list?campsiteCategory=Tent%20Sites"
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -44,7 +43,24 @@ def pay_indianRiverTent(start_date, end_date, num_adults, num_kids, payment_info
                 print("No availability found, investigate further.")
                 return False
             
-            place_container = page.query_selector_all('ul.search-results-list li')[0]
+            place_containers = page.query_selector_all('ul.search-results-list li')
+            place_container = None
+            for container in place_containers:
+                if 'search-results-ad' in container.get_attribute('class'):
+                    continue
+                site_name = container.query_selector('.search-results-site-title').inner_text().strip()
+                if site_name == 'Waterfront Rustic Tent Site':
+                    place_container = container
+                    break
+            
+            if not place_container:
+                for container in place_containers:
+                    if 'search-results-ad' in container.get_attribute('class'):
+                        continue
+                    site_name = container.query_selector('.search-results-site-title').inner_text().strip()
+                    if site_name == 'Rustic Tent Site':
+                        place_container = container
+                        break
 
             if place_container:
                 price_span = place_container.query_selector('span.app-average-per-night-price')
@@ -61,16 +77,6 @@ def pay_indianRiverTent(start_date, end_date, num_adults, num_kids, payment_info
                     site_booking = page.query_selector("div.site-booking")
                     add_to_cart_button = site_booking.query_selector("div.mobile-modal-add-to-cart")
                     add_to_cart_button.click()
-
-                    try:
-                        site_lock_modal = page.wait_for_selector("div.site-lock-modal-content", timeout=5000, state="visible")
-                        if site_lock_modal:
-                            no_thanks_button = site_lock_modal.query_selector("button.site-lock-modal-actions-button.mod-decline")
-                            if no_thanks_button:
-                                no_thanks_button.click()
-                    except playwright.errors.TimeoutError:
-                        # Site lock modal doesn't exist, continue with the flow
-                        pass
 
                     cart_confirmation_section = page.wait_for_selector("section.cart-confirmation")
                     review_cart_button = cart_confirmation_section.wait_for_selector("a.cart-confirmation-item-actions-button.app-view-cart-button", state="visible", timeout=10000)
@@ -111,9 +117,6 @@ def pay_indianRiverTent(start_date, end_date, num_adults, num_kids, payment_info
                     continue_to_payment_method_button = checkout_div.wait_for_selector("button.checkout-form-submit-button.app-checkout-continue-to-payment-info-button", state="visible", timeout=10000)
                     continue_to_payment_method_button.scroll_into_view_if_needed()
                     continue_to_payment_method_button.click()
-
-                    credit_card_radio = checkout_div.wait_for_selector("input#payment-method-credit-card", timeout=10000)
-                    credit_card_radio.click()
 
                     iframe_token = page.wait_for_selector("iframe#tokenFrame", timeout=10000)
                     ccnum_frame = iframe_token.content_frame()
@@ -161,8 +164,8 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
-    indianRiverData = pay_indianRiverTent('05/07/25', '05/09/25', 2, 1, payment_info)
-    print(indianRiverData)
+    touristParkData = pay_touristParkTent('10/15/24', '10/17/24', 2, 1, payment_info)
+    print(touristParkData)
 
 if __name__ == '__main__':
     main()
