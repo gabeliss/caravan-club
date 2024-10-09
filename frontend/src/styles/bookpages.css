@@ -40,15 +40,7 @@
 .nights {
     display: flex;
     flex-direction: column;
-    width: 95%;
-}
-
-.nights img {
     width: 100%;
-    height: 35vh;
-    object-fit: cover; /* Image covers the area without distortion */
-    object-position: center; /* Center the image in the container */
-    border-radius: 5%;
 }
 
 .night {
@@ -56,17 +48,9 @@
     flex-direction: column;
     margin: auto;
     padding-bottom: 80px;
+    width: 95%;
 }
 
-.pic {
-    height: 100%;
-    width: 100%;
-}
-
-.pic img {
-    width: 100%;
-    object-fit: cover; /* Cover the area, maintain aspect ratio */
-}
 
 @media (min-width: 768px) { 
     .night {
@@ -181,6 +165,7 @@
     transition: transform 0.3s ease;
     display: inline-block;
     color: grey;
+    margin-right: 20px;
   }
 
   .toggle-icon.active {

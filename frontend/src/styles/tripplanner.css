@@ -1,146 +1,86 @@
-/* Trip Planner Styles */
 .trip-planner {
   background-color: var(--primary-color);
   padding: 20px;
-  padding-bottom: 0px;
+  padding-bottom: 15px;
   margin: 20px auto;
-  width: auto;
-  max-width: fit-content;
+  max-width: 100%;
   box-sizing: border-box;
-  display: inline-block;
 }
 
 .trip-planner-row {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  padding-right: 20px;
-  margin-bottom: 15px;
+  justify-content: space-around;
   flex-wrap: nowrap;
-  width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
 .trip-planner-column {
-  min-width: 10px;
-  margin-bottom: 10px;
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  max-width: 30%;
+}
+
+.adults-column {
+  max-width: 15%;
+}
+
+.trip-planner-column label {
+  font-size: 18px;
+  color: white;
+  margin-bottom: 5px;
+  text-align: left;
 }
 
 .trip-planner-column select,
 .trip-planner-column input[type="date"] {
   width: 100%;
-  padding: 8px;
   margin-bottom: 10px;
   border: none;
   border-bottom: 1px solid white;
   background-color: transparent;
   color: white;
   appearance: none;
-  background-repeat: no-repeat;
-  background-position: right 8px center;
   height: 38px;
-  box-sizing: border-box;
-  font-size: 16px;
+  font-size: 24px;
+  font-family: inherit;
 }
 
-.trip-planner-column input[type="date"] {
-  background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
-}
-
-.trip-planner-column select:focus {
-  outline: none;
-  border-bottom-color: var(--secondary-color);
-}
-
-.trip-planner-column input + input {
-  margin-top: 0;
-}
-
-.trip-planner-column .date-input-wrapper,
-.trip-planner-column select:last-child {
-  margin-top: auto;
-}
-
-.trip-planner-column > *:first-child {
-  margin-bottom: auto;
-}
-
-.trip-planner label {
-  display: block;
-  color: white;
-  margin-bottom: 5px;
-  font-weight: bold;
-  text-align: left;
-}
-
-.trip-planner select,
-.trip-planner input[type="date"],
-.trip-planner input[type="number"] {
-  width: 100%;
-  padding: 8px;
-  border: none;
-  border-bottom: 1px solid white;
-  background-color: transparent;
-  color: white;
-  box-sizing: border-box;
-  height: 38px;
-  font-size: 16px;
-}
-
-.trip-planner input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-
-.trip-planner select option {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-/* Date and People Groups */
-.date-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.people-group {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.people-group input {
-  flex: 1;
-}
-
-/* Check Availability Button */
 .check-availability {
   background-color: var(--secondary-color);
   color: var(--primary-color);
-  border: none;
-  padding: 10px 15px;
+  padding: 8px 12px;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
   transition: background-color 0.3s;
-  margin: 20px auto 0;
-  display: block;
-  width: auto;
-  min-width: 150px;
+  margin-top: 25%;
+  font-size: 18px;
+  font-family: inherit;
 }
 
 .check-availability:hover {
   background-color: #e0e0e0;
 }
 
-/* Responsive Styles */
+.date-input-wrapper {
+  position: relative;
+}
+
+.calendar-wrapper {
+  position: absolute;
+  top: 100%;
+  left: 10;
+  z-index: 1000;
+  background-color: var(--primary-color);
+  border: 1px solid white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
 @media (max-width: 1024px) {
   .trip-planner {
-    width: 70%;
+    width: 100%;
     max-width: none;
   }
 
@@ -151,17 +91,15 @@
   .trip-planner-column {
     width: 100%;
     margin: 0;
+    margin-bottom: 20px;
   }
 
-  .trip-planner select,
-  .trip-planner input[type="date"],
-  .trip-planner input[type="number"] {
-    width: 100%;
+  .destination-column, .date-column, .adults-column, .button-column {
+    max-width: 100%;
   }
 
-  .destination-select,
-  .nights-select {
-    max-width: 140px;
+  .destination-select {
+    max-width: 240px;
   }
 
   .adults-select {
@@ -169,42 +107,10 @@
   }
 
   .check-availability {
-    min-width: 100%;
-  }
-
-  .hidden-select {
-    visibility: hidden;
-    position: absolute;
-    width: 0;
-    height: 0;
-    overflow: hidden;
+    max-width: 100%;
+    margin-top: 0;
   }
 }
 
-/* Select Styling */
-.destination-select {
-  min-width: 180px;
-}
 
-.nights-select {
-  min-width: 10px;
-}
 
-.adults-select {
-  min-width: 100px;
-}
-
-/* Calendar Styling */
-.date-input-wrapper {
-  position: relative;
-}
-
-.calendar-wrapper {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 1000;
-  background-color: var(--primary-color);
-  border: 1px solid white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}

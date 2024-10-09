@@ -159,7 +159,7 @@ footer a {
 
 /* Landing Page Styles */
 .landing-page {
-  font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+  font-family: "Orpheus Pro", New Century Schoolbook, TeX Gyre Schola, serif;
   margin: 0;
   padding: 0;
   color: var(--primary-color);

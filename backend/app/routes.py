@@ -1,10 +1,10 @@
 from app import app
-from app.scrape_helpers.night1and2api import scrape_traverseCityStatePark_api, scrape_timberRidge_api, scrape_anchorInn_api, scrape_traverseCityKoa_api
-from app.scrape_helpers.night3and4api import scrape_stIgnaceKoa_api, scrape_cabinsOfMackinaw_api
-from app.scrape_helpers.night5and6api import scrape_uncleducky_api, scrape_picturedRocksKoa_api, scrape_fortSuperior_api, scrape_touristPark_api
-from app.payment_helpers.night1and2api_pay import pay_anchorInn_api, pay_timberRidge_api, pay_traverseCityKoa_api
-from app.payment_helpers.night3and4api_pay import pay_cabinsOfMackinaw_api
-from app.payment_helpers.night5and6api_pay import pay_uncleducky_api, pay_fortSuperior_api, pay_touristPark_api
+from app.scrape_helpers.northernMichigan.traverseCity.tent.scrapeTimberRidgeTent import scrape_timberRidgeTent
+from app.scrape_helpers.northernMichigan.traverseCity.tent.scrapeLeelanauPinesTent import scrape_leelanauPinesTent
+from app.scrape_helpers.northernMichigan.mackinacCity.tent.scrapeIndianRiverTent import scrape_indianRiverTent
+from app.scrape_helpers.northernMichigan.picturedRocks.tent.scrapeUncleDuckysTent import scrape_uncleDuckysTent
+from app.scrape_helpers.northernMichigan.picturedRocks.tent.scrapeTouristParkTent import scrape_touristParkTent
+from app.scrape_helpers.northernMichigan.picturedRocks.tent.scrapeFortSuperiorTent import scrape_fortSuperiorTent
 import os, base64
 from flask import request, jsonify
 import logging
@@ -42,16 +42,18 @@ def read_image(path):
 def get_price(place_name, min_travelers, max_travelers, scrape_function):
     logging.info(f"{place_name} Request Args: %s", request.args)
     try:
-        num_travelers = request.args.get('numTravelers', default=1, type=int)
-        if num_travelers < min_travelers:
+        num_adults = request.args.get('num_adults', default=1, type=int)
+        num_kids = request.args.get('num_kids', default=0, type=int)
+        num_travelers = num_adults + num_kids
+        if num_adults < min_travelers:
             return {"available": False, "price": None, "message": f"Not available for less than {min_travelers} travelers"}
         
         if num_travelers > max_travelers:
             return {"available": False, "price": None, "message": f"Not available for more than {max_travelers} travelers"}
 
-        start_date = request.args.get('startDate', default='', type=str)
-        end_date = request.args.get('endDate', default='', type=str)
-        data = scrape_function(num_travelers, start_date, end_date)
+        start_date = request.args.get('start_date', default='', type=str)
+        end_date = request.args.get('end_date', default='', type=str)
+        data = scrape_function(start_date, end_date, num_adults, num_kids)
         logging.info('get_price return value', data)
         return data
     except Exception as e:
@@ -85,87 +87,29 @@ def process_payment(api_function):
     result = api_function(num_travelers, start_date, end_date, stay_name, payment_info)
     return jsonify(success=result)
 
-#### SCRAPES ###
-@app.route('/api/scrape/traverseCityStatePark')
-def get_traverseCityStatePark_price():
-    return get_price('Traverse City State Park', 1, 6, scrape_traverseCityStatePark_api)
 
-@app.route('/api/scrape/timberRidge')
-def get_timberRidge_price():
-    return get_price('Timber Ridge', 1, 10, scrape_timberRidge_api)
+#### SCRAPES - Northern Michigan - Tent ####
 
+@app.route('/api/scrape/timberRidgeTent')
+def get_timberRidgeTent_price():
+    return get_price('Timber Ridge', 1, 6, scrape_timberRidgeTent)
 
-@app.route('/api/scrape/anchorInn')
-def get_anchorInn_price():
-    return get_price('Anchor Inn', 1, 6, scrape_anchorInn_api)
+@app.route('/api/scrape/leelanauPinesTent')
+def get_leelanauPinesTent_price():
+    return get_price('Leelanau Pines', 1, 8, scrape_leelanauPinesTent)
 
+@app.route('/api/scrape/indianRiverTent')
+def get_indianRiverTent_price():
+    return get_price('Indian River', 1, 8, scrape_indianRiverTent)
 
-@app.route('/api/scrape/traverseCityKoa')
-def get_traverseCityKoa_price():
-    return get_price('Traverse City Koa', 1, 8, scrape_traverseCityKoa_api)
+@app.route('/api/scrape/uncleDuckysTent')
+def get_uncleDuckysTent_price():
+    return get_price('Uncle Duckys', 1, 5, scrape_uncleDuckysTent)
 
+@app.route('/api/scrape/touristParkTent')
+def get_touristParkTent_price():
+    return get_price('Tourist Park', 1, 6, scrape_touristParkTent)
 
-@app.route('/api/scrape/stIgnaceKoa')
-def get_stIgnaceKoa_price():
-    return get_price('St Ignace Koa', 1, 8, scrape_stIgnaceKoa_api)
-
-
-@app.route('/api/scrape/cabinsOfMackinaw')
-def get_cabinsOfMackinaw_price():
-    return get_price('Cabins Of Mackinaw', 1, 6, scrape_cabinsOfMackinaw_api)
-
-
-@app.route('/api/scrape/uncleDucky')
-def get_uncleducky_price():
-    return get_price('Uncle Ducky', 1, 8, scrape_uncleducky_api)
-
-
-@app.route('/api/scrape/picturedRocksKoa')
-def get_picturedRocksKoa_price():
-    return get_price('Pictured Rocks Koa', 1, 8, scrape_picturedRocksKoa_api)
-
-
-@app.route('/api/scrape/fortSuperior')
-def get_fortSuperior_price():
-    return get_price('Fort Superior', 1, 6, scrape_fortSuperior_api)
-
-
-@app.route('/api/scrape/touristPark')
-def get_touristPark_price():
-    return get_price('Tourist Park', 1, 6, scrape_touristPark_api)
-
-
-### PAYMENTS ###
-
-@app.route('/api/pay/timberRidge')
-def pay_timberRidge():
-    return process_payment(pay_timberRidge_api)
-
-@app.route('/api/pay/anchorInn')
-def pay_anchorInn():
-    return process_payment(pay_anchorInn_api)
-
-
-@app.route('/api/pay/traverseCityKoa')
-def pay_traverseCityKoa():
-    return process_payment(pay_traverseCityKoa_api)
-
-
-@app.route('/api/pay/cabinsOfMackinaw')
-def pay_cabinsOfMackinaw():
-    return process_payment(pay_cabinsOfMackinaw_api)
-
-
-@app.route('/api/pay/uncleDucky')
-def pay_uncleDucky():
-    return process_payment(pay_uncleducky_api)
-
-
-@app.route('/api/pay/fortSuperior')
-def pay_fortSuperior():
-    return process_payment(pay_fortSuperior_api)
-
-
-@app.route('/api/pay/touristPark')
-def pay_touristPark():
-    return process_payment(pay_touristPark_api)
+@app.route('/api/scrape/fortSuperiorTent')
+def get_fortSuperiorTent_price():
+    return get_price('Fort Superior', 1, 6, scrape_fortSuperiorTent)

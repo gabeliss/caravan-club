@@ -1,251 +1,169 @@
-import React, {useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './../../styles/bookpages.css';
 import ToggleList from '../../components/book/BookPagesToggle';
 import accommodationsData from './../../northernmichigandata.json'
-import TripDetailsForm from '../../components/book/TripDetailsForm';
-import { adjustDate, convertDateFormat } from './../../utils/helpers.js'
+import { convertDateFormat } from './../../utils/helpers.js'
 import { fetchAccommodationDetails } from '../../api/northernMichiganApi.js';
+import tripMapping from '../../tripmapping.json'
 
 function BookNorthernMichiganPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    const tripTitle = 'Northern Michigan'
-    
-    const [isLoading, setIsLoading] = useState(false);
-    const [detailsSubmitted, setDetailsSubmitted] = useState(false)
-    const [numTravelers, setNumTravelers] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [placeDetails, setPlaceDetails] = useState(accommodationsData);
-    const [selectedAccommodations, setSelectedAccommodations] = useState({
-      night1and2: null,
-      night3and4: null,
-      night5and6: null,
-    });
-    
-    const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+  const [placeDetails, setPlaceDetails] = useState(accommodationsData);
+  const [selectedAccommodations, setSelectedAccommodations] = useState({
+    traverseCity: null,
+    mackinacCity: null,
+    picturedRocks: null,
+  });
 
-    const validateDetails = () => {
-        if (!numTravelers || !startDate || !endDate) {
-            alert("Please fill all required fields");
-            return false;
-        }
-        else {
-            return true
-        }
+  useEffect(() => {
+    if (!location.state) {
+      navigate('/');
+      return;
     }
+
+    const { tripTitle, start_date, end_date, num_adults, num_kids, nights } = location.state;
+
+    const fetchAccommodationData = async () => {
+        try {
+          const tripStructure = tripMapping[tripTitle][`${nights}nights`];
+          console.log('tripStructure', tripStructure)
+          if (!tripStructure) {
+            console.error('Invalid trip structure for the given destination and nights.');
+            return;
+          }
+
+        // Calculate date ranges for each segment of the trip
+          const segmentDates = calculateSegmentDates(start_date, nights, tripStructure);
+          // Make multiple API calls for each accommodation in each city
+          const apiCalls = [];
+          const updatedPlaceDetails = { ...placeDetails };
   
-    const validatePage = () => {
-      if (!numTravelers || !startDate || !endDate) {
-        alert("Please fill all required fields");
-        return false;
-      }
-      else if (Object.values(selectedAccommodations).some(value => value === null)) {
-        alert("Please select at least one accommodation for each night.");
-        return false;
-      }
-      return true;
-    };
-
-    const handleDetailsSubmit = async (event) => {
-        event.preventDefault();
-        if (validateDetails()) {
-            setDetailsSubmitted(true);
-            let night1and2StartDate = convertDateFormat(startDate);
-            let night1and2EndDate = convertDateFormat(adjustDate(startDate, 2));
-            let night3and4StartDate = convertDateFormat(startDate, 2);
-            let night3and4EndDate = convertDateFormat(adjustDate(startDate, 4));
-            let night5and6StartDate = convertDateFormat(adjustDate(startDate, 4));
-            let night5and6EndDate = convertDateFormat(endDate);
-    
-            setIsLoading(true);
-    
-            try {
-                const responses = await Promise.allSettled([
-                    fetchAccommodationDetails('traverseCityStatePark', numTravelers, night1and2StartDate, night1and2EndDate),
-                    fetchAccommodationDetails('timberRidge', numTravelers, night1and2StartDate, night1and2EndDate),
-                    fetchAccommodationDetails('anchorInn', numTravelers, night1and2StartDate, night1and2EndDate),
-                    fetchAccommodationDetails('traverseCityKoa', numTravelers, night1and2StartDate, night1and2EndDate),
-                    fetchAccommodationDetails('stIgnaceKoa', numTravelers, night3and4StartDate, night3and4EndDate),
-                    fetchAccommodationDetails('cabinsOfMackinaw', numTravelers, night3and4StartDate, night3and4EndDate),
-                    fetchAccommodationDetails('uncleDucky', numTravelers, night5and6StartDate, night5and6EndDate),
-                    fetchAccommodationDetails('picturedRocksKoa', numTravelers, night5and6StartDate, night5and6EndDate),
-                    fetchAccommodationDetails('fortSuperior', numTravelers, night5and6StartDate, night5and6EndDate),
-                    fetchAccommodationDetails('touristPark', numTravelers, night5and6StartDate, night5and6EndDate),
-                ]);
-    
-                responses.forEach((result, index) => {
-                    if (result.status === 'fulfilled') {
-                        const details = result.value;
-                        switch (index) {
-                            case 0:
-                                updateAccommodationsState('traverseCityStatePark', details, 'night1and2');
-                                break;
-                            case 1:
-                                updateAccommodationsState('timberRidge', details, 'night1and2');
-                                break;
-                            case 2:
-                                updateAccommodationsState('anchorInn', details, 'night1and2');
-                                break;
-                            case 3:
-                                updateAccommodationsState('traverseCityKoa', details, 'night1and2');
-                                break;
-                            case 4:
-                                updateAccommodationsState('stIgnaceKoa', details, 'night3and4');
-                                break;
-                            case 5:
-                                updateAccommodationsState('cabinsOfMackinaw', details, 'night3and4');
-                                break;
-                            case 6:
-                                updateAccommodationsState('uncleDucky', details, 'night5and6');
-                                break;
-                            case 7:
-                                updateAccommodationsState('picturedRocksKoa', details, 'night5and6');
-                                break;
-                            case 8:
-                                updateAccommodationsState('fortSuperior', details, 'night5and6');
-                                break;
-                            case 9:
-                                updateAccommodationsState('touristPark', details, 'night5and6');
-                                break;
-                            default:
-                                break;
-                        }
-                    } else {
-                        console.error('Error in fetching details:', result.reason);
-                    }
-                });
-            } catch (error) {
-                console.error('Unexpected error:', error);
-            } finally {
-                setIsLoading(false);
-            }
+          // Loop through each city and their accommodations
+          Object.entries(segmentDates).forEach(([location, dates]) => {
+            Object.keys(accommodationsData[location].tent).forEach(accommodation => {
+              apiCalls.push(
+                fetchAccommodationDetails(accommodation, convertDateFormat(dates.start), convertDateFormat(dates.end), num_adults, num_kids)
+                  .then(data => {
+                    updatedPlaceDetails[location].tent[accommodation] = {
+                      ...updatedPlaceDetails[location].tent[accommodation],
+                      ...data
+                    };
+                  })
+                  .catch(error => {
+                    console.error(`Error fetching details for ${accommodation}:`, error);
+                  })
+              );
+            });
+          });
+  
+          // Wait for all API calls to complete
+          await Promise.all(apiCalls);
+          setPlaceDetails(updatedPlaceDetails);
+        } catch (error) {
+            console.error('Unexpected error:', error);
+        } finally {
+            setIsLoading(false);
         }
-    };
+      };
+  
+      fetchAccommodationData();
+    }, [location.state, navigate]);
 
 
-      function updateAccommodationsState(place, details, nightXandY) {
-        console.log('updateAccomodationsState: place, details, nightXandY', place, details, nightXandY)
-        const updatedPlaceDetails = { ...placeDetails };
-        updatedPlaceDetails[nightXandY][place] = {
-            ...updatedPlaceDetails[nightXandY][place],
-            ...details
-        };
-        
-        setPlaceDetails(updatedPlaceDetails);
-        localStorage.setItem('placeDetails', JSON.stringify(updatedPlaceDetails));
-    }
-
-
-    const handleSelectStatus = (nightKey, accommodationKey) => {
-        setSelectedAccommodations(prev => {
-            const newState = {
-                ...prev,
-                [nightKey]: prev[nightKey] === accommodationKey ? null : accommodationKey
-            };
-            console.log(`Updated state for ${nightKey}:`, newState[nightKey]);
-            return newState;
+    const calculateSegmentDates = (startDate, nights, tripStructure) => {
+        const segments = {};
+        let currentStartDate = new Date(startDate);
+    
+        Object.entries(tripStructure).forEach(([night, location]) => {
+          const segmentStart = new Date(currentStartDate);
+          const segmentEnd = new Date(segmentStart);
+          segmentEnd.setDate(segmentEnd.getDate() + (night.startsWith("night1") ? 2 : 1)); // Adjust based on number of nights at the location
+          
+          segments[location] = {
+            start: segmentStart.toISOString().split('T')[0],
+            end: segmentEnd.toISOString().split('T')[0]
+          };
+    
+          // Update the start date for the next location
+          currentStartDate = new Date(segmentEnd);
         });
-    };
-  
-    const handlePageSubmit = (event) => {
-        event.preventDefault();
-        if (validatePage()) {
-            const tripDetails = { tripTitle, numTravelers, startDate, endDate, selectedAccommodations };
-            console.log('Navigating with state:', tripDetails);
-            localStorage.setItem('tripDetails', JSON.stringify(tripDetails));
-            navigate('/reviewtrip', { state: tripDetails });
-        }
+    
+        return segments;
     };
 
+
+  const handleSelectStatus = (location, accommodationKey) => {
+    setSelectedAccommodations(prev => ({
+      ...prev,
+      [location]: prev[location] === accommodationKey ? null : accommodationKey
+    }));
+  };
+
+  const handlePageSubmit = (event) => {
+    event.preventDefault();
+    if (validatePage()) {
+      const tripDetails = { ...location.state, selectedAccommodations };
+      navigate('/reviewtrip', { state: tripDetails });
+    }
+  };
+
+  const validatePage = () => {
+    if (Object.values(selectedAccommodations).some(value => value === null)) {
+      alert("Please select at least one accommodation for each location.");
+      return false;
+    }
+    return true;
+  };
+
+  if (isLoading) {
+    return <div className="loader">Loading...</div>;
+  }
 
   return (
     <div className='book-page'>
-        {isLoading ? (
-            <div className="loader">Loading...</div>
-        ) : (
-            <>
-                <div className='intro'>
-                    <h1>Northern Michigan</h1>
-                    <h2>5-Day Road Trip</h2>
-                </div>
-                <TripDetailsForm
-                    numTravelers={numTravelers}
-                    setNumTravelers={setNumTravelers}
-                    startDate={startDate}
-                    setStartDate={setStartDate}
-                    endDate={endDate}
-                    setEndDate={setEndDate}
-                    handleDetailsSubmit={handleDetailsSubmit}
-                    detailsSubmitted={detailsSubmitted}
-                />
-                <div className='nights'>
-                    <div className='night'>
-                        <div className='pic'>
-                            <img src="/images/bookpages/northernmichigan1.png" alt="Northern Michigan" />
-                        </div>
-                        <div className='info'>
-                            <h2>Night 1 & 2: Traverse City</h2>
-                            <p>Night 1 and 2 begin in Traverse City, where you can choose from a variety of glamping, camping, and boutique stays. Select the one that best suits your preferences, and we'll handle the rest. In the event that your chosen accommodation is unavailable, we will provide you with the next best option.</p>
-                            {detailsSubmitted && (
-                                <div className='select-stay-container'>
-                                    <h4 className='blank'></h4>
-                                    <h3 className='select-stay'>Select Stay:</h3>
-                                </div>
-                            )}
-                            <ToggleList
-                                data={placeDetails['night1and2']}
-                                onSelectionChange={(index) => handleSelectStatus('night1and2', index)}
-                                detailsSubmitted={detailsSubmitted}
-                            />
-                        </div>
-                    </div>
-                    <div className='night'>
-                        <div className='pic reverse-pic'>
-                            <img src="/images/bookpages/northernmichigan2.jpg" alt="Northern Michigan" />
-                        </div>
-                        <div className='info reverse-info'>
-                            <h2>Night 3 & 4: Mackinac Island or City</h2>
-                            <p>Night 3 begins in Traverse City, where you can choose from a variety of glamping, camping, and boutique stays. Select the one that best suits your preferences, and we'll handle the rest. In the event that your chosen accommodation is unavailable, we will provide you with the next best option.</p>
-                            {detailsSubmitted && (
-                                <div className='select-stay-container'>
-                                    <h4 className='blank'></h4>
-                                    <h3 className='select-stay'>Select Stay:</h3>
-                                </div>
-                            )}
-                            <ToggleList
-                                data={placeDetails['night3and4']}
-                                onSelectionChange={(index) => handleSelectStatus('night3and4', index)}
-                                detailsSubmitted={detailsSubmitted}
-                            />
-                        </div>
-                    </div>
-                    <div className='night'>
-                        <div className='pic'>
-                            <img src="/images/bookpages/northernmichigan3.jpg" alt="Northern Michigan" />
-                        </div>
-                        <div className='info'>
-                            <h2>Night 5: Pictured Rocks</h2>
-                            <p>Night 5 begin in Traverse City, where you can choose from a variety of glamping, camping, and boutique stays. Select the one that best suits your preferences, and we'll handle the rest. In the event that your chosen accommodation is unavailable, we will provide you with the next best option.</p>
-                            {detailsSubmitted && (
-                                <div className='select-stay-container'>
-                                    <h4 className='blank'></h4>
-                                    <h3 className='select-stay'>Select Stay:</h3>
-                                </div>
-                            )}
-                            <ToggleList
-                                data={placeDetails['night5and6']}
-                                onSelectionChange={(index) => handleSelectStatus('night5and6', index)}
-                                detailsSubmitted={detailsSubmitted}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className='form-group'>
-                    <button type='submit' className='submit-button' onClick={handlePageSubmit}>Submit</button>
-                </div>
-            </>
-        )}
+      <div className='intro'>
+        <h1>Northern Michigan</h1>
+        <h2>5-Day Road Trip</h2>
+      </div>
+      <div className='nights'>
+        <div className='night'>
+          <div className='info'>
+            <h2>Traverse City</h2>
+            <p>Traverse City is a picturesque lakeside town known for its scenic views, charming downtown, and renowned wineries on the Old Mission and Leelanau Peninsulas. Outdoor enthusiasts enjoy hiking at Sleeping Bear Dunes, kayaking, and exploring the area's beautiful beaches. Browse through each accommodation and select based on your preferences.</p>
+            <ToggleList
+              data={placeDetails.traverseCity.tent}
+              onSelectionChange={(index) => handleSelectStatus('traverseCity', index)}
+            />
+          </div>
+        </div>
+        <div className='night'>
+          <div className='info'>
+            <h2>Mackinac City</h2>
+            <p>Continue your adventure in Mackinac City, offering a blend of history and natural beauty.</p>
+            <ToggleList
+              data={placeDetails.mackinacCity.tent}
+              onSelectionChange={(index) => handleSelectStatus('mackinacCity', index)}
+            />
+          </div>
+        </div>
+        <div className='night'>
+          <div className='info'>
+            <h2>Pictured Rocks</h2>
+            <p>Conclude your trip at the stunning Pictured Rocks, where you can immerse yourself in nature's beauty.</p>
+            <ToggleList
+              data={placeDetails.picturedRocks.tent}
+              onSelectionChange={(index) => handleSelectStatus('picturedRocks', index)}
+            />
+          </div>
+        </div>
+      </div>
+      <div className='form-group'>
+        <button type='submit' className='submit-button' onClick={handlePageSubmit}>Submit</button>
+      </div>
     </div>
   );
 }

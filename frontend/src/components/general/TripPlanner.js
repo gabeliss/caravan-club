@@ -1,39 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import tripMapping from '../../tripmapping.json';
 import CustomCalendar from './CustomCalendar';
+import PopupModal from './PopupModal';
 import '../../styles/tripplanner.css';
 
 function TripPlanner() {
-  const [destination, setDestination] = useState('');
-  const [nights, setNights] = useState('');
+  const navigate = useNavigate();
+  const calendarRef = useRef(null);
+  const [destination, setDestination] = useState('northernMichigan');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [adults, setAdults] = useState(1);
   const [kids, setKids] = useState(0);
-  const [maxNights, setMaxNights] = useState(0);
   const [showCalendar, setShowCalendar] = useState(false);
-  const calendarRef = useRef(null);
-  const startDateInputRef = useRef(null);
+  const [calendarMode, setCalendarMode] = useState('start');
+  const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
+  // Set default dates
   useEffect(() => {
-    if (destination && tripMapping[destination]) {
-      setMaxNights(tripMapping[destination].maxNights || 0);
-      setNights('');
-      setStartDate('');
-      setEndDate('');
-    } else {
-      setMaxNights(0);
-      setNights('');
-      setStartDate('');
-      setEndDate('');
-    }
-  }, [destination]);
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    setStartDate(today.toISOString().split('T')[0]);
+    setEndDate(tomorrow.toISOString().split('T')[0]);
+  }, []);
 
-  useEffect(() => {
-    setStartDate('');
-    setEndDate('');
-  }, [nights]);
-
+  // Close the calendar if clicking outside of it
   useEffect(() => {
     function handleClickOutside(event) {
       if (calendarRef.current && !calendarRef.current.contains(event.target)) {
@@ -47,116 +41,145 @@ function TripPlanner() {
     };
   }, [calendarRef]);
 
-  const handleStartDateChange = (newStartDate) => {
-    setStartDate(newStartDate);
-    
-    if (newStartDate && nights) {
-      const endDate = new Date(newStartDate);
-      endDate.setDate(endDate.getDate() + parseInt(nights));
-      setEndDate(endDate.toISOString().split('T')[0]);
-    } else {
-      setEndDate('');
-    }
-  };
-
+  // Capitalize the first letter of destination names
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  const handleStartDateClick = () => {
-    if (nights) {
-      setShowCalendar(true);
+  // Format destination name for display
+  const formatDestinationName = (key) => {
+    return key.replace(/([A-Z])/g, ' $1').split(' ').map(capitalizeFirstLetter).join(' ');
+  };
+
+  // Start date change handler
+  const handleStartDateChange = (newStartDate) => {
+    setStartDate(newStartDate);
+    const startDateObj = new Date(newStartDate);
+    let newEndDate = new Date(startDateObj);
+    newEndDate.setDate(startDateObj.getDate() + 1);
+
+    setEndDate(newEndDate.toISOString().split('T')[0]);
+  };
+
+  // End date change handler with max nights validation based on selected destination
+  const handleEndDateChange = (newEndDate) => {
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(newEndDate);
+
+    // Get maxNights from the selected destination
+    const maxNights = tripMapping[destination]?.maxNights || 6;
+
+    // Ensure the end date is not more than maxNights past the start date
+    if (endDateObj > startDateObj && (endDateObj - startDateObj) / (1000 * 60 * 60 * 24) <= maxNights) {
+      setEndDate(newEndDate);
+    } else {
+      setShowModal(true);
     }
+  };
+
+  // Handle the availability check
+  const handleCheckAvailability = () => {
+    if (!destination || !startDate || !endDate || !adults) {
+      setError('Please fill out all required fields before checking availability.');
+      return;
+    }
+    setError('');
+    const tripDetails = {
+      tripTitle: destination,
+      start_date: startDate,
+      end_date: endDate,
+      num_adults: adults,
+      num_kids: kids,
+    };
+    navigate(`/book/${destination.toLowerCase()}`, { state: tripDetails });
   };
 
   return (
     <div className="trip-planner">
       <div className="trip-planner-row">
-        <div className="trip-planner-column">
+        <div className="trip-planner-column destination-column">
           <label>I want to go:</label>
-          <select className="destination-select" value={destination} onChange={(e) => setDestination(e.target.value)}>
-            <option value="">Select destination</option>
-            {Object.keys(tripMapping).map(key => (
-              <option key={key} value={key}>{capitalizeFirstLetter(key.replace(/([A-Z])/g, ' $1').trim())}</option>
-            ))}
-          </select>
-          <select className="hidden-select" style={{ visibility: 'hidden' }}></select>
-        </div>
-
-        <div className="trip-planner-column">
-          <label>Nights:</label>
-          <select 
-            value={nights} 
-            onChange={(e) => setNights(e.target.value)}
-            disabled={!destination}
-            className="nights-select"
+          <select
+            className="destination-select"
+            value={destination}
+            onChange={(e) => setDestination(e.target.value)}
           >
-            <option value="">0</option>
-            {[...Array(maxNights)].map((_, i) => (
-              <option key={i+1} value={i+1}>{i+1}</option>
+            {Object.keys(tripMapping).map((key) => (
+              <option key={key} value={key}>
+                {capitalizeFirstLetter(key.replace(/([A-Z])/g, ' $1').trim())}
+              </option>
             ))}
           </select>
-          <select className="hidden-select" style={{ visibility: 'hidden' }}></select>
         </div>
 
-        <div className="trip-planner-column">
+        <div className="trip-planner-column date-column">
           <label>During:</label>
           <div className="date-input-wrapper">
-            <input 
-              type="date" 
-              value={startDate} 
-              onClick={handleStartDateClick}
+            <input
+              type="date"
+              value={startDate}
+              onClick={() => {
+                setShowCalendar(true);
+                setCalendarMode('start');
+              }}
+              className="date-input-active"
               readOnly
-              disabled={!nights}
-              className={nights ? "date-input-active" : "date-input-disabled"}
-              ref={startDateInputRef}
             />
-            {showCalendar && nights && (
-              <div className="calendar-wrapper" ref={calendarRef}>
-                <CustomCalendar
-                  startDate={startDate}
-                  endDate={endDate}
-                  onDateSelect={(date) => {
-                    handleStartDateChange(date);
-                    setShowCalendar(false);
-                  }}
-                  nights={nights}
-                />
-              </div>
-            )}
+            <input
+              type="date"
+              value={endDate}
+              onClick={() => {
+                setShowCalendar(true);
+                setCalendarMode('end');
+              }}
+              className="date-input-active"
+              readOnly
+            />
           </div>
-          <input 
-            type="date" 
-            value={endDate} 
-            disabled
-          />
+          {showCalendar && (
+            <div className="calendar-wrapper" ref={calendarRef}>
+              <CustomCalendar
+                startDate={startDate}
+                endDate={endDate}
+                onDateSelect={(date) => {
+                  if (calendarMode === 'start') {
+                    handleStartDateChange(date);
+                  } else {
+                    handleEndDateChange(date);
+                  }
+                  setShowCalendar(false);
+                }}
+              />
+            </div>
+          )}
         </div>
 
-        <div className="trip-planner-column trip-planner-column-with">
+        <div className="trip-planner-column adults-column">
           <label className="trip-planner-column-with">With:</label>
-          <select 
-            value={adults} 
-            onChange={(e) => setAdults(parseInt(e.target.value))}
-            className="adults-select"
-          >
+          <select value={adults} onChange={(e) => setAdults(parseInt(e.target.value))} className="adults-select">
             {[1, 2, 3, 4, 5, 6].map(num => (
               <option key={num} value={num}>{num} Adult{num > 1 ? 's' : ''}</option>
             ))}
           </select>
-          <select 
-            value={kids} 
-            onChange={(e) => setKids(parseInt(e.target.value))}
-            className="adults-select"
-          >
+          <select value={kids} onChange={(e) => setKids(parseInt(e.target.value))} className="adults-select">
             {[0, 1, 2, 3, 4, 5, 6].map(num => (
               <option key={num} value={num}>{num} Kid{num !== 1 ? 's' : ''}</option>
             ))}
           </select>
         </div>
-        <div className="trip-planner-column">
-          <button className="check-availability">Check Availability</button>
+
+        <div className="trip-planner-column button-column">
+          <button className="check-availability" onClick={handleCheckAvailability}>
+            Check Availability
+          </button>
         </div>
       </div>
+      {error && <div className="error-message">{error}</div>}
+      <PopupModal
+        show={showModal}
+        message={`The end date for the ${formatDestinationName(destination)} trip cannot be more than ${tripMapping[destination]?.maxNights || 6} days after the start date.`}
+        onClose={() => setShowModal(false)}
+      />
     </div>
   );
 }

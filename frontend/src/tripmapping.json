@@ -11,28 +11,28 @@
         "3nights": {
             "night1": "traverseCity",
             "night2": "traverseCity",
-            "night3": "mackinawCity"
+            "night3": "mackinacCity"
         },
         "4nights": {
             "night1": "traverseCity",
             "night2": "traverseCity",
-            "night3": "mackinawCity",
-            "night4": "mackinawCity"
+            "night3": "mackinacCity",
+            "night4": "mackinacCity"
         },
         "5nights": {
             "night1": "traverseCity",
             "night2": "traverseCity",
-            "night3": "mackinawCity",
-            "night4": "munising",
-            "night5": "munising"
+            "night3": "mackinacCity",
+            "night4": "picturedRocks",
+            "night5": "picturedRocks"
         },
         "6nights": {
             "night1": "traverseCity",
             "night2": "traverseCity",
-            "night3": "mackinawCity",
-            "night4": "mackinawCity",
-            "night5": "munising",
-            "night6": "munising"
+            "night3": "mackinacCity",
+            "night4": "mackinacCity",
+            "night5": "picturedRocks",
+            "night6": "picturedRocks"
         }
     },
     "arizona": {

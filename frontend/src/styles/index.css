@@ -2,15 +2,14 @@ body {
   margin: 0px;
   padding: 0px;
   background-color: rgb(238, 230, 206);
-  font-family: New Century Schoolbook, TeX Gyre Schola, serif;
+  font-family: "Orpheus Pro", New Century Schoolbook, TeX Gyre Schola, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 @import url(https://db.onlinewebfonts.com/c/2aea0ac500c896188f9ad191c231029c?family=Orpheus+Pro);
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: "Orpheus Pro", New Century Schoolbook, TeX Gyre Schola, serif;
 }
 
 :root {

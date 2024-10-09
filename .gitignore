@@ -11,8 +11,6 @@ compress_images.py
 backend/node_modules/
 frontend/node_modules/
 
-backend/app/__pycache__/
-backend/app/scrape_helpers/__pycache__/
-backend/app/payment_helpers/__pycache__/
+**/__pycache__/
 
 .DS_Store

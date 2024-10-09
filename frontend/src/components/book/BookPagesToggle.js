@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './../../styles/bookpages.css';
 
-const ToggleItem = ({ title, content, isActive, setActive, availability, price, message, isSelected, onSelect, detailsSubmitted }) => {
+const ToggleItem = ({ title, content, isActive, setActive, availability, price, message, isSelected, onSelect }) => {
     const contentRef = useRef(null);
     const [contentHeight, setContentHeight] = useState(0);
 
@@ -12,25 +12,21 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
     }, []);
 
     const currentHeight = isActive ? contentHeight : 0;
-    const toggleHeaderWidth = {
-        width: detailsSubmitted ? '75%' : '100%',
-    };
 
     return (
         <div className="toggle-item">
             <div className='toggle-container'>
-                <div className="toggle-header" onClick={setActive} style={toggleHeaderWidth}>
+                <div className="toggle-header" onClick={setActive} style={{ width: '100%' }}>
                     {title}
                     <span className={`toggle-icon ${isActive ? 'active' : ''}`}>▼</span>
                 </div>
-                {detailsSubmitted && (
-                    <div 
-                        className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'selected' : ''}`} 
-                        onClick={() => availability && onSelect()}
-                    >
-                        {message}
-                    </div>
-                )}
+                <div 
+                    className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'selected' : ''}`} 
+                    onClick={() => availability && onSelect()}
+                >
+                    {/* Display price and message if available */}
+                    {message}
+                </div>
             </div>
             <div
                 ref={contentRef}
@@ -43,7 +39,7 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
     );
 };
 
-const ToggleList = ({ data, onSelectionChange, detailsSubmitted }) => {
+const ToggleList = ({ data, onSelectionChange }) => {
     const [activeIndex, setActiveIndex] = useState(null);
     const [selectedStatusKey, setSelectedStatusKey] = useState(null);
 
@@ -70,7 +66,6 @@ const ToggleList = ({ data, onSelectionChange, detailsSubmitted }) => {
                     message={details.message}
                     isSelected={key === selectedStatusKey}
                     onSelect={() => handleSelectStatus(key)}
-                    detailsSubmitted={detailsSubmitted}
                 />
             ))}
         </div>
