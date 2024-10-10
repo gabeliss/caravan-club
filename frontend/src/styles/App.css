@@ -344,9 +344,10 @@ footer a {
 }
 
 .trip-logos h2 {
-  color: #2c3e50;
+  color: var(--primary-color);
   margin-bottom: 2rem;
-  font-weight: normal;
+  font-weight: bolder;
+  font-size: 200%;
 }
 
 .logo-container {

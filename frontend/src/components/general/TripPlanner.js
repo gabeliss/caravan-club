@@ -18,7 +18,6 @@ function TripPlanner() {
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
 
-  // Set default dates
   useEffect(() => {
     const today = new Date();
     const tomorrow = new Date(today);
@@ -27,7 +26,6 @@ function TripPlanner() {
     setEndDate(tomorrow.toISOString().split('T')[0]);
   }, []);
 
-  // Close the calendar if clicking outside of it
   useEffect(() => {
     function handleClickOutside(event) {
       if (calendarRef.current && !calendarRef.current.contains(event.target)) {
@@ -77,6 +75,55 @@ function TripPlanner() {
     }
   };
 
+  const getTripSegments = () => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const numberOfNights = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+  
+    const destinationConfig = tripMapping[destination];
+    if (!destinationConfig) {
+      console.error(`Destination config not found for ${destination}`);
+      return null;  // Return null if destinationConfig is undefined
+    }
+  
+    const itineraryKey = numberOfNights === 1 ? `1night` : `${numberOfNights}nights`;
+    const itinerary = destinationConfig[itineraryKey];
+  
+    if (!itinerary) {
+      console.error(`Itinerary not found for ${destination} with ${numberOfNights} nights`);
+      return null;  // Return null if the itinerary does not exist
+    }
+  
+    const segments = {};
+    let segmentStart = new Date(start);
+  
+    Object.entries(itinerary).forEach(([night, city], index) => {
+      const segmentEnd = new Date(segmentStart);
+      if (index === Object.entries(itinerary).length - 1) {
+        // For the last segment, set end to trip end date
+        segmentEnd.setDate(end.getDate());
+      } else {
+        // For intermediate segments, add one day to get the correct segment end date
+        segmentEnd.setDate(segmentStart.getDate() + 1);
+      }
+  
+      if (segments[city]) {
+        segments[city].end = segmentEnd.toISOString().split('T')[0];  // Update only the end date
+      } else {
+        segments[city] = {
+          start: segmentStart.toISOString().split('T')[0],  // Use standard format
+          end: segmentEnd.toISOString().split('T')[0],      // Use standard format
+        };
+      }
+  
+      // Set next segment's start date to the end date of the current segment
+      segmentStart = new Date(segmentEnd);
+    });
+  
+    console.log('Calculated segments:', segments);  // Debug log to inspect segments
+    return segments;
+  };
+
   // Handle the availability check
   const handleCheckAvailability = () => {
     if (!destination || !startDate || !endDate || !adults) {
@@ -84,13 +131,21 @@ function TripPlanner() {
       return;
     }
     setError('');
+
+    const tripSegments = getTripSegments();
+
     const tripDetails = {
       tripTitle: destination,
       start_date: startDate,
       end_date: endDate,
       num_adults: adults,
       num_kids: kids,
+      nights: Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24)),
+      segments: tripSegments,
     };
+
+    console.log('Trip details:', tripDetails);
+
     navigate(`/book/${destination.toLowerCase()}`, { state: tripDetails });
   };
 
