@@ -32,6 +32,15 @@
         "name": "",
         "taxRate": 0,
         "message": "Unavailable"  
+      },
+      "fakePlace": {
+        "title": "Mackinac Island Placeholder",
+        "content": "This is a placeholder for Mackinac City.",
+        "available": true,
+        "price": 85,
+        "name": "",
+        "taxRate": 0,
+        "message": "$85.00 per night"  
       }
     },
     "lodging": {}

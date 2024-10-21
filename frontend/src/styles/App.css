@@ -365,6 +365,7 @@ footer a {
   align-items: center;
   margin: 1.5rem;
   width: 150px;
+  cursor: pointer;
 }
 
 .logo-item img {

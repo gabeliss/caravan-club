@@ -53,8 +53,10 @@ const ToggleList = ({ data, onSelectionChange }) => {
     };
 
     return (
-        <div className="toggle-list">
-            {Object.entries(data).map(([key, details], index) => (
+        <>
+            <div className='select-stay'>Select One Option</div>
+            <div className="toggle-list">
+                {Object.entries(data).map(([key, details], index) => (
                 <ToggleItem 
                     key={key}
                     title={details.title}
@@ -67,8 +69,9 @@ const ToggleList = ({ data, onSelectionChange }) => {
                     isSelected={key === selectedStatusKey}
                     onSelect={() => handleSelectStatus(key)}
                 />
-            ))}
-        </div>
+                ))}
+            </div>
+        </>
     );
 };
 

@@ -3,6 +3,7 @@ import Gallery from './../components/general/Gallery';
 import LandingQuestions from '../components/general/LandingQuestions';
 import tripMapping from '../tripmapping.json';
 import TripPlanner from '../components/general/TripPlanner';
+import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
   const [destination, setDestination] = useState('');
@@ -12,6 +13,7 @@ function HomePage() {
   const [maxNights, setMaxNights] = useState(0);
   const [showCalendar, setShowCalendar] = useState(false);
   const calendarRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (destination && tripMapping[destination]) {
@@ -45,6 +47,10 @@ function HomePage() {
     };
   }, [calendarRef]);
 
+  const handleLogoClick = (tripPath) => {
+    navigate(`/trips/${tripPath}`);
+  };
+
   return (
     <div className='landing-page'>
       {/* Welcome */}
@@ -62,19 +68,19 @@ function HomePage() {
       <div className='trip-logos'>
         <h2>OUR TRIPS</h2>
         <div className='logo-container'>
-          <div className='logo-item'>
+          <div className='logo-item' onClick={() => handleLogoClick('washington')}>
             <img src='/images/triplogos/washington.png' alt='Washington' />
           </div>
-          <div className='logo-item'>
+          <div className='logo-item' onClick={() => handleLogoClick('northernmichigan')}>
             <img src='/images/triplogos/northernmichigan.png' alt='Northern Michigan' />
           </div>
-          <div className='logo-item'>
+          <div className='logo-item' onClick={() => handleLogoClick('arizona')}>
             <img src='/images/triplogos/arizona.png' alt='Arizona' />
           </div>
-          <div className='logo-item'>
+          <div className='logo-item' onClick={() => handleLogoClick('southerncalifornia')}>
             <img src='/images/triplogos/southerncalifornia.png' alt='Southern California' />
           </div>
-          <div className='logo-item'>
+          <div className='logo-item' onClick={() => handleLogoClick('smokymountain')}>
             <img src='/images/triplogos/smokynationalpark.png' alt='Smoky National Park' />
           </div>
         </div>

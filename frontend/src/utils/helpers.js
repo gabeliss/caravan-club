@@ -16,15 +16,16 @@ export function convertDateFormat(dateStr) {
     return `${month}/${day}/${year}`; // Format into MM/DD/YY
 }
 
-export function calculateTotalForStay(nightKey, accommodationKey, accommodationsData) {
-    const accommodation = accommodationsData[nightKey][accommodationKey];
+export function calculateTotalForStay(cityKey, accommodationKey, accommodationsData, numNights) {
+    const accommodation = accommodationsData[cityKey]?.tent[accommodationKey];
 
     if (!accommodation) return { total: 0, payment: 0, disclaimer: '' };
 
-    const priceForTwoNights = parseFloat(accommodation.price) * 2;
+    // Multiply the price by the total number of nights
+    const priceForStay = parseFloat(accommodation.price) * numNights;
 
     const taxRate = accommodation.taxRate || 0;
-    const totalForStay = priceForTwoNights + (priceForTwoNights * taxRate);
+    const totalForStay = priceForStay + (priceForStay * taxRate);
 
     let paymentAmount = totalForStay;
     if (accommodation.partialPayment) {
@@ -37,6 +38,7 @@ export function calculateTotalForStay(nightKey, accommodationKey, accommodations
         disclaimer: accommodation.disclaimer || ''
     };
 }
+
 
 export function formatDates(startDate, endDate) {
     const formatDate = (dateStr) => {

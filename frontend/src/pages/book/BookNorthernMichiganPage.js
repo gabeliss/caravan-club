@@ -5,14 +5,25 @@ import ToggleList from '../../components/book/BookPagesToggle';
 import accommodationsData from './../../northernmichigandata.json';
 import { convertDateFormat } from './../../utils/helpers.js';
 import { fetchAccommodationDetails } from '../../api/northernMichiganApi.js';
+import CustomLoader from '../../components/general/CustomLoader';
+import PopupModal from '../../components/general/PopupModal';
 
 function BookNorthernMichiganPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [placeDetails, setPlaceDetails] = useState(accommodationsData);
-  const [selectedAccommodations, setSelectedAccommodations] = useState({});
   const [fetchError, setFetchError] = useState(null);
+  
+  const [selectedAccommodations, setSelectedAccommodations] = useState(() => {
+    const initialState = {};
+    if (location.state && location.state.segments) {
+      Object.keys(location.state.segments).forEach(city => {
+        initialState[city] = null;
+      });
+    }
+    return initialState;
+  });
 
   // Ref to track if API calls have been made
   const apiCalled = useRef(false);
@@ -43,8 +54,12 @@ function BookNorthernMichiganPage() {
     return date.toLocaleDateString('en-US', options);
   };
 
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
   useEffect(() => {
     if (!location.state) {
+      console.log('No location state found. Navigating to home.');
       navigate('/');
       return;
     }
@@ -102,6 +117,7 @@ function BookNorthernMichiganPage() {
       fetchAccommodationData();
     }
 
+    console.log('Location state found:', location.state);
   }, [location.state, navigate]);  // Removed `placeDetails` from dependency list to prevent re-renders
 
   const handleSelectStatus = (location, accommodationKey) => {
@@ -115,27 +131,36 @@ function BookNorthernMichiganPage() {
     event.preventDefault();
     if (validatePage()) {
       const tripDetails = { ...location.state, selectedAccommodations };
+      console.log('Trip details:', tripDetails);
+      console.log('Navigating to review trip page.');
       navigate('/reviewtrip', { state: tripDetails });
     }
   };
 
   const validatePage = () => {
+    console.log('Selected accommodations:', selectedAccommodations);
     if (Object.values(selectedAccommodations).some(value => value === null)) {
-      alert("Please select at least one accommodation for each location.");
+      setModalMessage("Please select at least one accommodation for each location.");
+      setShowModal(true);
       return false;
     }
+    console.log('Page is valid.');
     return true;
   };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   if (isLoading) {
-    return <div className="loader">Loading...</div>;
+    return <CustomLoader />;
   }
 
   return (
     <div className='book-page'>
       <div className='intro'>
         <h1>{location.state.tripTitle.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</h1>
-        <h2>Custom Road Trip</h2>
+        <h2>{location.state.nights}-Night Road Trip</h2>
       </div>
       <div className='nights'>
         {Object.entries(location.state.segments).map(([city, dateRange], index) => (
@@ -152,10 +177,17 @@ function BookNorthernMichiganPage() {
           </div>
         ))}
       </div>
-      <div className='form-group'>
-        <button type='submit' className='submit-button' onClick={handlePageSubmit}>Submit</button>
-      </div>
+      <button type="button" className="submit-button" onClick={(event) => {
+        console.log("Submit button clicked");
+        handlePageSubmit(event);
+        }}
+      >Submit</button>
       {fetchError && <div className="error-message">Failed to fetch accommodation details. Please try again later.</div>}
+      <PopupModal 
+        show={showModal} 
+        message={modalMessage} 
+        onClose={handleCloseModal} 
+      />
     </div>
   );
 }
