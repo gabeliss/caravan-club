@@ -20,6 +20,7 @@ export const fetchAccommodationDetails = async (accommodationKey, start_date, en
         console.error(`API route not defined for accommodation: ${accommodationKey}`);
         return;
     }
+    console.log('Scrape endpoint:', `${SCRAPE_ENDPOINT}/${apiEndpoint}`);
     const url = `${SCRAPE_ENDPOINT}/${apiEndpoint}`;
     try {
         const response = await axios.get(url, {
