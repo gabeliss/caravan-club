@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-const SCRAPE_ENDPOINT = 'http://127.0.0.1:5000/api/scrape';
-const PAYMENT_ENDPOINT = 'http://127.0.0.1:5000/api/pay';
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+const SCRAPE_ENDPOINT = `${BASE_URL}/api/scrape`;
+const PAYMENT_ENDPOINT = `${BASE_URL}/api/pay`;
 
 const apiRouteMappingScrape = {
     'timberRidge': 'timberRidgeTent',
