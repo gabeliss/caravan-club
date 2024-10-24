@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: caravan-club-backend
+    env: python
+    plan: free
+    buildCommand: |
+      pip install -r requirements.txt
+      playwright install --with-deps chromium
+    startCommand: gunicorn run:app
