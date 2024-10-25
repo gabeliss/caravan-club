@@ -2,7 +2,9 @@ from datetime import datetime
 import requests
 
 
-def scrape_fortSuperiorTent(start_date, end_date, num_adults, num_kids):
+def scrape_teePeeCampgroundTent(start_date, end_date, num_adults, num_kids):
+    #Not Implemented Yet
+    return {"available": False, "price": None, "message": "No options available."}
     # Convert dates to timestamps in milliseconds
     start_timestamp = int(datetime.strptime(start_date, '%m/%d/%y').timestamp() * 1000)
     end_timestamp = int(datetime.strptime(end_date, '%m/%d/%y').timestamp() * 1000)
@@ -60,8 +62,8 @@ def scrape_fortSuperiorTent(start_date, end_date, num_adults, num_kids):
             
 
 def main():
-    fortSuperiorData = scrape_fortSuperiorTent('10/25/24', '10/27/24', 2, 1)
-    print(fortSuperiorData)
+    teePeeCampgroundData = scrape_teePeeCampgroundTent('10/25/24', '10/27/24', 2, 1)
+    print(teePeeCampgroundData)
 
 if __name__ == '__main__':
     main()

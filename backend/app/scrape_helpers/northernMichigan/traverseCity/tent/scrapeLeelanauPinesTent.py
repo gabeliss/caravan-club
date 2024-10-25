@@ -1,80 +1,66 @@
 from datetime import datetime
-from playwright.sync_api import sync_playwright
+import requests
+import json
 
 
 def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
-    start_date = datetime.strptime(start_date, '%m/%d/%y').strftime('%Y-%m-%d')
-    end_date = datetime.strptime(end_date, '%m/%d/%y').strftime('%Y-%m-%d')
+    start_date_formatted = datetime.strptime(start_date, '%m/%d/%y').strftime('%Y-%m-%d')
+    end_date_formatted = datetime.strptime(end_date, '%m/%d/%y').strftime('%Y-%m-%d')
 
-    url = f"https://leelanaupinescampresort.com/stay/search?start={start_date}&end={end_date}"
+    url = "https://campspot-embedded-booking-ytynsus4ka-uc.a.run.app/parks/2000/search"
+    headers = {
+        "accept": "application/json, text/plain, */*",
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "accept-language": "en-US,en;q=0.9",
+        "origin": "https://leelanaupinescampresort.com",
+        "referer": "https://leelanaupinescampresort.com/",
+        "sec-ch-ua": '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"macOS"',
+        "sec-fetch-dest": "empty",
+        "sec-fetch-mode": "cors",
+        "sec-fetch-site": "cross-site",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+    }
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        context = browser.new_context()
-        page = context.new_page()
-        page.goto(url)
+    params = {
+        "checkIn": start_date_formatted,
+        "checkOut": end_date_formatted,
+        "adults": num_adults,
+        "children": num_kids,
+        "pets": 0,
+    }
 
-        try:
-            page.wait_for_selector('div:has-text("Ways To Stay")', timeout=10000)
-            page.click('div.flex.flex-col.space-y-1 > div:has-text("Tent Sites")')
-            page.wait_for_selector('.mantine-Select-root input[placeholder="Select a sort option"]', timeout=5000)
-            page.click('.mantine-Select-root input[placeholder="Select a sort option"]')
-            page.wait_for_selector('div[role="option"]:has-text("Price (Low - High)")', timeout=5000)
-            page.click('div[role="option"]:has-text("Price (Low - High)")')
+    response = requests.get(url, headers=headers, params=params, timeout=30)
 
-            page.click('svg[data-icon="chevron-down"]')
+    if response.status_code == 200:
+        text = response.text
+        inventory = json.loads(text)
+        tent_sites = ["Standard Back-In RV", "Deluxe Back-In RV", "Lakefront Basic RV", "Premium Back-In RV"]
+        minPrice = float('inf')
+        for place in inventory['data']:
+            if place["availability"] != "AVAILABLE":
+                continue
 
-            page.wait_for_selector('div:has-text("Children")', timeout=5000)
+            if place['name'] == "Lakefront Basic RV":
+                minPrice = place['averagePricePerNight']
+                break
 
-            children_section = page.locator('div:has-text("Children")')
-            children_plus_button = children_section.locator('button:has(svg[data-icon="plus"])').nth(0)  # Use nth(0) to select the correct button
+            if place['name'] in tent_sites:
+                if place['averagePricePerNight'] < minPrice:
+                    minPrice = place['averagePricePerNight']
 
-            for _ in range(num_kids):
-                children_plus_button.click()
-                page.wait_for_timeout(100)
-
-            adults_section = page.locator('div:has-text("Adults")')
-            adults_minus_button = adults_section.locator('button:has(svg[data-icon="minus"])').nth(1)  # Use nth(0) to select the correct button
-            adults_plus_button = adults_section.locator('button:has(svg[data-icon="plus"])').nth(1)
-
-            current_adults = 2
-            if num_adults < current_adults:
-                for _ in range(current_adults - num_adults):
-                    adults_minus_button.click()
-                    page.wait_for_timeout(100)
-            elif num_adults > current_adults:
-                for _ in range(num_adults - current_adults):
-                    adults_plus_button.click()
-                    page.wait_for_timeout(100)
-
-            page.click('span:has-text("Search")')
-            page.wait_for_load_state('networkidle')
-
-            no_results = page.query_selector('div.flex.flex-col.items-center.justify-center.gap-8.rounded-lg.border')
-            if no_results:
-                return {"available": False, "price": None, "message": "Not available for selected dates."}
-
-            first_option = page.query_selector('div[class*="min-h-"]')
-            if first_option:
-                price_element = first_option.query_selector('div[class*="text-xl"][class*="font-bold"][class*="text-primary"]')
-                price = round(float(price_element.inner_text().replace('$', '').strip()), 2)
-                return {
-                    "available": True,
-                    "price": price,
-                    "message": f"${price:.2f} per night"
-                }
-            else:
-                return {"available": False, "price": None, "message": "No options found."}
-
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return {"available": False, "price": None, "message": f"Error: {str(e)}"}
-        finally:
-            browser.close()
+        if minPrice == float('inf'):
+            return {"available": False, "price": None, "message": "No options available."}
+        else:
+            return {"available": True, "price": minPrice, "message": f"${minPrice:.2f} per night"}
+    else:
+        print("Failed to retrieve data:", response)
+        return {"available": False, "price": None, "message": "Failed to retrieve data"}
 
 
 def main():
-    leelanauPinesData = scrape_leelanauPinesTent('10/15/24', '10/17/24', 5, 1)
+    leelanauPinesData = scrape_leelanauPinesTent('06/06/25', '06/08/25', 3, 1)
     print(leelanauPinesData)
 
 if __name__ == '__main__':

@@ -1,53 +1,69 @@
 from datetime import datetime
-from playwright.sync_api import sync_playwright
-import time
+import requests
+from bs4 import BeautifulSoup
 
 
 def scrape_timberRidgeTent(start_date, end_date, num_adults, num_kids):
-    # Convert dates to the required format (DD-MM-YY)
-    start_date_formatted = datetime.strptime(start_date, "%m/%d/%y").strftime("%d-%m-%y")
-    end_date_formatted = datetime.strptime(end_date, "%m/%d/%y").strftime("%d-%m-%y")
+    url = "https://bookingsus.newbook.cloud/timberridgeresort/api.php"
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Accept": "*/*",
+        "Origin": "https://bookingsus.newbook.cloud",
+        "Referer": "https://bookingsus.newbook.cloud/timberridgeresort/index.php",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15",
+        "X-Requested-With": "XMLHttpRequest"
+    }
+    def convert_date(date_str):
+        date_obj = datetime.strptime(date_str, '%m/%d/%y')
+        return date_obj.strftime('%b %d %Y')
+    
+    start_date_formatted = convert_date(start_date)
+    end_date_formatted = convert_date(end_date)
 
-    url = f"https://bookingsus.newbook.cloud/timberridgeresort/index.php?available_from={start_date_formatted}&available_to={end_date_formatted}&adults={num_adults}&kids={num_kids}&equipment_type=3&equipment_length=20"
+    data = {
+        "newbook_api_action": "availability_chart_responsive",
+        "available_from": start_date_formatted,
+        "available_to": end_date_formatted,
+        "nights": 2,
+        "adults": num_adults,
+        "children": num_kids,
+        "infants": 0,
+        "animals": 0,
+        "equipment_type": 3,
+        "equipment_length": 20
+    }
 
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        context = browser.new_context()
-        page = context.new_page()
-        page.goto(url)
-        time.sleep(1)
+    response = requests.post(url, headers=headers, data=data, timeout=30)
 
-        try:
-            page.wait_for_selector('#category-list')
-
-            first_option = page.query_selector('.newbook_online_category_box')
-
-            if first_option:
-                price_element = first_option.query_selector('.newbook_online_from_price_text')
-
-                if price_element:
-                    price = float(price_element.inner_text().replace('$', ''))
-                    return {
-                        "available": True,
-                        "price": price,
-                        "message": f"${price:.2f} per night"
-                    }
-                else:
-                    return {"available": False, "price": None, "message": "No options available."}
+    if response.status_code == 200:
+        inventory = response.text
+        soup = BeautifulSoup(inventory, 'html.parser')
+        all_containers = soup.find_all("div", class_="newbook_online_category_details")
+        if not all_containers:
+            return {"available": False, "price": None, "message": "Not available for selected dates."}
+        
+        container = all_containers[0]
+        a_tag = container.find("h3").find("a") if container.find("h3") else None
+        if a_tag:
+            price_span = container.find_all("span", class_="newbook_online_from_price_text")
+            if price_span:
+                price = float(price_span[0].text.lstrip("$"))
+                return {
+                    "available": True,
+                    "price": price,
+                    "message": f"${price:.2f} per night"
+                }   
             else:
-                return {"available": False, "price": None, "message": "No options found."}
+                return {"available": False, "price": None, "message": "No options available."}
+        else:
+            return {"available": False, "price": None, "message": "No options available."}
+    else:
+        print("Failed to retrieve data:", response)
+        return {"available": False, "price": None, "message": "Failed to retrieve data"}
 
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return {"available": False, "price": None, "message": f"Error: {str(e)}"}
-
-        finally:
-            browser.close()
 
 def main():
-    #timberRidgeDataUnavailable = scrape_timberRidgeTent('10/01/24', '10/03/24', 8, 1)
-    #print(timberRidgeDataUnavailable)
-    timberRidgeData = scrape_timberRidgeTent('10/01/24', '10/03/24', 3, 1)
+    timberRidgeData = scrape_timberRidgeTent('10/25/24', '10/27/24', 3, 1)
     print(timberRidgeData)
 
 if __name__ == '__main__':
