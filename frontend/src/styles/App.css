@@ -167,7 +167,7 @@ footer a {
 }
 
 .landing-welcome {
-  background: url('/public/images/header/background.jpg') center/cover no-repeat;
+  background: url('https://caravan-bucket.s3.us-east-2.amazonaws.com/images/header/background.jpg') center/cover no-repeat;
   height: auto;
   min-height: 75vh;
   display: flex;

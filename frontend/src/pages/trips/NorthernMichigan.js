@@ -20,7 +20,7 @@ function NorthernMichigan() {
         </div>
         <div className="image-area">
           <img 
-            src="/images/trippage/northernmichigan/kayaking.png" 
+            src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/kayaking.png" 
             alt="Northern Michigan Landscape"
             className="main-image"
           />
@@ -30,22 +30,22 @@ function NorthernMichigan() {
       <div className="trip-info">
         <h3>A Typical Trip to Northern Michigan</h3>
         <div className="info-item">
-          <img src="/images/icons/calendar.png" alt="Calendar" />
+          <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/icons/calendar.png" alt="Calendar" />
           <span className="info-label">Best Time to Visit</span>
           <span className="info-value">May-October</span>
         </div>
         <div className="info-item">
-          <img src="/images/icons/clock.png" alt="Clock" />
+          <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/icons/clock.png" alt="Clock" />
           <span className="info-label">Suggested Travel Time</span>
           <span className="info-value">6 Nights</span>
         </div>
         <div className="info-item">
-          <img src="/images/icons/trail.png" alt="Trail" />
+          <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/icons/trail.png" alt="Trail" />
           <span className="info-label">Local Activities</span>
           <span className="info-value">Hiking, Kayaking, Exploring Towns</span>
         </div>
         <div className="info-item">
-          <img src="/images/icons/cabin.png" alt="Cabin" />
+          <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/icons/cabin.png" alt="Cabin" />
           <span className="info-label">Typical Accommodations</span>
           <span className="info-value">Tent , Glamping, Boutique Lodging</span>
         </div>
@@ -54,41 +54,41 @@ function NorthernMichigan() {
         <h3>Top Places to Visit in Northern Michigan</h3>
         <div className="maps">
           <div className="map">
-            <img src="/images/trippage/northernmichigan/map1.png" alt="Northern Michigan Map" />
+            <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/map1.png" alt="Northern Michigan Map" />
           </div>
           <div className="map">
-            <img src="/images/trippage/northernmichigan/map2.png" alt="Northern Michigan Map" />
+            <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/map2.png" alt="Northern Michigan Map" />
           </div>
         </div>
       </div>
       <div className="places-container">
         <div className="place">
             <div className="place-image">
-                <img src="/images/trippage/northernmichigan/lakemichigan.png" alt="Lake Michigan" />
+                <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/lakemichigan.png" alt="Lake Michigan" />
                 <h4>Lake Michigan</h4>
             </div>
         </div>
         <div className="place">
             <div className="place-image">
-                <img src="/images/trippage/northernmichigan/fishtown.png" alt="Fish Town" />
+                <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/fishtown.png" alt="Fish Town" />
                 <h4>Fish Town</h4>
             </div>
         </div>
         <div className="place">
             <div className="place-image">
-                <img src="/images/trippage/northernmichigan/empirebluffs.png" alt="Empire Bluffs" />
+                <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/empirebluffs.png" alt="Empire Bluffs" />
                 <h4>Empire Bluffs</h4>
             </div>
         </div>
         <div className="place">
             <div className="place-image">
-                <img src="/images/trippage/northernmichigan/traversecity.png" alt="Traverse City" />
+                <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/traversecity.png" alt="Traverse City" />
                 <h4>Traverse City</h4>
             </div>
         </div>
         <div className="place">
             <div className="place-image">
-                <img src="/images/trippage/northernmichigan/picturedrocks.png" alt="Pictured Rocks" />
+                <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/picturedrocks.png" alt="Pictured Rocks" />
                 <h4>Pictured Rocks</h4>
             </div>
         </div>

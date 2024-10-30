@@ -159,17 +159,17 @@
 }
 
 .northern-michigan {
-    background: url('../../public/images/trippage/northernmichigan/lakemichigan.png') center/cover;
+    background: url('https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/lakemichigan.png') center/cover;
 }
 
 .arizona {
-    background: url('../../public/images/trippage/arizona.png') center/cover;
+    background: url('https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/arizona.png') center/cover;
 }
 
 .smoky-mountain {
-    background: url('../../public/images/trippage/smokymountain.png') center/cover;
+    background: url('https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/smokymountain.png') center/cover;
 }
 
 .southern-california {
-    background: url('../../public/images/trippage/southerncalifornia.png') center/cover;
+    background: url('https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/southerncalifornia.png') center/cover;
 }

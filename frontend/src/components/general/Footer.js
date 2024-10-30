@@ -10,7 +10,7 @@ function Footer() {
       </div>
       <div className="footer-center">
         <Link to="/">
-          <img src="/images/header/CaravanClub.png" alt="Caravan Club Logo" />
+          <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/header/CaravanClub.png" alt="Caravan Club Logo" />
         </Link>
       </div>
       <div className="footer-right">

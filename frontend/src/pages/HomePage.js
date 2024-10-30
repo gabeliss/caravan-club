@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Gallery from './../components/general/Gallery';
 import LandingQuestions from '../components/general/LandingQuestions';
 import tripMapping from '../tripmapping.json';
 import TripPlanner from '../components/general/TripPlanner';
@@ -69,19 +68,19 @@ function HomePage() {
         <h2>OUR TRIPS</h2>
         <div className='logo-container'>
           <div className='logo-item' onClick={() => handleLogoClick('washington')}>
-            <img src='/images/triplogos/washington.png' alt='Washington' />
+            <img src='https://caravan-bucket.s3.us-east-2.amazonaws.com/images/triplogos/washington.png' alt='Washington' />
           </div>
           <div className='logo-item' onClick={() => handleLogoClick('northernmichigan')}>
-            <img src='/images/triplogos/northernmichigan.png' alt='Northern Michigan' />
+            <img src='https://caravan-bucket.s3.us-east-2.amazonaws.com/images/triplogos/northernmichigan.png' alt='Northern Michigan' />
           </div>
           <div className='logo-item' onClick={() => handleLogoClick('arizona')}>
-            <img src='/images/triplogos/arizona.png' alt='Arizona' />
+            <img src='https://caravan-bucket.s3.us-east-2.amazonaws.com/images/triplogos/arizona.png' alt='Arizona' />
           </div>
           <div className='logo-item' onClick={() => handleLogoClick('southerncalifornia')}>
-            <img src='/images/triplogos/southerncalifornia.png' alt='Southern California' />
+            <img src='https://caravan-bucket.s3.us-east-2.amazonaws.com/images/triplogos/southerncalifornia.png' alt='Southern California' />
           </div>
           <div className='logo-item' onClick={() => handleLogoClick('smokymountain')}>
-            <img src='/images/triplogos/smokynationalpark.png' alt='Smoky National Park' />
+            <img src='https://caravan-bucket.s3.us-east-2.amazonaws.com/images/triplogos/smokynationalpark.png' alt='Smoky National Park' />
           </div>
         </div>
       </div>

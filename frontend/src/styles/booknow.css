@@ -34,7 +34,7 @@
     align-items: center;
     justify-content: center;
     padding: 0 8%;
-    background-image: url('./../../public/images/bookpages/book1.jpg');
+    background-image: url('https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookpages/book1.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

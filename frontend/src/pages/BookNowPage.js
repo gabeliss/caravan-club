@@ -25,29 +25,29 @@ function BookPage() {
                 <div className='all-diagrams'>
                     <div className='one-diagram'>
                         <h2>Provide</h2>
-                        <img src="/images/icons/handshake.png" alt="Provide" />
+                        <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/icons/handshake.png" alt="Provide" />
                         <p>Provide us with specific information about your ideal road trip</p>
                     </div>
                     <div className='one-diagram'>
                         <h2>Browse</h2>
-                        <img src="/images/icons/browse.png" alt="Browse" />
+                        <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/icons/browse.png" alt="Browse" />
                         <p>Browse our instantly curated list of available options tailored to your preferences</p>
                     </div>
                     <div className='one-diagram'>
                         <h2>Select</h2>
-                        <img src="/images/icons/select.png" alt="Select" />
+                        <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/icons/select.png" alt="Select" />
                         <p>Select from our vetted list of accommodations & book your entire trip with one click</p>
                     </div>
                     <div className='one-diagram'>
                         <h2>Explore</h2>
-                        <img src="/images/icons/hiking.png" alt="Explore" />
+                        <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/icons/hiking.png" alt="Explore" />
                         <p>Set off on your road trip with less time spent on planning & more time dedicated on the good stuff</p>
                     </div>
                 </div>
             </div>
             <div className="book-now-footer">
                 <div className="footer-section">
-                    <img src="/images/bookpages/book2.jpg" alt="Book Now 1" />
+                    <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookpages/book2.jpg" alt="Book Now 1" />
                 </div>
                 <div className="footer-section">
                     <div className="footer-text">
@@ -56,7 +56,7 @@ function BookPage() {
                     </div>
                 </div>
                 <div className="footer-section">
-                    <img src="/images/bookpages/book3.jpg" alt="Book Now 2" />
+                    <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookpages/book3.jpg" alt="Book Now 2" />
                 </div>
                 <div className="footer-section">
                     <div className="footer-text">
