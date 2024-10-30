@@ -1,7 +1,7 @@
-from datetime import datetime
-import requests
 import json
-
+import requests
+from datetime import datetime
+import zlib
 
 def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
     start_date_formatted = datetime.strptime(start_date, '%m/%d/%y').strftime('%Y-%m-%d')
@@ -10,7 +10,7 @@ def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
     url = "https://campspot-embedded-booking-ytynsus4ka-uc.a.run.app/parks/2000/search"
     headers = {
         "accept": "application/json, text/plain, */*",
-        "accept-encoding": "gzip, deflate, br, zstd",
+        "accept-encoding": "gzip, deflate, br",  # Specify decompression methods
         "accept-language": "en-US,en;q=0.9",
         "origin": "https://leelanaupinescampresort.com",
         "referer": "https://leelanaupinescampresort.com/",
@@ -35,7 +35,15 @@ def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
 
     if response.status_code == 200:
         try:
-            text = response.text
+            # Decompress if necessary
+            if response.headers.get('Content-Encoding') == 'gzip':
+                text = zlib.decompress(response.content, zlib.MAX_WBITS | 16).decode('utf-8')
+            elif response.headers.get('Content-Encoding') == 'deflate':
+                text = zlib.decompress(response.content).decode('utf-8')
+            else:
+                text = response.text  # No decompression needed
+            
+            # Parse JSON data
             inventory = json.loads(text)
             tent_sites = ["Standard Back-In RV", "Deluxe Back-In RV", "Lakefront Basic RV", "Premium Back-In RV"]
             minPrice = float('inf')
