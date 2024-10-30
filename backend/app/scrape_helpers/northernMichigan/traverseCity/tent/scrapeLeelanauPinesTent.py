@@ -34,33 +34,37 @@ def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
     response = requests.get(url, headers=headers, params=params, timeout=30)
 
     if response.status_code == 200:
-        text = response.text
-        inventory = json.loads(text)
-        tent_sites = ["Standard Back-In RV", "Deluxe Back-In RV", "Lakefront Basic RV", "Premium Back-In RV"]
-        minPrice = float('inf')
-        for place in inventory['data']:
-            if place["availability"] != "AVAILABLE":
-                continue
+        try:
+            text = response.text
+            inventory = json.loads(text)
+            tent_sites = ["Standard Back-In RV", "Deluxe Back-In RV", "Lakefront Basic RV", "Premium Back-In RV"]
+            minPrice = float('inf')
+            for place in inventory.get('data', []):
+                if place["availability"] != "AVAILABLE":
+                    continue
 
-            if place['name'] == "Lakefront Basic RV":
-                minPrice = place['averagePricePerNight']
-                break
+                if place['name'] == "Lakefront Basic RV":
+                    minPrice = place['averagePricePerNight']
+                    break
 
-            if place['name'] in tent_sites:
-                if place['averagePricePerNight'] < minPrice:
+                if place['name'] in tent_sites and place['averagePricePerNight'] < minPrice:
                     minPrice = place['averagePricePerNight']
 
-        if minPrice == float('inf'):
-            return {"available": False, "price": None, "message": "No options available."}
-        else:
-            return {"available": True, "price": minPrice, "message": f"${minPrice:.2f} per night"}
+            if minPrice == float('inf'):
+                return {"available": False, "price": None, "message": "No options available."}
+            else:
+                return {"available": True, "price": minPrice, "message": f"${minPrice:.2f} per night"}
+
+        except json.JSONDecodeError as e:
+            print("Failed to parse JSON response:", response.text)
+            return {"available": False, "price": None, "message": "Invalid JSON response from API"}
     else:
-        print("Failed to retrieve data:", response)
+        print(f"Failed to retrieve data: Status Code {response.status_code}, Response: {response.text}")
         return {"available": False, "price": None, "message": "Failed to retrieve data"}
 
 
 def main():
-    leelanauPinesData = scrape_leelanauPinesTent('06/06/25', '06/08/25', 3, 1)
+    leelanauPinesData = scrape_leelanauPinesTent('06/04/25', '06/06/25', 2, 0)
     print(leelanauPinesData)
 
 if __name__ == '__main__':
