@@ -1,68 +1,55 @@
-from datetime import datetime
 import requests
+import os
+import json
+
+
+def get_initial_cookies(url):
+    session = requests.Session()
+    session.get(url)
+    return session
 
 
 def scrape_teePeeCampgroundTent(start_date, end_date, num_adults, num_kids):
-    #Not Implemented Yet
-    return {"available": False, "price": None, "message": "No options available."}
-    # Convert dates to timestamps in milliseconds
-    start_timestamp = int(datetime.strptime(start_date, '%m/%d/%y').timestamp() * 1000)
-    end_timestamp = int(datetime.strptime(end_date, '%m/%d/%y').timestamp() * 1000)
 
-    # API URL
-    url = "https://hotels.wixapps.net/api/rooms/search"
+    file_path = os.path.join(os.path.dirname(__file__), "date_to_pk_mapping.json")
 
-    # Payload
-    payload = {
-        "checkIn": str(start_timestamp),
-        "checkOut": str(end_timestamp),
-        "adults": str(num_adults)
-    }
+    with open(file_path, "r") as f:
+        date_to_pk_dict = json.load(f)
+    
+    pk = date_to_pk_dict.get(start_date)
 
-    # Headers
+    url = f"https://fareharbor.com/api/v1/companies/teepeecampground/total-sheets/238778/pricing/Availability/{pk}/"
+
+    session = get_initial_cookies(url)
+    
     headers = {
-        "accept": "application/json, text/plain, */*",
-        "accept-encoding": "gzip, deflate, br, zstd",
-        "accept-language": "en-US,en;q=0.9",
-        "content-type": "application/json;charset=UTF-8",
-        "origin": "https://hotels.wixapps.net",
-        "referer": "https://hotels.wixapps.net/index.html/rooms/",
-        "sec-ch-ua": '"Chromium";v="128", "Not;A=Brand";v="24", "Google Chrome";v="128"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": '"macOS"',
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin",
-        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
-        "x-wix-hotels-user-lang": "en",
-        "x-wix-instance": "e3V5_uiZIx5AVeNQI_FHABdSXKJTMzuM4gVL9oSpzVk.eyJpbnN0YW5jZUlkIjoiMmU5MGQ2YjktOWZlZC00MGNiLTlhMzItNzNlMWU3Yjk1ZDVkIiwiYXBwRGVmSWQiOiIxMzVhYWQ4Ni05MTI1LTYwNzQtNzM0Ni0yOWRjNmEzYzliY2YiLCJtZXRhU2l0ZUlkIjoiNTIwYTJjZDUtNjg4OC00NWFlLWI4ZDYtMTcxMzZiYmYyNTU5Iiwic2lnbkRhdGUiOiIyMDI0LTEwLTI1VDIxOjQ5OjQxLjYwMloiLCJ2ZW5kb3JQcm9kdWN0SWQiOiJob3RlbHMiLCJkZW1vTW9kZSI6ZmFsc2UsIm9yaWdpbkluc3RhbmNlSWQiOiIwYzFlYmI1ZC1mYTc2LTRkMDUtYWUyYS1lNjRiY2MyM2MyODkiLCJhaWQiOiI3ZDBlYTY5Zi03YWFmLTQyMTctYmFmNS04MDgxOWJlMDZiMWIiLCJiaVRva2VuIjoiN2M5YWZhNmMtZjc2NS0wNTY1LTIyZTQtNjRmMjhjMDY3ODA0Iiwic2l0ZU93bmVySWQiOiI4NGM4ZDM0Yi1mOWYyLTQyM2EtODFjYi04M2Y3YTI5ZTYzZGUifQ",
-        "x-xsrf-token": "1729892982|vi-2-zPY5Kwr"
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Cache-Control": "max-age=0",
+        "Referer": "https://fareharbor.com/embeds/book/teepeecampground/items/74239/calendar/2025/05/15/",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        "Upgrade-Insecure-Requests": "1",
     }
-
-    # Use a session to handle cookies
-    session = requests.Session()
-    response = session.post(url, headers=headers, json=payload, timeout=30)
-
-    # Check if the response was successful and return the content
-    if response.status_code == 200:
-        inventory = response.json()
-        for room in inventory:
-            if room['availableUnits'] == None:
-                continue
-
-            if "Canvas Tent Barrack" not in room['room']['name']:
-                price = room['room']['offer']['perNight']
-                return {"available": True, "price": price, "message": f"${price:.2f} per night"}
-        
-        return {"available": False, "price": None, "message": "No options available."}
-            
-    else:
+    
+    csrf_token = session.cookies.get("csrftoken")
+    if csrf_token:
+        headers["X-CSRFTOKEN"] = csrf_token
+    
+    
+    try:
+        response = session.get(url, headers=headers)
+        response.raise_for_status() 
+        data = response.json() 
+        # Revisit when site is populated
+        return {"available": False, "price": None, "message": "Site is not populated yet."}
+    except requests.RequestException as e:
         print("Failed to retrieve data:", response)
         return {"available": False, "price": None, "message": "Failed to retrieve data"}
-            
+
 
 def main():
-    teePeeCampgroundData = scrape_teePeeCampgroundTent('10/25/24', '10/27/24', 2, 1)
+    teePeeCampgroundData = scrape_teePeeCampgroundTent('05/15/25', '05/17/25', 2, 1)
     print(teePeeCampgroundData)
 
 if __name__ == '__main__':

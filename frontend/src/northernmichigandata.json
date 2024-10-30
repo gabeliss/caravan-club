@@ -33,6 +33,15 @@
         "taxRate": 0,
         "message": "Unavailable"  
       },
+      "teepeeCampground": {
+        "title": "TeePee Campground",
+        "content": "Tee Pee Camground description",
+        "available": false,
+        "price": 0,
+        "name": "",
+        "taxRate": 0,
+        "message": "Unavailable"
+      },
       "fakePlace": {
         "title": "Mackinac Island Placeholder",
         "content": "This is a placeholder for Mackinac City.",
