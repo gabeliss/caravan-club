@@ -9,6 +9,7 @@ const apiRouteMappingScrape = {
     'timberRidge': 'timberRidgeTent',
     'leelanauPines': 'leelanauPinesTent',
     'indianRiver': 'indianRiverTent',
+    'teePeeCampground': 'teePeeCampgroundTent',
     'uncleDucky': 'uncleDuckysTent',
     'touristPark': 'touristParkTent',
     'fortSuperior': 'fortSuperiorTent',

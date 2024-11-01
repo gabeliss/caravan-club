@@ -27,7 +27,7 @@ def scrape_teePeeCampgroundTent(start_date, end_date, num_adults, num_kids):
         "Accept-Encoding": "gzip, deflate, br, zstd",
         "Accept-Language": "en-US,en;q=0.9",
         "Cache-Control": "max-age=0",
-        "Referer": "https://fareharbor.com/embeds/book/teepeecampground/items/74239/calendar/2025/05/15/",
+        "Referer": f"https://fareharbor.com/embeds/book/teepeecampground/items/74239/calendar/20{start_date[6:8]}/{start_date[0:2]}/{start_date[3:5]}/",
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
         "Upgrade-Insecure-Requests": "1",
     }
@@ -42,6 +42,7 @@ def scrape_teePeeCampgroundTent(start_date, end_date, num_adults, num_kids):
         response.raise_for_status() 
         data = response.json() 
         # Revisit when site is populated
+        print("Site is not populated yet.")
         return {"available": False, "price": None, "message": "Site is not populated yet."}
     except requests.RequestException as e:
         print("Failed to retrieve data:", response)

@@ -2,6 +2,7 @@ from app import app
 from app.scrape_helpers.northernMichigan.traverseCity.tent.scrapeTimberRidgeTent import scrape_timberRidgeTent
 from app.scrape_helpers.northernMichigan.traverseCity.tent.scrapeLeelanauPinesTent import scrape_leelanauPinesTent
 from app.scrape_helpers.northernMichigan.mackinacCity.tent.scrapeIndianRiverTent import scrape_indianRiverTent
+from app.scrape_helpers.northernMichigan.mackinacCity.tent.scrapeTeePeeCampgroundTent import scrape_teePeeCampgroundTent
 from app.scrape_helpers.northernMichigan.picturedRocks.tent.scrapeUncleDuckysTent import scrape_uncleDuckysTent
 from app.scrape_helpers.northernMichigan.picturedRocks.tent.scrapeTouristParkTent import scrape_touristParkTent
 from app.scrape_helpers.northernMichigan.picturedRocks.tent.scrapeFortSuperiorTent import scrape_fortSuperiorTent
@@ -101,6 +102,10 @@ def get_leelanauPinesTent_price():
 @app.route('/api/scrape/indianRiverTent')
 def get_indianRiverTent_price():
     return get_price('Indian River', 1, 8, scrape_indianRiverTent)
+
+@app.route('/api/scrape/teePeeCampgroundTent')
+def get_teePeeCampgroundTent_price():
+    return get_price('Tee Pee Campground', 1, 6, scrape_teePeeCampgroundTent)
 
 @app.route('/api/scrape/uncleDuckysTent')
 def get_uncleDuckysTent_price():

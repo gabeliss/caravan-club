@@ -144,7 +144,13 @@
   }
 
   .toggle-content.active {
-    max-height: 500em; /* Set to a value that is greater than what you expect the content height to be */
+    max-height: 800em; /* Set to a value that is greater than what you expect the content height to be */
     transition: max-height 0.3s ease-in; /* Adjust this value to fit your content */
     width: 70%;
+  }
+
+  .toggle-img {
+    width: 450px;
+    height: 450px;
+    margin-right: 10px;
   }

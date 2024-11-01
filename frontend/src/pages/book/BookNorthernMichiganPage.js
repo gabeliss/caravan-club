@@ -108,7 +108,7 @@ function BookNorthernMichiganPage() {
         setFetchError(error);
       } finally {
         setIsLoading(false);
-        apiCalled.current = true;  // Mark the API calls as completed
+        apiCalled.current = true;
       }
     };
 
@@ -118,7 +118,7 @@ function BookNorthernMichiganPage() {
     }
 
     console.log('Location state found:', location.state);
-  }, [location.state, navigate]);  // Removed `placeDetails` from dependency list to prevent re-renders
+  }, [location.state, navigate]); 
 
   const handleSelectStatus = (location, accommodationKey) => {
     setSelectedAccommodations(prev => ({

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './../../styles/bookpages.css';
 
-const ToggleItem = ({ title, content, isActive, setActive, availability, price, message, isSelected, onSelect }) => {
+const ToggleItem = ({ title, content, isActive, setActive, availability, price, message, isSelected, onSelect, details }) => {
     const contentRef = useRef(null);
     const [contentHeight, setContentHeight] = useState(0);
 
@@ -24,7 +24,6 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
                     className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'selected' : ''}`} 
                     onClick={() => availability && onSelect()}
                 >
-                    {/* Display price and message if available */}
                     {message}
                 </div>
             </div>
@@ -34,6 +33,34 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
                 style={{ maxHeight: `${currentHeight}px` }}
             >
                 <p>{content}</p>
+                
+                {/* Display images if they exist */}
+                {details.imageUrls?.length > 0 && (
+                    <div className="image-gallery">
+                        {details.imageUrls.map((url, index) => (
+                            <img src={url} alt={`Image ${index + 1}`} key={index} className="toggle-img" />
+                        ))}
+                    </div>
+                )}
+
+                {/* Display additional details if they exist */}
+                <div className="additional-details">
+                    {details.distanceToTown && <p><strong>Distance to town:</strong> {details.distanceToTown}</p>}
+                    {details.amenities?.length > 0 && (
+                        <>
+                            <p><strong>Amenities:</strong></p>
+                            <ul>
+                                {details.amenities.map((amenity, i) => (
+                                    <li key={i}>{amenity}</li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
+                    {details.checkInTime && <p><strong>Check-in:</strong> {details.checkInTime}</p>}
+                    {details.checkOutTime && <p><strong>Check-out:</strong> {details.checkOutTime}</p>}
+                    {details.guidelines && <p><strong>Guidelines:</strong> {details.guidelines}</p>}
+                    {details.cancellationPolicy && <p><strong>Cancellation Policy:</strong> {details.cancellationPolicy}</p>}
+                </div>
             </div>
         </div>
     );
@@ -68,6 +95,7 @@ const ToggleList = ({ data, onSelectionChange }) => {
                     message={details.message}
                     isSelected={key === selectedStatusKey}
                     onSelect={() => handleSelectStatus(key)}
+                    details={details}
                 />
                 ))}
             </div>

@@ -8,7 +8,28 @@
         "price": 0,
         "name": "",
         "taxRate": 0.11,
-        "message": "Unavailable"
+        "message": "Unavailable",
+        "imageUrls": [
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/explorepage/smokymountain.jpg",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/explorepage/sedona.jpg"
+        ],
+        "distanceToTown": "8 minutes from downtown Traverse City",
+        "amenities": [
+          "Picnic table",
+          "Fire ring",
+          "Bathrooms",
+          "Showers",
+          "Electricity (at select sites)",
+          "Pool (seasonal)",
+          "Laundry facilities",
+          "Camp store",
+          "Playground",
+          "Disc golf course"
+        ],
+        "checkInTime": "3:00 PM",
+        "checkOutTime": "12:00 PM (A late fee of $25 will apply for any late check-outs)",
+        "guidelines": "6 Guests Maximum Per Site",
+        "cancellationPolicy": "A $15 processing fee applies to all cancellations. You may cancel up to 30 days prior to arrival for a refund, minus the fee. Reservations canceled within 30 days of arrival are non-refundable. Rescheduling is permitted within the same calendar year."
       },
       "leelanauPines": {
         "title": "Leelanau Pines Campground",
@@ -33,7 +54,7 @@
         "taxRate": 0,
         "message": "Unavailable"  
       },
-      "teepeeCampground": {
+      "teePeeCampground": {
         "title": "TeePee Campground",
         "content": "Tee Pee Camground description",
         "available": false,

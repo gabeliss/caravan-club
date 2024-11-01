@@ -40,7 +40,8 @@ def scrape_timberRidgeTent(start_date, end_date, num_adults, num_kids):
         soup = BeautifulSoup(inventory, 'html.parser')
         all_containers = soup.find_all("div", class_="newbook_online_category_details")
         if not all_containers:
-            return {"available": False, "price": None, "message": "Not available for selected dates."}
+            print("No containers found")
+            return {"available": False, "price": None, "message": "No options available."}
         
         container = all_containers[0]
         a_tag = container.find("h3").find("a") if container.find("h3") else None

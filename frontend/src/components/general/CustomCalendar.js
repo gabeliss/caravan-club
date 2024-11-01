@@ -28,8 +28,11 @@ const isSameDay = (date1, date2) => {
 };
 
 const CustomCalendar = ({ startDate, endDate, onDateSelect, nights }) => {
+  const today = new Date();
+  const parsedStartDate = startDate ? new Date(startDate.replace(/-/g, '/')) : today;
+  
   const [currentMonth, setCurrentMonth] = useState(() => {
-    return startDate ? new Date(startDate) : new Date();
+    return new Date(parsedStartDate.getFullYear(), parsedStartDate.getMonth(), 1);
   });
   const [selectedStartDate, setSelectedStartDate] = useState(startDate ? new Date(startDate) : null);
   const [selectedEndDate, setSelectedEndDate] = useState(endDate ? new Date(endDate) : null);
