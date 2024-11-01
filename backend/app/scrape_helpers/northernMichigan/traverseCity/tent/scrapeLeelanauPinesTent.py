@@ -1,7 +1,8 @@
-import json
 import requests
+import json
+import gzip
+import brotli  # Import Brotli for handling Brotli compression
 from datetime import datetime
-import zlib
 
 def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
     start_date_formatted = datetime.strptime(start_date, '%m/%d/%y').strftime('%Y-%m-%d')
@@ -10,7 +11,7 @@ def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
     url = "https://campspot-embedded-booking-ytynsus4ka-uc.a.run.app/parks/2000/search"
     headers = {
         "accept": "application/json, text/plain, */*",
-        "accept-encoding": "gzip, deflate, br",  # Specify decompression methods
+        "accept-encoding": "gzip, deflate, br",
         "accept-language": "en-US,en;q=0.9",
         "origin": "https://leelanaupinescampresort.com",
         "referer": "https://leelanaupinescampresort.com/",
@@ -33,16 +34,26 @@ def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
 
     response = requests.get(url, headers=headers, params=params, timeout=30)
 
+    print("Request URL:", response.url)
+    print("Response Headers:", response.headers)
+
     if response.status_code == 200:
         try:
-            # Decompress if necessary
-            if response.headers.get('Content-Encoding') == 'gzip':
-                text = zlib.decompress(response.content, zlib.MAX_WBITS | 16).decode('utf-8')
-            elif response.headers.get('Content-Encoding') == 'deflate':
-                text = zlib.decompress(response.content).decode('utf-8')
+            # Check encoding and decompress accordingly
+            if response.headers.get("Content-Encoding") == "gzip":
+                text = gzip.decompress(response.content).decode('utf-8')
+            elif response.headers.get("Content-Encoding") == "br":
+                try:
+                    text = brotli.decompress(response.content).decode('utf-8')
+                except brotli.error as e:
+                    print("Brotli decompression error:", e)
+                    print("Response content preview (uncompressed):", response.content[:200])  # Print preview of the content
+                    text = response.content.decode('utf-8')  # Attempt to decode directly if Brotli fails
             else:
-                text = response.text  # No decompression needed
-            
+                text = response.text
+
+            print("Response Preview:", text[:200])  # Print first 200 characters of the response
+
             # Parse JSON data
             inventory = json.loads(text)
             tent_sites = ["Standard Back-In RV", "Deluxe Back-In RV", "Lakefront Basic RV", "Premium Back-In RV"]
@@ -64,7 +75,7 @@ def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
                 return {"available": True, "price": minPrice, "message": f"${minPrice:.2f} per night"}
 
         except json.JSONDecodeError as e:
-            print("Failed to parse JSON response:", response.text)
+            print("Failed to parse JSON response:", text)
             return {"available": False, "price": None, "message": "Invalid JSON response from API"}
     else:
         print(f"Failed to retrieve data: Status Code {response.status_code}, Response: {response.text}")
