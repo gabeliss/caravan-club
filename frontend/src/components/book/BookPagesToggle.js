@@ -1,4 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import './../../styles/bookpages.css';
 
 const ToggleItem = ({ title, content, isActive, setActive, availability, price, message, isSelected, onSelect, details }) => {
@@ -36,12 +39,30 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
                 
                 {/* Display images if they exist */}
                 {details.imageUrls?.length > 0 && (
-                    <div className="image-gallery">
-                        {details.imageUrls.map((url, index) => (
-                            <img src={url} alt={`Image ${index + 1}`} key={index} className="toggle-img" />
-                        ))}
-                    </div>
-                )}
+                <Slider
+                    className="image-carousel"
+                    dots={true}
+                    infinite={false} // No looping, so no duplicates
+                    speed={500}
+                    slidesToShow={Math.min(details.imageUrls.length, 3)} // Show up to 3 images or the total number available
+                    slidesToScroll={1}
+                    responsive={[
+                        {
+                            breakpoint: 768,
+                            settings: {
+                                slidesToShow: 1,
+                                slidesToScroll: 1,
+                            },
+                        },
+                    ]}
+                >
+                    {details.imageUrls.map((url, index) => (
+                        <div key={index} className="carousel-slide">
+                            <img src={url} alt={`Image ${index + 1}`} className="toggle-img" />
+                        </div>
+                    ))}
+                </Slider>
+            )}
 
                 {/* Display additional details if they exist */}
                 <div className="additional-details">

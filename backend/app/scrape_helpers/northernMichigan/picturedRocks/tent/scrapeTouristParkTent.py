@@ -4,6 +4,9 @@ import json
 
 
 def scrape_touristParkTent(start_date, end_date, num_adults, num_kids):
+    start_month, start_day, start_year = map(int, start_date.split('/'))
+    if start_year < 25 or (start_year == 25 and (start_month < 5 or (start_month == 5 and start_day < 15))):
+        return {"available": False, "price": None, "message": "Not available before May 25, 2025"}
     # Convert dates to the required format (YYYY-MM-DD)
     start_date_formatted = datetime.strptime(start_date, "%m/%d/%y").strftime("%Y-%m-%d")
     end_date_formatted = datetime.strptime(end_date, "%m/%d/%y").strftime("%Y-%m-%d")

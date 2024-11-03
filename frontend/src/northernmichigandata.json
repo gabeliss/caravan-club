@@ -10,8 +10,11 @@
         "taxRate": 0.11,
         "message": "Unavailable",
         "imageUrls": [
-          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/explorepage/smokymountain.jpg",
-          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/explorepage/sedona.jpg"
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/timberRidge1.png",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/timberRidge2.png",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/timberRidge3.png",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/timberRidge4.png",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/timberRidge5.png"
         ],
         "distanceToTown": "8 minutes from downtown Traverse City",
         "amenities": [
@@ -33,12 +36,37 @@
       },
       "leelanauPines": {
         "title": "Leelanau Pines Campground",
-        "content": "Description",
+        "content": "Located on the picturesque shores of Lake Leelanau, Leelanau Pines Campground is a prime spot for waterfront camping. Tent sites offer stunning lake views and direct access to the water, making it a haven for boating, fishing, and water sports enthusiasts. Campers rave about the peaceful sunrise views over the lake, and the campground’s proximity to the wineries of Leelanau Peninsula adds a perfect touch for those looking to indulge in local culture.",
         "available": false,
         "price": 0,
         "name": "",
         "taxRate": 0.06,
-        "message": "Unavailable"
+        "message": "Unavailable",
+        "imageUrls": [
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/leelanauPines1.png",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/leelanauPines2.png",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/leelanauPines3.png",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/leelanauPines4.png"
+        ],
+        "distanceToTown": "15 minutes from Suttons Bay, 20 minutes from downtown Leland, and 25 minutes from Traverse City",
+        "amenities": [
+          "Fire pit",
+          "Picnic table",
+          "Not Pet-Friendly on Tent Sites",
+          "Pickleball Courts",
+          "Gaga Ball",
+          "Basketball",
+          "Electricity (at some sites)",
+          "Bathrooms",
+          "Showers",
+          "Laundry facilities",
+          "Camp store",
+          "Swimming in the lake"
+        ],
+        "checkInTime": "3:00 PM",
+        "checkOutTime": "1:00 PM",
+        "guidelines": "1 Tent, 8 Guests Maximum Per Site",
+        "cancellationPolicy": "If you cancel your reservation more than 2 weeks in advance, you will receive a refund minus a $25 cancellation fee per campsite, or full refund issued as camp credit. For cancellations made at least 1 week in advance, you will receive 50% of the reservation as camp credit, with the other 50% forfeited. If you cancel less than 1 week before your arrival, the full reservation amount will be forfeited. For changes to your reservation, if you make adjustments to your arrival or departure dates more than 2 weeks in advance, you are allowed one courtesy change. However, any subsequent changes will incur a $15 service fee."
       }
     },
     "lodging": {}
@@ -47,12 +75,35 @@
     "tent": {
       "indianRiver": {
         "title": "Indian River RV Resort",
-        "content": "Indian River RV Resort is a family-owned and operated campground located on the eastern shore of Indian River, Michigan. The campground offers a peaceful and scenic setting, with a mix of wooded and waterfront campsites. It features a sandy beach, a playground, and a picnic area. The campground also offers a general store, a laundromat, and a dump station. Indian River RV Resort is a great destination for those looking to enjoy the natural beauty of northern Michigan while still having access to nearby amenities.",
+        "content": "Indian River Resort offers a serene escape along Michigan's beautiful Inland Waterway, just a short distance from Mackinac Island. Tent sites are surrounded by lush forests and situated along tranquil riverbanks, providing campers with easy access to kayaking and canoeing. This campground is a popular choice for outdoor enthusiasts, with ample opportunities for water-based activities as well as nearby hiking and ATV trails. The soothing sounds of the flowing river create a peaceful ambiance, making it an ideal spot to unwind after a day of exploration in the stunning surrounding parks.",
         "available": false,
         "price": 0,
         "name": "",
         "taxRate": 0,
-        "message": "Unavailable"  
+        "message": "Unavailable",
+        "imageUrls": [
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/indianRiver1.png",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/indianRiver2.png",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/indianRiver3.png"
+        ],
+        "distanceToTown": "5 minutes from downtown Indian River, 20 minutes from Cheboygan, 28 minutes from Mackinaw City (Port to head to Mackinac Island)",
+        "amenities": [
+          "Fire ring",
+          "Picnic table",
+          "Electricity",
+          "Pet-friendly",
+          "Wi-Fi",
+          "Bathrooms",
+          "Showers",
+          "Laundry facilities",
+          "Camp store",
+          "River and pool swimming",
+          "Nearby Burt Lake State Park with hiking trails and sandy beaches"
+        ],
+        "checkInTime": "1:00 PM",
+        "checkOutTime": "11:00 AM",
+        "guidelines": "1 Tent, 8 Guests Maximum Per Site",
+        "cancellationPolicy": "All reservations require a deposit of the first night's stay (10% for 7-day reservations). A $20 cancellation fee applies if you cancel more than 30 days in advance; if you cancel between 8 and 30 days, your deposit will be held as a credit for 12 months. No refunds or credits will be issued for cancellations within a week of arrival or after check-in. Please note that changes to your reservation may result in increased nightly rates."
       },
       "teePeeCampground": {
         "title": "TeePee Campground",
@@ -75,38 +126,96 @@
     },
     "lodging": {}
   },
-  "picturedRocks": {
-    "tent": {
-      "uncleDucky": {
-        "title": "Uncle Ducky's - Paddlers Village",
-        "content": "Paddlers Village offers a modern camping experience with electricity in every unit, mini fridges, and direct access to amenities like the Duck Pond Eatery and Grand Island Boat Cruise dock. The smaller private beach adds waterfront charm. In contrast, Au Train Beach Campground is larger, embracing a rustic feel with solar-powered lights and USB ports for most units. Only Grand Yurts and Common Areas have wired electricity. Despite lacking on-site beach access, it compensates with proximity to the expansive 3-mile-long Au Train Beach, providing a natural and spacious setting with the option to have fires. The choice boils down to preferences for modern conveniences and smaller beaches (Paddlers Village) versus a larger, rustic ambiance and access to a significant natural beach (Au Train Beach Campground).",
-        "available": false,
-        "name": "",
-        "price": 0,
-        "taxRate": 0.07,
-        "message": "Unavailable",
-        "partialPayment": true,
-        "disclaimer": "* Disclaimer: Only 50% of the total payment is required at the time of booking, the remaining 50% will be due later. You will receive an email from Uncle Duckys with further information upon successful payment."
-      },
-      "touristPark": {
-        "title": "Tourist Park Campground",
-        "content": "Description",
-        "available": false,
-        "price": 0,
-        "name": "",
-        "taxRate": 0.03,
-        "message": "Unavailable"
-      },
-      "fortSuperior": {
-        "title": "Fort Superior Campground",
-        "content": "Description",
-        "available": false,
-        "price": 0,
-        "name": "",
-        "taxRate": 0.05,
-        "message": "Unavailable"
-      }
+"picturedRocks": {
+  "tent": {
+    "uncleDucky": {
+      "title": "Uncle Ducky's - Paddlers Village",
+      "content": "Uncle Ducky's in Munising is your gateway to the breathtaking beauty of Michigan's Upper Peninsula, located on the shores of Lake Superior. This campground is famous for its Pictured Rocks kayaking tours, offering campers a unique chance to explore one of Michigan’s most iconic natural wonders. Tent sites are located just steps from the lake, and the stunning views of Superior, combined with easy access to outdoor adventures, make this a favorite for nature lovers.",
+      "available": false,
+      "price": 0,
+      "name": "",
+      "taxRate": 0.07,
+      "message": "Unavailable",
+      "imageUrls": [
+        "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/uncleDuckys1.png"
+      ],
+      "distanceToTown": "15 minutes from Munising, with access to shops, restaurants, and Pictured Rocks National Lakeshore.",
+      "amenities": [
+        "Fire pit",
+        "Picnic table",
+        "Pet-Friendly ($25 per pet)",
+        "Wi-Fi in common areas",
+        "Bathrooms",
+        "Showers",
+        "Beer Garden Nearby",
+        "Beach access",
+        "Hiking Shuttle",
+        "Kayak rentals and guided tours"
+      ],
+      "checkInTime": "3:00 PM",
+      "checkOutTime": "11:00 AM",
+      "guidelines": "2 Tents, 8 Guests Maximum Per Site",
+      "cancellationPolicy": "A standard $25 cancellation fee applies to all reservations. You may cancel without additional penalties up to 14 days before your arrival date. Cancellations made within 14 days will incur the cancellation fee plus the cost of one full night’s stay. Unfortunately, reservations canceled within 72 hours of check-in will not receive a refund."
     },
+    "touristPark": {
+      "title": "Tourist Park Campground",
+      "content": "Located in Munising, Tourist Park Campground offers a perfect balance of convenience and natural beauty, with tent sites situated along the shores of the Anna River. This peaceful park is a great option for those looking to explore the wonders of Pictured Rocks National Lakeshore while being close to town. Campers can enjoy fishing, kayaking, and easy access to nearby waterfalls and hiking trails. Tourist Park is also ideal for those wanting a quiet, laid-back atmosphere after a day of exploring the Upper Peninsula.",
+      "available": false,
+      "price": 0,
+      "name": "",
+      "taxRate": 0.03,
+      "message": "Unavailable",
+      "imageUrls": [
+        "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/touristPark1.png",
+        "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/touristPark2.png"
+      ],
+      "distanceToTown": "5 minutes from downtown Munising, offering shops, restaurants, and access to Pictured Rocks.",
+      "amenities": [
+        "Fire ring",
+        "Picnic table",
+        "Wi-Fi",
+        "Pet-Friendly",
+        "Electricity (at most sites)",
+        "Bathrooms",
+        "Showers",
+        "Laundry facilities",
+        "River swimming (no pool)",
+        "Playground",
+        "Hiking and waterfall trails nearby"
+      ],
+      "checkInTime": "12:00 PM",
+      "checkOutTime": "12:00 PM",
+      "guidelines": "2 Tents, 6 Guests Maximum Per Site",
+      "cancellationPolicy": "All cancellations made 3 days or more before your arrival will incur a $20 fee. Cancellations occurring within 72 hours of your arrival will be charged 50% of the current reservation cost. For one-night stays, the full amount for that night will be billed."
+    },
+    "fortSuperior": {
+      "title": "Fort Superior Campground",
+      "content": "Fort Superior Campground is a hidden gem located near Munising, offering a unique camping experience surrounded by dense forests and rugged landscapes. This more rustic campground may require some walking to reach your site, but the breathtaking views of Lake Superior make it worthwhile. Perfect for those seeking solitude and a deeper connection with nature, campers enjoy direct access to the lake, ideal for fishing, kayaking, and soaking in the stunning scenery. The campground is also conveniently situated near several historical sites, including the famous Pictured Rocks National Lakeshore, making it an excellent base for outdoor adventures.",
+      "available": false,
+      "price": 0,
+      "name": "",
+      "taxRate": 0.05,
+      "message": "Unavailable",
+      "imageUrls": [
+        "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/fortSuperior1.png",
+        "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/fortSuperior2.png",
+        "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/fortSuperior3.png",
+        "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/fortSuperior4.png"
+      ],
+      "distanceToTown": "10 minutes from downtown Munising, where you can find shops, restaurants, and access to Pictured Rocks.",
+      "amenities": [
+        "Fire pit",
+        "Picnic table",
+        "Pet-Friendly (2 per site)",
+        "4 Privy Toilets",
+        "Hand Pumps for Water"
+      ],
+      "checkInTime": "2:00 PM",
+      "checkOutTime": "11:00 AM",
+      "guidelines": "6 Guests Maximum Per Site, 2 vehicles per site",
+      "cancellationPolicy": "Full payment is required at the time of reservation, and all cancellations or changes must be submitted via email to fortsuperiorcampground@gmail.com. A $25 cancellation fee applies for cancellations made up to two weeks prior to check-in; within two weeks, the fee is $25 plus one full night’s stay. No refunds will be issued for cancellations within three days of check-in or for early check-outs, and credit card processing fees are non-refundable."
+    }
+  },
     "lodging": {}
   }
 }

@@ -10,6 +10,10 @@ def get_initial_cookies(url):
 
 
 def scrape_teePeeCampgroundTent(start_date, end_date, num_adults, num_kids):
+    # Check if start date is before May 1, 2025
+    start_month, start_day, start_year = map(int, start_date.split('/'))
+    if start_year < 30 or (start_year == 25 and start_month < 5):
+        return {"available": False, "price": None, "message": "Website availablitity is not populated yet for 2025"}
 
     file_path = os.path.join(os.path.dirname(__file__), "date_to_pk_mapping.json")
 

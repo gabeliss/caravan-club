@@ -16,7 +16,8 @@ function TripPlanner() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarMode, setCalendarMode] = useState('start');
   const [error, setError] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [showMaxNightsModal, setShowMaxNightsModal] = useState(false);
+  const [showDateLimitModal, setShowDateLimitModal] = useState(false);
 
   useEffect(() => {
     const today = new Date();
@@ -51,6 +52,14 @@ function TripPlanner() {
 
   // Start date change handler
   const handleStartDateChange = (newStartDate) => {
+    const selectedDate = new Date(newStartDate);
+    const maxDate = new Date('2025-11-30');
+    
+    if (selectedDate > maxDate) {
+      setShowDateLimitModal(true);
+      return;
+    }
+    
     setStartDate(newStartDate);
     const startDateObj = new Date(newStartDate);
     let newEndDate = new Date(startDateObj);
@@ -59,8 +68,16 @@ function TripPlanner() {
     setEndDate(newEndDate.toISOString().split('T')[0]);
   };
 
-  // End date change handler with max nights validation based on selected destination
+  // End date change handler with max nights validation
   const handleEndDateChange = (newEndDate) => {
+    const selectedDate = new Date(newEndDate);
+    const maxDate = new Date('2025-11-30');
+    
+    if (selectedDate > maxDate) {
+      setShowDateLimitModal(true);
+      return;
+    }
+
     const startDateObj = new Date(startDate);
     const endDateObj = new Date(newEndDate);
 
@@ -71,7 +88,7 @@ function TripPlanner() {
     if (endDateObj > startDateObj && (endDateObj - startDateObj) / (1000 * 60 * 60 * 24) <= maxNights) {
       setEndDate(newEndDate);
     } else {
-      setShowModal(true);
+      setShowMaxNightsModal(true);
     }
   };
 
@@ -231,9 +248,14 @@ function TripPlanner() {
       </div>
       {error && <div className="error-message">{error}</div>}
       <PopupModal
-        show={showModal}
-        message={`The end date for the ${formatDestinationName(destination)} trip cannot be more than ${tripMapping[destination]?.maxNights || 6} days after the start date.`}
-        onClose={() => setShowModal(false)}
+        show={showMaxNightsModal}
+        message={`This trip has a maximum duration of ${tripMapping[destination]?.maxNights || 6} nights. Please select a shorter date range.`}
+        onClose={() => setShowMaxNightsModal(false)}
+      />
+      <PopupModal
+        show={showDateLimitModal}
+        message="We're sorry, but bookings are only available through November 2025 at this time."
+        onClose={() => setShowDateLimitModal(false)}
       />
     </div>
   );

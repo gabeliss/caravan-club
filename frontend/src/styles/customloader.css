@@ -1,4 +1,5 @@
-.custom-loader {
+/* Spinner Loading CSS */
+/* .custom-loader {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,4 +43,23 @@
     margin-top: 20px;
     font-size: 18px;
     color: #333;
-  }
+  } */
+
+  /* Video Loading CSS */
+.custom-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color);
+}
+
+.loader-video {
+  width: 100vw;
+  height: 80vh;
+}
+
+.custom-loader p {
+  font-size: 1.2em;
+  color: #333;
+} 

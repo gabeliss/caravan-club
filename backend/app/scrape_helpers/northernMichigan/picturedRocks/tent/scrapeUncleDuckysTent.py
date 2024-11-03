@@ -3,6 +3,11 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 def scrape_uncleDuckysTent(start_date, end_date, num_adults, num_kids):
+    # Check if start date is before May 23, 2025
+    start_month, start_day, start_year = map(int, start_date.split('/'))
+    if start_year < 25 or (start_year == 25 and (start_month < 5 or (start_month == 5 and start_day < 23))):
+        return {"available": False, "price": None, "message": "Not available before May 23, 2025"}
+
     try:
         # Format the start and end dates
         start_date_formatted = datetime.strptime(start_date, '%m/%d/%y').strftime('%Y-%m-%d')

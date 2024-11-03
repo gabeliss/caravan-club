@@ -143,14 +143,26 @@
     width: 70%;
   }
 
+  /* .toggle-content p {
+    color: darkgrey;
+  } */
+
   .toggle-content.active {
     max-height: 800em; /* Set to a value that is greater than what you expect the content height to be */
     transition: max-height 0.3s ease-in; /* Adjust this value to fit your content */
     width: 70%;
   }
 
-  .toggle-img {
-    width: 450px;
-    height: 450px;
-    margin-right: 10px;
-  }
+  .image-carousel {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 40px; /* Vertical spacing between carousel and content below */
+    }
+
+    .toggle-img {
+        width: 100%;
+        height: auto;
+        max-height: 300px;
+        object-fit: cover;
+        border-radius: 5px;
+    }

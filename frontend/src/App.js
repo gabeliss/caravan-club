@@ -16,6 +16,7 @@ import NorthernMichigan from './pages/trips/NorthernMichigan';
 import SmokyMountain from './pages/trips/SmokyMountain';
 import SouthernCalifornia from './pages/trips/SouthernCalifornia';
 import BookNorthernMichiganPage from "./pages/book/BookNorthernMichiganPage";
+import CustomLoader from './components/general/CustomLoader';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
             <Route path="/trips" element={<TripPage />} />
             <Route path="/booknow" element={<BookNowPage />} />
             <Route path="/media" element={<MediaPage />} />
+            <Route path="/loading" element={<CustomLoader />} />
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/bookoptions" element={<BookOptionsPage />} />
             <Route path="/reviewtrip" element={<ReviewTripPage />} />

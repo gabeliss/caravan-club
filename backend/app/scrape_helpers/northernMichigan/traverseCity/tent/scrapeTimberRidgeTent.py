@@ -4,6 +4,10 @@ from bs4 import BeautifulSoup
 
 
 def scrape_timberRidgeTent(start_date, end_date, num_adults, num_kids):
+    start_month, start_day, start_year = map(int, start_date.split('/'))
+    if start_year < 30 or (start_year == 25 and (start_month < 5)):
+        return {"available": False, "price": None, "message": "Website availablitity is not populated yet for 2025"}
+    
     url = "https://bookingsus.newbook.cloud/timberridgeresort/api.php"
     headers = {
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",

@@ -22,6 +22,9 @@ function Header({ isMenuOpen, setIsMenuOpen }) {
         <Link to="/media">
           <button>Media</button>
         </Link>
+        <Link to="/loading">
+          <button>Loading Screen</button>
+        </Link>
       </div>
 
       <div className="header-logo">
