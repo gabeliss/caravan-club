@@ -1,0 +1,31 @@
+{
+    "family": "caravan-backend",
+    "networkMode": "awsvpc",
+    "containerDefinitions": [
+      {
+        "name": "caravan-backend",
+        "image": "REPLACE_IMAGE",
+        "portMappings": [
+          {
+            "containerPort": 5000,
+            "hostPort": 5000,
+            "protocol": "tcp"
+          }
+        ],
+        "essential": true,
+        "environment": [],
+        "logConfiguration": {
+          "logDriver": "awslogs",
+          "options": {
+            "awslogs-group": "/ecs/caravan-backend",
+            "awslogs-region": "us-east-2",
+            "awslogs-stream-prefix": "ecs"
+          }
+        }
+      }
+    ],
+    "requiresCompatibilities": ["FARGATE"],
+    "cpu": "512",
+    "memory": "1024"
+  }
+  

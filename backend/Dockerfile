@@ -22,8 +22,11 @@ RUN pip install playwright && playwright install chromium
 COPY . /app
 WORKDIR /app
 
+# Ensure gunicorn is executable
+RUN chmod +x /usr/local/bin/gunicorn
+
 # Expose the port your app runs on
 EXPOSE 5000
 
 # Start your application
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "run:app"]
+CMD exec gunicorn -b 0.0.0.0:5000 run:app

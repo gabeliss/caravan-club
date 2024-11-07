@@ -81,7 +81,14 @@ def scrape_uncleDuckysTent(start_date, end_date, num_adults, num_kids):
                 price_span = price_div.find("strong").find("span")
                 if price_span:
                     try:
-                        price = float(price_span.text.strip('$'))
+                        price_text = price_span.text.replace('$', '').strip()
+                        if ' - ' in price_text:
+                            # Handle range of prices
+                            low_price, high_price = map(float, price_text.split(' - '))
+                            price = (low_price + high_price) / 2
+                        else:
+                            # Handle single price
+                            price = float(price_text)
                         min_price = min(min_price, price)
                     except ValueError:
                         print(f"Failed to parse price: {price_span.text}")
@@ -100,7 +107,7 @@ def scrape_uncleDuckysTent(start_date, end_date, num_adults, num_kids):
 
 
 def main():
-    uncleDuckysData = scrape_uncleDuckysTent('06/08/25', '06/10/25', 3, 0)
+    uncleDuckysData = scrape_uncleDuckysTent('06/07/25', '06/09/25', 1, 0)
     print(uncleDuckysData)
 
 if __name__ == '__main__':
