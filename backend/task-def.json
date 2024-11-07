@@ -1,10 +1,11 @@
 {
     "family": "caravan-backend",
+    "executionRoleArn": "arn:aws:iam::445567091402:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
     "containerDefinitions": [
       {
         "name": "caravan-backend",
-        "image": "REPLACE_IMAGE",
+        "image": "445567091402.dkr.ecr.us-east-2.amazonaws.com/caravan-backend:latest",
         "portMappings": [
           {
             "containerPort": 5000,
