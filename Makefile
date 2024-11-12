@@ -1,4 +1,4 @@
-.PHONY: start-backend-dev start-frontend-dev run-dev build-docker start-docker run-docker
+.PHONY: start-backend-dev start-frontend-dev run-dev build-docker start-docker start-frontend build-frontend run-docker
 
 # Command to run the backend in a new Terminal tab (development mode with virtual environment)
 start-backend-dev:
@@ -19,6 +19,15 @@ build-docker:
 start-docker:
 	docker run -p 127.0.0.1:5000:5000 backend
 
-# Command to start both frontend and backend (backend with Docker)
-run-docker: build-docker start-docker
+# Command to build the frontend
+build-frontend:
+	cd frontend && npm install && npm run build
+
+# Command to start the frontend in production mode
+start-frontend:
+	cd frontend && serve -s build
+
+# Command to start both frontend and backend
+run-docker: build-docker build-frontend
+	make -j2 start-docker start-frontend
 
