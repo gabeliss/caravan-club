@@ -12,7 +12,7 @@ import logging
 
 @app.route('/api/hello')
 def index():
-    return 'Hello, World - modified!'
+    return 'Hello, World - modified! Psyche, modified again!'
 
 @app.route('/api/images')
 def serve_images():
