@@ -36,14 +36,19 @@ export const fetchAccommodationDetails = async (accommodationKey, start_date, en
 };
 
 
-export const initiatePayment = async (accommodationType, start_date, end_date, num_adults, num_kids, payment_info) => {
-    console.log("initiatePaymentParams:", accommodationType, start_date, end_date, num_adults, num_kids, payment_info)
-    const url = `${PAYMENT_ENDPOINT}/${accommodationType}`;
+export const initiatePayment = async (accommodationKey, start_date, end_date, num_adults, num_kids, payment_info) => {
+    const apiEndpoint = apiRouteMappingScrape[accommodationKey];
+    if (!apiEndpoint) {
+        console.error(`API route not defined for accommodation: ${accommodationKey}`);
+        return;
+    }
+    console.log("initiatePaymentParams:", accommodationKey, start_date, end_date, num_adults, num_kids, payment_info)
+    const url = `${PAYMENT_ENDPOINT}/${apiEndpoint}`;
     try {
         const response = await axios.get(url, {
             params: { start_date, end_date, num_adults, num_kids, payment_info }
         });
-        console.log('initiatePayment response.data', accommodationType, response.data)
+        console.log('initiatePayment response.data', accommodationKey, response.data)
         return response.data;
     } catch (error) {
         console.log('initiatePayment error', error)

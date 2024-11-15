@@ -50,10 +50,12 @@ function ReviewTripPage() {
 
     const handleConfirm = () => {
         const totalPrice = calculateTotalPriceWithFees();
+        console.log('Navigating to payment page with state:', state)
         navigate('/payments', {
             state: {
                 selectedAccommodations,
                 totalPrice,
+                segments,
                 num_adults,
                 num_kids,
                 start_date,

@@ -1,7 +1,7 @@
 body {
   margin: 0px;
   padding: 0px;
-  background-color: rgb(238, 230, 206);
+  background-color: var(--secondary-color);
   font-family: "Orpheus Pro", New Century Schoolbook, TeX Gyre Schola, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

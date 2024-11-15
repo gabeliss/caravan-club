@@ -22,8 +22,8 @@ function Header({ isMenuOpen, setIsMenuOpen }) {
         <Link to="/media">
           <button>Media</button>
         </Link>
-        <Link to="/loading">
-          <button>Loading Screen</button>
+        <Link to="/directions">
+          <button>Directions</button>
         </Link>
       </div>
 

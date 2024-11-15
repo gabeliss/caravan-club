@@ -5,7 +5,7 @@ import time
 
 def pay_uncleDuckysTent(start_date, end_date, num_adults, num_kids, payment_info):
     # Check if total number of people exceeds 5
-    if num_adults + num_kids > 5:
+    if int(num_adults) + int(num_kids) > 5:
         return False
 
     # Check if start date is before May 23, 2025

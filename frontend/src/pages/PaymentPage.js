@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './../styles/payment.css';
-import { adjustDate, convertDateFormat } from './../utils/helpers.js';
+import { convertDateFormat } from './../utils/helpers.js';
 import { initiatePayment } from '../api/northernMichiganApi.js';
 import PaymentForm from './../components/pay/PaymentForm.js';
+import CustomLoader from '../components/general/CustomLoader';
 
 function PaymentPage() {
   const navigate = useNavigate();
-  const { state } = useLocation();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
-  const { selectedAccommodations, totalPrice, numTravelers, startDate, endDate, placeDetails } = state || {};
+  
+  const state = location.state;
+  
+  const { 
+    selectedAccommodations, 
+    totalPrice, 
+    num_adults, 
+    num_kids, 
+    segments,
+    placeDetails 
+  } = state || {};
+
 
   const [paymentInfo, setPaymentInfo] = useState({
     first_name: '',
@@ -40,48 +52,56 @@ function PaymentPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(paymentInfo);
-    let night1and2StartDate = convertDateFormat(startDate);
-    let night1and2EndDate = convertDateFormat(adjustDate(startDate, 2));
-    let night3and4StartDate = convertDateFormat(adjustDate(startDate, 2));
-    let night3and4EndDate = convertDateFormat(adjustDate(startDate, 4));
-    let night5and6StartDate = convertDateFormat(adjustDate(startDate, 4));
-    let night5and6EndDate = convertDateFormat(endDate);
-    let night1and2Place = selectedAccommodations['night1and2'];
-    let night3and4Place = selectedAccommodations['night3and4'];
-    let night5and6Place = selectedAccommodations['night5and6'];
-    let night1and2stayName = placeDetails['night1and2'][night1and2Place]['name'];
-    let night3and4stayName = placeDetails['night3and4'][night3and4Place]['name'];
-    let night5and6stayName = placeDetails['night5and6'][night5and6Place]['name'];
 
+    if (!segments || !selectedAccommodations || !placeDetails) {
+      console.error('Missing required state data');
+      return;
+    }
+
+    const segmentPayments = Object.entries(segments).map(([segmentName, dates]) => {
+      const start_date = convertDateFormat(dates.start);
+      const end_date = convertDateFormat(dates.end);
+      const accommodationKey = selectedAccommodations[segmentName];
+
+      return {
+        accommodationKey,
+        start_date,
+        end_date
+      };
+    });
+
+    console.log('segmentPayments', segmentPayments);
     setIsLoading(true);
 
     try {
-      const responses = await Promise.allSettled([
-        initiatePayment(night1and2Place, numTravelers, night1and2StartDate, night1and2EndDate, night1and2stayName, paymentInfo),
-        initiatePayment(night3and4Place, numTravelers, night3and4StartDate, night3and4EndDate, night3and4stayName, paymentInfo),
-        initiatePayment(night5and6Place, numTravelers, night5and6StartDate, night5and6EndDate, night5and6stayName, paymentInfo)
-      ]);
+      const responses = await Promise.allSettled(
+        segmentPayments.map(({ accommodationKey, start_date, end_date }) =>
+          initiatePayment(
+            accommodationKey,
+            start_date,
+            end_date,
+            num_adults,
+            num_kids,
+            paymentInfo
+          )
+        )
+      );
 
-      const paymentStatus = {
-        night1and2: {
-          status: responses[0].status === 'fulfilled' && responses[0].value.success ? 'success' : 'error',
-          name: night1and2stayName
-        },
-        night3and4: {
-          status: responses[1].status === 'fulfilled' && responses[1].value.success ? 'success' : 'error',
-          name: night3and4stayName
-        },
-        night5and6: {
-          status: responses[2].status === 'fulfilled' && responses[2].value.success ? 'success' : 'error',
-          name: night5and6stayName
-        }
-      };
+      
+      const paymentStatus = Object.keys(segments).reduce((acc, segmentName, index) => {
+        const status = responses[index].status === 'fulfilled' ? 'success' : 'error';
+        acc[segmentName] = {
+          status: status,
+          accommodationKey: segmentPayments[index].accommodationKey
+        };
+        return acc;
+      }, {});
+      console.log('Final payment status object:', paymentStatus);
 
       navigate('/payments-confirmation', { state: { paymentStatus } });
 
     } catch (error) {
-      console.error('Error in fetching details:', error);
+      console.error('Error in payment:', error);
     } finally {
       setIsLoading(false);
     }
@@ -90,7 +110,7 @@ function PaymentPage() {
   return (
     <div className='payment-page center'>
       {isLoading ? (
-        <div className="loader">Loading...</div>
+        <CustomLoader />
       ) : (
         <>
           <h1 className='center'>Pay Now</h1>

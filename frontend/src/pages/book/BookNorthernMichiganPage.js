@@ -132,7 +132,7 @@ function BookNorthernMichiganPage() {
     if (validatePage()) {
       const tripDetails = { ...location.state, selectedAccommodations };
       console.log('Trip details:', tripDetails);
-      console.log('Navigating to review trip page.');
+      console.log('Navigating to review trip page with state:', tripDetails);
       navigate('/reviewtrip', { state: tripDetails });
     }
   };

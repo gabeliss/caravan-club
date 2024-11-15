@@ -6,6 +6,13 @@ from app.scrape_helpers.northernMichigan.mackinacCity.tent.scrapeTeePeeCampgroun
 from app.scrape_helpers.northernMichigan.picturedRocks.tent.scrapeUncleDuckysTent import scrape_uncleDuckysTent
 from app.scrape_helpers.northernMichigan.picturedRocks.tent.scrapeTouristParkTent import scrape_touristParkTent
 from app.scrape_helpers.northernMichigan.picturedRocks.tent.scrapeFortSuperiorTent import scrape_fortSuperiorTent
+from app.payment_helpers.northernMichigan.traverseCity.tent.payTimberRidgeTent import pay_timberRidgeTent
+from app.payment_helpers.northernMichigan.traverseCity.tent.payLeelanauPinesTent import pay_leelanauPinesTent
+from app.payment_helpers.northernMichigan.mackinacCity.tent.payIndianRiverTent import pay_indianRiverTent
+from app.payment_helpers.northernMichigan.mackinacCity.tent.payTeePeeCampgroundTent import pay_teePeeCampgroundTent
+from app.payment_helpers.northernMichigan.picturedRocks.tent.payUncleDuckysTent import pay_uncleDuckysTent
+from app.payment_helpers.northernMichigan.picturedRocks.tent.payTouristParkTent import pay_touristParkTent
+from app.payment_helpers.northernMichigan.picturedRocks.tent.payFortSuperiorTent import pay_fortSuperiorTent
 import os, base64
 from flask import request, jsonify
 import logging
@@ -41,7 +48,6 @@ def read_image(path):
     
 
 def get_price(place_name, min_travelers, max_travelers, scrape_function):
-    logging.info(f"{place_name} Request Args: %s", request.args)
     try:
         num_adults = request.args.get('num_adults', default=1, type=int)
         num_kids = request.args.get('num_kids', default=0, type=int)
@@ -55,7 +61,6 @@ def get_price(place_name, min_travelers, max_travelers, scrape_function):
         start_date = request.args.get('start_date', default='', type=str)
         end_date = request.args.get('end_date', default='', type=str)
         data = scrape_function(start_date, end_date, num_adults, num_kids)
-        logging.info('get_price return value', data)
         return data
     except Exception as e:
         logging.error(f"Error in {place_name}: %s", str(e), exc_info=True)
@@ -63,10 +68,10 @@ def get_price(place_name, min_travelers, max_travelers, scrape_function):
     
 
 def process_payment(api_function):
-    num_travelers = request.args.get('numTravelers', default=1, type=int)
-    start_date = request.args.get('startDate', default='', type=str)
-    end_date = request.args.get('endDate', default='', type=str)
-    stay_name = request.args.get('stayName', default='', type=str)
+    num_adults = request.args.get('num_adults', default=1, type=int)
+    num_kids = request.args.get('num_kids', default=0, type=int)
+    start_date = request.args.get('start_date', default='', type=str)
+    end_date = request.args.get('end_date', default='', type=str)
     
     payment_info = {
         "first_name": request.args.get('payment_info[first_name]', default='', type=str),
@@ -85,7 +90,7 @@ def process_payment(api_function):
         "cvc": request.args.get('payment_info[cvc]', default='', type=str)
     }
     
-    result = api_function(num_travelers, start_date, end_date, stay_name, payment_info)
+    result = api_function(start_date, end_date, num_adults, num_kids, payment_info)
     return jsonify(success=result)
 
 
@@ -118,3 +123,33 @@ def get_touristParkTent_price():
 @app.route('/api/scrape/fortSuperiorTent')
 def get_fortSuperiorTent_price():
     return get_price('Fort Superior', 1, 6, scrape_fortSuperiorTent)
+
+#### PAYMENTS - Northern Michigan - Tent ####
+
+@app.route('/api/pay/timberRidgeTent')
+def process_timberRidgeTent_payment():
+    return process_payment(pay_timberRidgeTent)
+
+@app.route('/api/pay/leelanauPinesTent')
+def process_leelanauPinesTent_payment():
+    return process_payment(pay_leelanauPinesTent)
+
+@app.route('/api/pay/indianRiverTent')
+def process_indianRiverTent_payment():
+    return process_payment(pay_indianRiverTent)
+
+@app.route('/api/pay/teePeeCampgroundTent')
+def process_teePeeCampgroundTent_payment():
+    return process_payment(pay_teePeeCampgroundTent)
+
+@app.route('/api/pay/uncleDuckysTent')
+def process_uncleDuckysTent_payment():
+    return process_payment(pay_uncleDuckysTent)
+
+@app.route('/api/pay/touristParkTent')
+def process_touristParkTent_payment():
+    return process_payment(pay_touristParkTent)
+
+@app.route('/api/pay/fortSuperiorTent')
+def process_fortSuperiorTent_payment():
+    return process_payment(pay_fortSuperiorTent)
