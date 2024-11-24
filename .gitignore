@@ -17,3 +17,6 @@ frontend/node_modules/
 .vscode/
 
 frontend/build/
+
+backend/.env.local
+backend/.env.production

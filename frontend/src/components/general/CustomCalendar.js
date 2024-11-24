@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './../../styles/customcalendar.css';
+import './../../styles/components/home/customcalendar.css';
 
 // Utility functions
 const daysInMonth = (date) => {

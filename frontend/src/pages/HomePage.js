@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import LandingQuestions from '../components/general/LandingQuestions';
 import tripMapping from '../tripmapping.json';
 import TripPlanner from '../components/general/TripPlanner';
+import HowItWorks from '../components/home/HowItWorks';
+import MakesDifferent from '../components/home/MakesDifferent';
 import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
@@ -56,12 +57,25 @@ function HomePage() {
       <div className='landing-welcome'>
         <div className='landing-welcome-content'>
           <h2>
-            Welcome to Caravan Club, the ultimate road trip companion for adventurers seeking
+            Welcome to CaraVan Trip Plan, the ultimate road trip companion for adventurers seeking
             hassle-free outdoor experiences
           </h2>
           <TripPlanner />
         </div>
       </div>
+
+      {/* Intro */}
+      <div className='landing-intro'>
+          <h1>CaraVan Trip Plan</h1>
+          <p>
+            Caravan Club is your premier destination for effortless road trip adventures. 
+            We understand that planning a road trip can be overwhelming, from mapping out 
+            routes to securing the perfect campsites. That's why we've designed Caravan Club, 
+            a revolutionary travel guide that simplifies your journey like never before.
+          </p>
+      </div>
+
+      <div className='landing-separator-reverse'></div>
 
       {/* Trip Logos */}
       <div className='trip-logos'>
@@ -85,28 +99,8 @@ function HomePage() {
         </div>
       </div>
 
-      <div className='landing-separator'></div>
-
-      {/* Intro */}
-      <div className='landing-intro'>
-          <h1>Caravan Club</h1>
-          <p>
-            Caravan Club is your premier destination for effortless road trip adventures. 
-            We understand that planning a road trip can be overwhelming, from mapping out 
-            routes to securing the perfect campsites. That's why we've designed Caravan Club, 
-            a revolutionary travel guide that simplifies your journey like never before.
-          </p>
-      </div>
-
-      <div className='landing-separator-reverse'></div>
-
-      {/* Info */}
-      <div className='landing-info'>
-        <h1>Why Caravan Club?</h1>
-        <div className='landing-info-questions'>
-          <LandingQuestions />
-        </div>
-      </div>
+      <HowItWorks />
+      <MakesDifferent />
     </div>
   );
 }

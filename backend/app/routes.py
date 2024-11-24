@@ -16,6 +16,8 @@ from app.payment_helpers.northernMichigan.picturedRocks.tent.payFortSuperiorTent
 import os, base64
 from flask import request, jsonify
 import logging
+from sqlalchemy import text
+from app import app, db
 
 @app.route('/api/hello')
 def index():
@@ -153,3 +155,15 @@ def process_touristParkTent_payment():
 @app.route('/api/pay/fortSuperiorTent')
 def process_fortSuperiorTent_payment():
     return process_payment(pay_fortSuperiorTent)
+
+
+#### Database Routes ####
+@app.route('/api/test-db')
+def test_db():
+    try:
+        # Use a connection to execute raw SQL
+        with db.engine.connect() as connection:
+            result = connection.execute(text("SELECT 1"))
+            return {"status": "connected"} if result.scalar() == 1 else {"status": "failed"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}, 500

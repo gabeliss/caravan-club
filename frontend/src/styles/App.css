@@ -190,43 +190,29 @@ footer a {
   font-size: 250%;
 }
 
-/* Landing Intro and Info */
-.landing-intro, .landing-info {
+/* Landing Intro */
+.landing-intro {
   display: flex;
   flex-direction: column;
   padding-top: 10vh;
-  padding-left: 8%;
-  padding-right: 8%;
-}
-
-.landing-intro {
+  padding: 8%;
   background-color: var(--secondary-color);
-  min-height: 20vh;
-  padding-top: 30px;
-  padding-bottom: 20px;
 }
 
-.landing-info {
-  background-color: white;
-  min-height: 40vh;
-  padding-top: 5vh;
-}
 
-.landing-intro h1, .landing-info h1 {
+.landing-intro h1 {
   text-align: center;
   width: 100%;
   font-weight: lighter;
-  font-size: 350%;
+  font-size: 4.5em;
+  margin-top: 0;
+  margin-right: 5%;
 }
 
 .landing-intro p {
   line-height: 1.5;
   font-size: 150%;
-}
-
-.landing-info-questions {
-  border-top: 1px solid #ccc;
-  padding-bottom: 5vh;
+  margin-top: 0;
 }
 
 /* Landing Page Media Queries */
@@ -238,29 +224,11 @@ footer a {
   .landing-intro h1 {
     flex: 1;
     text-align: left;
-    line-height: 0%;
   }
 
   .landing-intro p {
     flex: 1;
     text-align: left;
-  }
-
-  .landing-info {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-
-  .landing-info h1 {
-    text-align: left;
-    width: 30%;
-  }
-
-  .landing-info-questions {
-    width: 60%;
-    padding-top: 10px;
   }
 }
 
@@ -277,35 +245,6 @@ footer a {
   height: 5vh;
   background: linear-gradient(to top left, white 50%, var(--secondary-color) 50%);
   clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
-}
-
-/* Landing Questions */
-.landing-questions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 10px;
-}
-
-.landing-question {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  color: black;
-  font-size: 140%;
-}
-
-.landing-toggle {
-  margin-left: auto;
-}
-
-.landing-answer {
-  margin-top: 10px;
-  width: 100%;
 }
 
 /* Landing Gallery */
@@ -355,7 +294,6 @@ footer a {
   justify-content: space-around;
   align-items: center;
   flex-wrap: wrap;
-  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -363,14 +301,14 @@ footer a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 1.5rem;
+  margin: 2rem 3rem;
   width: 150px;
   cursor: pointer;
 }
 
 .logo-item img {
-  width: 200px;
-  height: 200px;
+  width: 250px;
+  height: 250px;
   object-fit: contain;
   border-radius: 50%;
   overflow: hidden;

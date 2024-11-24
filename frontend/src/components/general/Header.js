@@ -16,20 +16,17 @@ function Header({ isMenuOpen, setIsMenuOpen }) {
         <Link to="/trips">
           <button>Trips</button>
         </Link>
-        <Link to="/booknow">
-          <button>Book Now</button>
+        <Link to="/faq">
+          <button>FAQ</button>
         </Link>
         <Link to="/media">
           <button>Media</button>
-        </Link>
-        <Link to="/directions">
-          <button>Directions</button>
         </Link>
       </div>
 
       <div className="header-logo">
         <Link to="/">
-          <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/header/CaravanClub.png" alt="Caravan Club Logo" />
+          <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/header/CaravanTripPlan.png" alt="Caravan Trip Plan" />
         </Link>
       </div>
 
@@ -44,8 +41,9 @@ function Header({ isMenuOpen, setIsMenuOpen }) {
       <div className="header-menu">
         <button className="menu-button" onClick={toggleMenu}>{isMenuOpen ? '✕' : '☰'}</button>
         <div className={`dropdown-menu ${isMenuOpen ? 'open' : ''}`}>
+          <Link to="/" onClick={toggleMenu}><button>Home</button></Link>
           <Link to="/trips" onClick={toggleMenu}><button>Trips</button></Link>
-          <Link to="/book" onClick={toggleMenu}><button>Book</button></Link>
+          <Link to="/faq" onClick={toggleMenu}><button>FAQ</button></Link>
           <Link to="/media" onClick={toggleMenu}><button>Media</button></Link>
           <a href="http://instagram.com/squarespace" target="_blank" rel="noopener noreferrer" className="icon-container flex-center" onClick={toggleMenu}>
             <i className="fab fa-instagram header-icon"></i>

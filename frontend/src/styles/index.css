@@ -13,11 +13,13 @@ code {
 }
 
 :root {
-  --primary-color: rgb(28, 52, 40);
+  --primary-color: #3E624F;
+  --primary-color-dark: #1a3629;
   --secondary-color: rgb(247, 236, 214);
   --light-color: rgb(247, 111, 131);
   --text-light: white;
   --text-dark: black;
+  --charcoal-gray: #423E3E;
 }
 
 h1, h2, h3, h4, h5, h6 {

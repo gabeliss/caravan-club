@@ -14,7 +14,7 @@ function BookNorthernMichiganPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [placeDetails, setPlaceDetails] = useState(accommodationsData);
   const [fetchError, setFetchError] = useState(null);
-  
+
   const [selectedAccommodations, setSelectedAccommodations] = useState(() => {
     const initialState = {};
     if (location.state && location.state.segments) {
@@ -25,33 +25,53 @@ function BookNorthernMichiganPage() {
     return initialState;
   });
 
-  // Ref to track if API calls have been made
   const apiCalled = useRef(false);
 
-  // Default descriptions for the locations
   const locationDescriptions = {
     traverseCity: {
       title: "Traverse City",
       description:
-        "Traverse City is a picturesque lakeside town known for its scenic views, charming downtown, and renowned wineries on the Old Mission and Leelanau Peninsulas. Outdoor enthusiasts enjoy hiking at Sleeping Bear Dunes, kayaking, and exploring the area's beautiful beaches. Browse through each accommodation and select based on your preferences.",
+        "Traverse City, a scenic lakeside town, offers charming downtown vibes, renowned wineries on Old Mission and Leelanau Peninsulas, and outdoor adventures like hiking Sleeping Bear Dunes or kayaking.",
     },
     mackinacCity: {
-      title: "Mackinac City",
+      title: "Mackinac City / Island",
       description:
-        "Continue your adventure in Mackinac City, offering a blend of history and natural beauty. Enjoy exploring Fort Michilimackinac, walking along the Mackinac Bridge, and taking a ferry to Mackinac Island. Choose from the available accommodations to enjoy your stay.",
+        "Mackinac Island, a car-free haven, offers charming streets, historic sites like Fort Mackinac, and scenic views from Arch Rock. Enjoy biking, carriage rides, and famous fudge. Nearby Mackinaw City features waterfront views, quaint shops, and easy access to the Mackinac Bridge.",
     },
     picturedRocks: {
       title: "Pictured Rocks",
       description:
-        "Conclude your trip at the stunning Pictured Rocks, where you can immerse yourself in nature's beauty. Enjoy kayaking, hiking, and taking in the colorful sandstone cliffs along Lake Superior. Browse and select accommodations based on availability and your preferences.",
+        "Pictured Rocks, a stunning lakeside destination, features towering sandstone cliffs, vibrant rock formations, and cascading waterfalls along Lake Superior. Enjoy outdoor adventures like hiking scenic trails, kayaking through sea caves, or taking a boat tour for breathtaking views. Nearby Munising offers charming local shops, cozy cafes, and a perfect base for exploring this natural wonder.",
     },
   };
 
   const formatToReadableDate = (dateStr) => {
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    const options = { month: 'short', day: 'numeric' };
     const date = new Date(dateStr);
-    date.setDate(date.getDate() + 1);
     return date.toLocaleDateString('en-US', options);
+  };
+
+  const calculateNightRanges = (segments) => {
+    const nightRanges = [];
+    let currentNight = 1;
+
+    Object.entries(segments).forEach(([city, dateRange]) => {
+      const startDate = new Date(dateRange.start);
+      const endDate = new Date(dateRange.end);
+      const nights = (endDate - startDate) / (1000 * 60 * 60 * 24); // Calculate nights between start and end dates
+      const range = nights === 1 
+        ? `Night ${currentNight}` 
+        : `Night ${currentNight} & ${currentNight + 1}`;
+      currentNight += nights;
+      nightRanges.push({
+        city,
+        range,
+        start: formatToReadableDate(dateRange.start),
+        end: formatToReadableDate(dateRange.end),
+      });
+    });
+
+    return nightRanges;
   };
 
   const [showModal, setShowModal] = useState(false);
@@ -66,7 +86,6 @@ function BookNorthernMichiganPage() {
 
     const { num_adults, num_kids, segments } = location.state;
 
-    // Early exit if the API calls have already been made
     if (apiCalled.current) {
       console.log("API calls have already been made. Skipping repeated fetch.");
       return;
@@ -112,13 +131,14 @@ function BookNorthernMichiganPage() {
       }
     };
 
-    // Fetch the data only if not already called
     if (!apiCalled.current) {
       fetchAccommodationData();
     }
 
     console.log('Location state found:', location.state);
-  }, [location.state, navigate]); 
+  }, [location.state, navigate]);
+
+  const nightRanges = calculateNightRanges(location.state.segments);
 
   const handleSelectStatus = (location, accommodationKey) => {
     setSelectedAccommodations(prev => ({
@@ -159,16 +179,22 @@ function BookNorthernMichiganPage() {
   return (
     <div className='book-page'>
       <div className='intro'>
-        <h1>{location.state.tripTitle.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</h1>
-        <h2>{location.state.nights}-Night Road Trip</h2>
+        <div className='intro-image'>
+          <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/welcome.png" alt="Northern Michigan" />
+        </div>
+        <div className='intro-text'>
+          <h1>{location.state.tripTitle.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} - {location.state.nights} Night Road Trip</h1>
+          <h3>We've simplified road trip planning, letting you focus on the fun instead of the details. Each accommodation is handpicked and vetted by the CaraVan Trip Plan team, saving you hours of searching for availability and the perfect place to stay. </h3>
+        </div>
       </div>
       <div className='nights'>
-        {Object.entries(location.state.segments).map(([city, dateRange], index) => (
+        {nightRanges.map(({ city, range, start, end }, index) => (
           <div className='night' key={index}>
             <div className='info'>
-              <h2>{locationDescriptions[city]?.title || city.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} -  
-              ({formatToReadableDate(dateRange.start)} - {formatToReadableDate(dateRange.end)})</h2>
-              <p>{locationDescriptions[city]?.description || "No description available for this location."}</p>
+              <div className='info-header'>
+                <h2>{range}: {locationDescriptions[city]?.title || city.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} ({start} - {end})</h2>
+                <p>{locationDescriptions[city]?.description || "No description available for this location."}</p>
+              </div>
               <ToggleList
                 data={placeDetails[city].tent}
                 onSelectionChange={(index) => handleSelectStatus(city, index)}
@@ -178,10 +204,9 @@ function BookNorthernMichiganPage() {
         ))}
       </div>
       <button type="button" className="submit-button" onClick={(event) => {
-        console.log("Submit button clicked");
         handlePageSubmit(event);
         }}
-      >Submit</button>
+      >Review Your Road Trip</button>
       {fetchError && <div className="error-message">Failed to fetch accommodation details. Please try again later.</div>}
       <PopupModal 
         show={showModal} 

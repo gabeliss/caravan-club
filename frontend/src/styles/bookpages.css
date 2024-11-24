@@ -6,33 +6,87 @@
     align-items: center;
 }
 
-.center {
-    display: flex; 
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
 .intro {
-    background-color: rgb(118, 142, 143);
+    background-color: var(--charcoal-gray);
     width: 100%;
+    display: flex;
+    flex-wrap: wrap; /* Allows content to wrap for smaller screens */
+    align-items: stretch; /* Ensures same height for image and text */
 }
 
-.intro h1, h2 {
-    text-align: center;
+.intro-image {
+    flex: 1; /* Take equal space with text */
+}
+
+.intro-image img {
+    width: 100%;
+    height: 100%; /* Ensures it matches the height of the text */
+    object-fit: cover; /* Ensures the image doesn't stretch */
+}
+
+.intro-text {
+    flex: 2; /* Take equal space with the image */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 20px;
+}
+
+.intro-text h1, h3 {
+    text-align: left;
     font-weight: lighter;
-    color: white;
+    color: var(--secondary-color);
+    padding: 0 5%;
 }
 
-.intro h1 {
-    font-size: 300%;
+.intro-text h1 {
+    font-size: 2.75rem;
 }
 
-.intro h2 {
-    font-size: 200%;
-    padding-bottom: 30px;
+.intro-text h3 {
+    font-size: 1.5rem;
 }
 
+@media (max-width: 1024px) {
+    .intro-text  {
+        flex: 1;
+    }
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .intro {
+        flex-direction: column;
+    }
+
+    .intro-image {
+        order: 2;
+    }
+
+    .intro-image img {
+        width: 100%; /* Ensure the image spans the full width */
+        max-height: 30vh; /* Reduce the height further */
+        object-fit: cover; /* Show the entire image without cropping */
+        object-position: center; /* Center the image within its container */
+    }
+
+    .intro-text {
+        margin: 0%;
+        text-align: center;
+        order: 1;
+    }
+
+    .intro-text h1 {
+        font-size: 1.75rem;
+        padding: 0 4%;
+    }
+
+    .intro-text h3 {
+        font-size: 1.25rem;
+        padding: 0 5%;
+        padding-bottom: 20px;
+    }
+}
 
 .nights {
     display: flex;
@@ -46,30 +100,57 @@
     flex-direction: column;
     margin: auto;
     width: 95%;
-    padding-bottom: 80px;
+    padding-bottom: 4%;
+}
+
+.info {
+    padding: 1% 0;
+}
+
+.info-header {
+    background-color: var(--secondary-color);
+    padding: 1% 3%;
+    border: 1px solid black;
 }
 
 
 .info h2 {
-    font-size: 250%;
+    font-size: 2.75rem;
     text-align: left;
-    color: var(--primary-color);
+    color: black;
 }
 
 .info p {
-    color: grey;
+    color: var(--primary-color);
     padding-bottom: 10px;
+    font-size: 1.25rem;
 }
 
-.select-stay {
-    margin-top: 10px;
-    font-weight: lighter;
-    text-align: right;
-    margin-right: 2%;
+
+.toggle-labels {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 3%;
+    padding-bottom: 1%;
+    font-size: 1.25rem;
+    font-weight: bold;
+    border-bottom: 1px solid black;
+    margin-bottom: 4%;
 }
 
 .submit-button {
+    padding: 1.5% 2%;
     margin-bottom: 5vh;
+    background-color: var(--charcoal-gray);
+    color: var(--secondary-color);
+    border: 1px solid black;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.submit-button:hover {
+    transform: scale(1.05);
 }
 
 /* toggle css */
@@ -94,7 +175,7 @@
     margin-top: 20px;
     padding: 10px 0;
     text-align: center;
-    border: 2px solid black;
+    border: 1px solid black;
     border-radius: 5%;
     color: grey;
     cursor: pointer;
@@ -108,10 +189,10 @@
     background-color: white;
 }
 
-.availability-status.available.selected {
-    background-color: green;
+.availability-status.available:hover, .availability-status.available.selected {
+    background-color: var(--primary-color);
     color: white;
-    border: 3px solid #333;
+    border: 1px solid #333;
     transform: scale(1.1);
     box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
 }
@@ -121,48 +202,105 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: larger;
+    font-size: 1.5rem;
     padding-top: 20px;
-  }
+}
 
-  .toggle-icon {
+.toggle-icon {
     transition: transform 0.3s ease;
     display: inline-block;
     color: grey;
     margin-right: 20px;
-  }
+}
 
-  .toggle-icon.active {
+.toggle-icon.active {
     transform: rotate(-180deg); /* rotates the arrow to point upwards when active */
-  }
-  
-  .toggle-content {
+}
+
+.toggle-content {
     overflow: hidden;
-    max-height: 500em;
+    max-height: 0;
     transition: max-height 0.3s ease-in-out;
     width: 70%;
-  }
+}
 
-  /* .toggle-content p {
-    color: darkgrey;
-  } */
+.toggle-content p {
+    color: black;
+    font-size: 1rem;
+}
 
-  .toggle-content.active {
-    max-height: 800em; /* Set to a value that is greater than what you expect the content height to be */
+.toggle-content.active {
+    max-height: none; /* Set to a value that is greater than what you expect the content height to be */
     transition: max-height 0.3s ease-in; /* Adjust this value to fit your content */
-    width: 70%;
-  }
+}
 
-  .image-carousel {
+.image-carousel {
     width: 100%;
     margin-top: 10px;
     margin-bottom: 40px; /* Vertical spacing between carousel and content below */
+}
+
+.toggle-img {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.toggle-item.expanded .availability-status {
+    max-height: 0;
+    max-width: 0;
+    opacity: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    visibility: hidden;
+    transition: max-height 0.5s ease-in-out;
+}
+
+.toggle-item.expanded .toggle-content {
+    width: 95%;
+}
+
+
+
+@media (max-width: 768px) {
+    .info {
+        padding: 4%;
     }
 
-    .toggle-img {
-        width: 100%;
-        height: auto;
-        max-height: 300px;
-        object-fit: cover;
-        border-radius: 5px;
+    .info-header {
+        margin-bottom: 5%;
     }
+
+    .info-header h2 {
+        font-size: 2rem;
+    }
+
+    .info p {
+        font-size: 1rem;
+    }
+
+    .toggle-labels {
+        margin-bottom: 8%;
+        font-size: 1rem;
+    }
+
+
+    .availability-status {
+        font-size: 0.8rem;
+    }
+
+    .toggle-header {
+       font-size: 1.2rem;
+    }
+
+    .toggle-content p, .toggle-content li {
+        font-size: 0.8rem;
+    }
+
+    .toggle-item.expanded .toggle-content {
+        width: 90%;
+    }
+}

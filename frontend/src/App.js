@@ -4,7 +4,7 @@ import Header from './components/general/Header';
 import Footer from './components/general/Footer'
 import HomePage from "./pages/HomePage";
 import TripPage from './pages/TripPage';
-import BookNowPage from "./pages/BookNowPage";
+import FAQPage from "./pages/FAQPage";
 import MediaPage from "./pages/MediaPage";
 import ExplorePage from './pages/ExplorePage';
 import BookOptionsPage from "./pages/BookOptionsPage";
@@ -17,7 +17,6 @@ import SmokyMountain from './pages/trips/SmokyMountain';
 import SouthernCalifornia from './pages/trips/SouthernCalifornia';
 import BookNorthernMichiganPage from "./pages/book/BookNorthernMichiganPage";
 import CustomLoader from './components/general/CustomLoader';
-import DirectionsPage from './pages/DirectionsPage';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -30,10 +29,9 @@ function App() {
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/trips" element={<TripPage />} />
-            <Route path="/booknow" element={<BookNowPage />} />
+            <Route path="/faq" element={<FAQPage />} />
             <Route path="/media" element={<MediaPage />} />
             <Route path="/loading" element={<CustomLoader />} />
-            <Route path="/directions" element={<DirectionsPage />} />
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/bookoptions" element={<BookOptionsPage />} />
             <Route path="/reviewtrip" element={<ReviewTripPage />} />

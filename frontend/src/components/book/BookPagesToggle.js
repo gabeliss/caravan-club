@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import './../../styles/bookpages.css';
 
 const ToggleItem = ({ title, content, isActive, setActive, availability, price, message, isSelected, onSelect, details }) => {
@@ -12,18 +13,20 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
         if (contentRef.current) {
             setContentHeight(contentRef.current.scrollHeight);
         }
-    }, []);
+    }, [isActive]); // Recalculate height when active state changes
 
-    const currentHeight = isActive ? contentHeight : 0;
+    const currentHeight = isActive ? `${contentHeight + 5000}px` : '0px';
 
     return (
-        <div className="toggle-item">
-            <div className='toggle-container'>
+        <div className={`toggle-item ${isActive ? 'expanded' : ''}`}>
+            <div className="toggle-container">
                 <div className="toggle-header" onClick={setActive} style={{ width: '100%' }}>
                     {title}
-                    <span className={`toggle-icon ${isActive ? 'active' : ''}`}>▼</span>
+                    <span className={`toggle-icon ${isActive ? 'active' : ''}`}>
+                        <KeyboardArrowDownIcon />
+                    </span>
                 </div>
-                <div 
+                <div
                     className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'selected' : ''}`} 
                     onClick={() => availability && onSelect()}
                 >
@@ -33,37 +36,37 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
             <div
                 ref={contentRef}
                 className="toggle-content"
-                style={{ maxHeight: `${currentHeight}px` }}
+                style={{ maxHeight: currentHeight, transition: 'max-height 0.3s ease-in-out' }}
             >
                 <p>{content}</p>
-                
+    
                 {/* Display images if they exist */}
                 {details.imageUrls?.length > 0 && (
-                <Slider
-                    className="image-carousel"
-                    dots={true}
-                    infinite={false} // No looping, so no duplicates
-                    speed={500}
-                    slidesToShow={Math.min(details.imageUrls.length, 3)} // Show up to 3 images or the total number available
-                    slidesToScroll={1}
-                    responsive={[
-                        {
-                            breakpoint: 768,
-                            settings: {
-                                slidesToShow: 1,
-                                slidesToScroll: 1,
+                    <Slider
+                        className="image-carousel"
+                        dots={true}
+                        infinite={false}
+                        speed={500}
+                        slidesToShow={Math.min(details.imageUrls.length, 3)}
+                        slidesToScroll={1}
+                        responsive={[
+                            {
+                                breakpoint: 768,
+                                settings: {
+                                    slidesToShow: 1,
+                                    slidesToScroll: 1,
+                                },
                             },
-                        },
-                    ]}
-                >
-                    {details.imageUrls.map((url, index) => (
-                        <div key={index} className="carousel-slide">
-                            <img src={url} alt={`Image ${index + 1}`} className="toggle-img" />
-                        </div>
-                    ))}
-                </Slider>
-            )}
-
+                        ]}
+                    >
+                        {details.imageUrls.map((url, index) => (
+                            <div key={index} className="carousel-slide">
+                                <img src={url} alt={`Image ${index + 1}`} className="toggle-img" />
+                            </div>
+                        ))}
+                    </Slider>
+                )}
+    
                 {/* Display additional details if they exist */}
                 <div className="additional-details">
                     {details.distanceToTown && <p><strong>Distance to town:</strong> {details.distanceToTown}</p>}
@@ -85,6 +88,7 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
             </div>
         </div>
     );
+    
 };
 
 const ToggleList = ({ data, onSelectionChange }) => {
@@ -101,8 +105,10 @@ const ToggleList = ({ data, onSelectionChange }) => {
     };
 
     return (
-        <>
-            <div className='select-stay'>Select One Option</div>
+        <>  <div className='toggle-labels'>
+                <div className='campground-label'>Campground:</div>
+                <div className='select-stay-label'>Select One Option</div>
+            </div>
             <div className="toggle-list">
                 {Object.entries(data).map(([key, details], index) => (
                 <ToggleItem 

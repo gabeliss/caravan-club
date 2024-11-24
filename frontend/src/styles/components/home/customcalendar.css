@@ -11,7 +11,13 @@
     align-items: center;
     margin-bottom: 16px;
   }
-  
+
+  .calendar-header h3 {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
   .calendar-header button {
     background: none;
     border: none;

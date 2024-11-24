@@ -39,9 +39,6 @@ def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
 
     response = requests.get(url, headers=headers, params=params, timeout=30)
 
-    print("Request URL:", response.url)
-    print("Response Headers:", response.headers)
-
     if response.status_code == 200:
         try:
             # Check encoding and decompress accordingly
@@ -51,15 +48,10 @@ def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
                 try:
                     text = brotli.decompress(response.content).decode('utf-8')
                 except brotli.error as e:
-                    print("Brotli decompression error:", e)
-                    print("Response content preview (uncompressed):", response.content[:200])  # Print preview of the content
                     text = response.content.decode('utf-8')  # Attempt to decode directly if Brotli fails
             else:
                 text = response.text
 
-            print("Response Preview:", text[:200])  # Print first 200 characters of the response
-
-            # Parse JSON data
             inventory = json.loads(text)
             tent_sites = ["Standard Back-In RV", "Deluxe Back-In RV", "Lakefront Basic RV", "Premium Back-In RV"]
             minPrice = float('inf')
