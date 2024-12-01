@@ -1,0 +1,63 @@
+.payment-trip-details {
+    background-color: var(--secondary-color);
+    padding: 2%;
+    width: 30%;
+    height: fit-content;
+    border: 2px solid var(--primary-color);
+}
+
+.payment-trip-details h2 {
+    color: var(--orange-color);
+}
+
+.payment-trip-details h3 {
+    color: black;
+}
+
+.payment-dates-and-travelers {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    margin-bottom: 8%;
+}
+
+.payment-dates, .payment-travelers {
+    display: flex;
+    align-items: center;
+}
+
+.payment-prices {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-top: 1px solid black;
+}
+
+.payment-stay, .payment-taxes-and-fees {
+    display: flex;
+    align-items: flex-start;
+    border-bottom: 1px solid black;
+}
+
+.payment-total {
+    display: flex;
+    justify-content: space-between;
+}
+
+.payment-prices h3, .payment-total h3 {
+    padding: 0;
+}
+
+@media (max-width: 768px) {
+    .payment-trip-details {
+        order: 1;
+        width: 45%;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-trip-details {
+        width: 90%;
+    }
+}

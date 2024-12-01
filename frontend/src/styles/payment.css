@@ -11,68 +11,71 @@
     color: black;
 }
 
-.form-container {
-    width: 70%; /* Increased width for better readability */
-    max-width: 800px;
-    background-color: #f9f9f9; /* Light background for form */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-}
-
-.form-input {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    box-sizing: border-box;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.form-group {
-    margin-bottom: 20px; /* Increased space between fields */
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold; /* Make labels bold for emphasis */
-}
-
-.buttons {
+.payment-page-container {
     display: flex;
-    justify-content: space-between; /* Better spacing between buttons */
-    align-items: center;
-    margin-top: 20px;
-    width: 80%;
-}
-
-.button {
-    height: 50px;
-    background-color: var(--secondary-color);
-    width: 40%; /* Slightly reduced width for better fit */
-    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    border-radius: 10px;
-    border: 2px solid var(--primary-color);
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    width: 100%;
 }
 
-.button:hover {
-    background-color: rgb(221, 195, 89);
-}
-
-.form-row {
+.place-icon-and-name {
     display: flex;
-    justify-content: space-between;
-    gap: 20px; /* Add gap between form groups for consistent spacing */
+    align-items: center;
 }
 
-.form-row .form-group {
-    flex: 1;
+.place-icon-and-name img {
+    height: 2.5rem;
+    width: 2.5rem;
+}
+
+.place-icon-and-name h3 {
+    color: black;
+    font-size: 1.25rem;
+    line-height: 2.5rem;
+    padding-left: 10px;
+    margin: 0;
+}
+
+.payment-header {
+    width: 100%;
+    margin-left: 2%;
+}
+
+.payment-header h1 {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+}
+
+.payment-trip-details {
+    margin-bottom: 20px;
+    order: 2;
+}
+
+.payment-form {
+    margin-bottom: 20px;
+    order: 1;
+    margin-right: 2%;
+}
+
+@media (max-width: 768px) {
+    .payment-page-container {
+        justify-content: space-evenly;
+    }
+
+    .payment-header {
+        width: 40%;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-page-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .payment-header {
+        width: 90%;
+    }
 }

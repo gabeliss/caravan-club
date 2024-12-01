@@ -1,5 +1,5 @@
 .review-trip-page {
-    background: linear-gradient(to bottom, #f9f9f9, #eaeaea);
+    background: white;
     min-height: 75vh;
     display: flex;
     flex-direction: column;
@@ -14,7 +14,18 @@
 .header-info {
     font-weight: lighter;
     color: rgba(86, 84, 84, 0.998);
-    border-bottom: solid 2px var(--secondary-color);;
+    border-bottom: solid 2px var(--secondary-color);
+    padding: 0;
+}
+
+.nightstays-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    padding: 0 20px;
+    margin-top: 3%;
 }
 
 .nightstay {
@@ -22,16 +33,18 @@
     flex-direction: column;
     align-items: center;
     background-color: var(--primary-color);
-    width: 60%;
-    margin: 20px 0;
+    color: white;
+    width: calc(33.333% - 20px);
+    max-width: 400px;
+    height: 550px;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0.4, 0.4, 0.4, 0.4);
+    border-radius: 150px / 80px;
+    /* border-radius: 10px; */
 }
 
 .disclaimer {
-    width: 50%;
-    font-size: 0.9em;
+    width: 80%;
+    font-size: 1em;
     color: rgba(86, 84, 84, 0.8);
 }
 
@@ -43,17 +56,17 @@
 
 .reviewtrip-buttons {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     width: 60%;
 }
 
 .reviewtrip-button  {
-    height: 70px;
+    height: 60px;
     background-color: var(--secondary-color);
     margin-top: 20px;
     margin-bottom: 50px;
-    width: 43%;
+    width: 20%;
     display: flex;
     justify-content: center;
     text-decoration: none;
@@ -64,4 +77,42 @@
 
 .reviewtrip-button:hover {
     background-color: rgb(221, 195, 89);
+}
+
+.accommodation-image {
+    width: 100%;
+    max-width: 500px;
+    height: 300px;
+    object-fit: cover;
+    margin: 10px 0;
+    border-radius: 8px;
+}
+
+@media (max-width: 1199px) {
+    .nightstay {
+        width: calc(50% - 20px);
+    }
+
+    .reviewtrip-buttons {
+        justify-content: space-between;
+    }
+
+    .reviewtrip-button {
+        width: 40%;
+    }
+}
+
+@media (max-width: 767px) {
+    .header-title {
+        font-size: 200%;
+        margin: 8%;
+    }
+    .nightstays-container {
+        padding: 0;
+    }
+
+    .nightstay {
+        width: 90%; 
+        margin: 10px 25px;
+    }
 }

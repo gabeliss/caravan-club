@@ -44,6 +44,7 @@
     font-weight: bold;
     font-size: 1.75rem;
     color: var(--primary-color);
+    text-align: center;
 }
 
 .makes-different-item p {

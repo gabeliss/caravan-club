@@ -138,8 +138,6 @@ function BookNorthernMichiganPage() {
     console.log('Location state found:', location.state);
   }, [location.state, navigate]);
 
-  const nightRanges = calculateNightRanges(location.state.segments);
-
   const handleSelectStatus = (location, accommodationKey) => {
     setSelectedAccommodations(prev => ({
       ...prev,
@@ -175,6 +173,14 @@ function BookNorthernMichiganPage() {
   if (isLoading) {
     return <CustomLoader />;
   }
+
+  if (!location.state) {
+    console.log('No location state found. Navigating to home.');
+    navigate('/');
+    return;
+  }
+
+  const nightRanges = calculateNightRanges(location.state.segments);
 
   return (
     <div className='book-page'>

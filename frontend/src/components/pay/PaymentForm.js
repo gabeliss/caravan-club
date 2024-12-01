@@ -1,4 +1,5 @@
 import React from 'react';
+import '../../styles/components/pay/payment-form.css';
 
 const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack, totalPrice }) => {
   const caravanFee = parseFloat((parseFloat(totalPrice) * 0.03).toFixed(2)); // 3% fee
@@ -15,88 +16,88 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
   };
 
   return (
-    <form onSubmit={handleSubmit} className='form-container'>
-      <div className='form-row'>
-        <div className='form-group'>
+    <form onSubmit={handleSubmit} className='payment-form'>
+      <div className='payment-form-row'>
+        <div className='payment-form-group'>
           <label htmlFor='first_name'>First Name</label>
           <input 
             type="text" 
             id="first_name" 
             name="first_name" 
-            className="form-input"
+            className="payment-form-input"
             value={paymentInfo.first_name} 
             onChange={handleInputChange} 
             required 
           />
         </div>
-        <div className='form-group'>
+        <div className='payment-form-group'>
           <label htmlFor='last_name'>Last Name</label>
           <input 
             type="text" 
             id="last_name" 
             name="last_name" 
-            className="form-input"
+            className="payment-form-input"
             value={paymentInfo.last_name} 
             onChange={handleInputChange} 
             required 
           />
         </div>
       </div>
-      <div className='form-group'>
+      <div className='payment-form-group'>
         <label htmlFor='email'>Email</label>
         <input 
           type="email" 
           id="email" 
           name="email" 
-          className="form-input"
+          className="payment-form-input"
           value={paymentInfo.email} 
           onChange={handleInputChange} 
           required 
         />
       </div>
-      <div className='form-group'>
+      <div className='payment-form-group'>
         <label htmlFor='phone_number'>Phone Number</label>
         <input 
           type="tel" 
           id="phone_number" 
           name="phone_number" 
-          className="form-input"
+          className="payment-form-input"
           value={paymentInfo.phone_number} 
           onChange={handleInputChange} 
           required 
         />
       </div>
-      <div className='form-group'>
+      <div className='payment-form-group'>
         <label htmlFor='street_address'>Street Address</label>
         <input 
           type="text" 
           id="street_address" 
           name="street_address" 
-          className="form-input"
+          className="payment-form-input"
           value={paymentInfo.street_address} 
           onChange={handleInputChange} 
           required 
         />
       </div>
-      <div className='form-row'>
-        <div className='form-group'>
+      <div className='payment-form-row'>
+        <div className='payment-form-group'>
           <label htmlFor='city'>City</label>
           <input 
             type="text" 
             id="city" 
             name="city" 
-            className="form-input"
+            className="payment-form-input"
             value={paymentInfo.city} 
             onChange={handleInputChange} 
             required 
           />
         </div>
-        <div className='form-group'>
+        <div className='payment-form-group'>
           <label htmlFor='state'>State</label>
           <select 
             id="state" 
             name="state" 
-            className="form-input"
+            className="payment-form-input"
             value={paymentInfo.state} 
             onChange={handleInputChange} 
             required
@@ -112,25 +113,25 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
           </select>
         </div>
       </div>
-      <div className='form-row'>
-        <div className='form-group'>
+      <div className='payment-form-row'>
+        <div className='payment-form-group'>
             <label htmlFor='zip_code'>Zip Code</label>
             <input 
             type="text" 
             id="zip_code" 
             name="zip_code" 
-            className="form-input"
+            className="payment-form-input"
             value={paymentInfo.zip_code} 
             onChange={handleInputChange} 
             required 
             />
         </div>
-        <div className='form-group'>
+        <div className='payment-form-group'>
             <label htmlFor='country'>Country</label>
             <select 
             id="country" 
             name="country" 
-            className="form-input"
+            className="payment-form-input"
             value={paymentInfo.country} 
             onChange={handleInputChange} 
             required
@@ -140,39 +141,39 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
             </select>
         </div>
       </div>
-      <div className='form-row'>
-        <div className='form-group'>
+      <div className='payment-form-row'>
+        <div className='payment-form-group'>
           <label htmlFor='cardholder_name'>Cardholder Name</label>
           <input 
             type="text" 
             id="cardholder_name" 
             name="cardholder_name" 
-            className="form-input"
+            className="payment-form-input"
             value={paymentInfo.cardholder_name} 
             onChange={handleInputChange} 
             required 
           />
         </div>
-        <div className='form-group'>
+        <div className='payment-form-group'>
           <label htmlFor='card_number'>Card Number</label>
           <input 
             type="text" 
             id="card_number" 
             name="card_number" 
-            className="form-input"
+            className="payment-form-input"
             value={paymentInfo.card_number} 
             onChange={handleInputChange} 
             required 
           />
         </div>
       </div>
-      <div className='form-row'>
-        <div className='form-group'>
+      <div className='payment-form-row'>
+        <div className='payment-form-group'>
             <label htmlFor='card_type'>Card Type</label>
             <select 
             id="card_type" 
             name="card_type" 
-            className="form-input"
+            className="payment-form-input"
             value={paymentInfo.card_type} 
             onChange={handleInputChange} 
             required
@@ -184,39 +185,39 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
             </select>
         </div>
       </div>
-      <div className='form-row'>
-        <div className='form-group'>
+      <div className='payment-form-row'>
+        <div className='payment-form-group'>
           <label htmlFor='expiry_date'>Expiry Date</label>
           <input 
             type="text" 
             id="expiry_date" 
             name="expiry_date" 
-            className="form-input"
+            className="payment-form-input"
             placeholder="MM/YY"
             value={paymentInfo.expiry_date} 
             onChange={handleExpiryDateChange} 
             required 
           />
         </div>
-        <div className='form-group'>
+        <div className='payment-form-group'>
           <label htmlFor='cvc'>CVC</label>
           <input 
             type="text" 
             id="cvc" 
             name="cvc" 
-            className="form-input"
+            className="payment-form-input"
             value={paymentInfo.cvc} 
             onChange={handleInputChange} 
             required 
           />
         </div>
       </div>
-      <div className='form-group center'>
+      <div className='payment-form-details'>
         <h2>Caravan Club Fee: ${caravanFee}</h2>
         <h2>Total Price: ${(parseFloat(totalPrice) + caravanFee).toFixed(2).toString()}</h2>
-        <div className='buttons'>
-          <button className="button" type="button" onClick={handleBack}>Back</button>
-          <button className="button" type="submit">Submit Payment</button>
+        <div className='payment-buttons'>
+          <button className="payment-button" type="button" onClick={handleBack}>Back</button>
+          <button className="payment-button" type="submit">Submit Payment</button>
         </div>
       </div>
     </form>

@@ -4,7 +4,11 @@ import './../styles/payment.css';
 import { convertDateFormat } from './../utils/helpers.js';
 import { initiatePayment } from '../api/northernMichiganApi.js';
 import PaymentForm from './../components/pay/PaymentForm.js';
+import PaymentTripDetails from './../components/pay/PaymentTripDetails.js';
 import CustomLoader from '../components/general/CustomLoader';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import PersonIcon from '@mui/icons-material/Person';
+
 
 function PaymentPage() {
   const navigate = useNavigate();
@@ -19,8 +23,12 @@ function PaymentPage() {
     num_adults, 
     num_kids, 
     segments,
-    placeDetails 
+    placeDetails,
+    tripTitle
   } = state || {};
+
+  console.log('state', state);
+  console.log('tripTitle', tripTitle);
 
 
   const [paymentInfo, setPaymentInfo] = useState({
@@ -108,12 +116,19 @@ function PaymentPage() {
   };
 
   return (
-    <div className='payment-page center'>
+    <div className='payment-page'>
       {isLoading ? (
         <CustomLoader />
       ) : (
-        <>
-          <h1 className='center'>Pay Now</h1>
+        <div className='payment-page-container'>
+          <div className='payment-header'>
+            <div className='place-icon-and-name'>
+              <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/icons/locationPin.png" alt="location pin" />
+              <h3>{tripTitle.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</h3>
+            </div>
+            <h1>Complete Booking</h1>
+          </div>
+          <PaymentTripDetails />
           <PaymentForm
             paymentInfo={paymentInfo}
             handleInputChange={handleInputChange}
@@ -121,7 +136,7 @@ function PaymentPage() {
             handleBack={handleBack}
             totalPrice={totalPrice}
           />
-        </>
+        </div>
       )}
     </div>
   );
