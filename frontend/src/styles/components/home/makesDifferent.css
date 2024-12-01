@@ -65,6 +65,14 @@
         flex-wrap: wrap;
     }
 
+    .makes-different-section-title {
+        margin-bottom: 2rem;
+    }
+
+    .makes-different-section-title h2 {
+        font-size: 2.3rem;
+    }
+
     .makes-different-item:nth-child(2),
     .makes-different-item:nth-child(3),
     .makes-different-item:nth-child(4) {
@@ -72,7 +80,11 @@
     }
 
     .makes-different-item {
-        min-width: 80%;
+        min-width: 90%;
+    }
+
+    .makes-different-item h3 {
+        font-size: 1.4rem;
     }
 }
 

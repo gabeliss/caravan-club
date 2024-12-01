@@ -50,19 +50,34 @@ button, .header-right img {
 /* Header Media Queries */
 @media (max-width: 600px) {
   .header-left, .header-right {
-    display: none; /* Hide left and right header parts */
+    display: none;
+  }
+
+  .header-logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .header-logo img {
+    width: 120px;
   }
 
   .header-menu {
-    position: relative;
+    position: absolute;
+    right: 5%;
     display: flex;
-    justify-content: space-evenly;
-    width: 30%;
+    justify-content: flex-end;
+    width: auto;
   }
 
   header {
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: 0;
+    margin-right: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 18vh;
   }
 
   .header-menu button {
@@ -167,7 +182,8 @@ footer a {
 }
 
 .landing-welcome {
-  background: url('https://caravan-bucket.s3.us-east-2.amazonaws.com/images/header/background.jpg') center/cover no-repeat;
+  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)),
+              url('https://caravan-bucket.s3.us-east-2.amazonaws.com/images/header/background.jpg') center/cover no-repeat;
   height: auto;
   min-height: 75vh;
   display: flex;
@@ -176,18 +192,20 @@ footer a {
 }
 
 .landing-welcome-content {
-  width: 80%;
+  width: 90%;
   max-width: 1200px;
   height: 100%;
   text-align: center;
-  padding: 20px;
+  padding: 20px 0;
   box-sizing: border-box;
   position: relative;
 }
 
 .landing-welcome-content h2 {
   color: var(--primary-color);
-  font-size: 250%;
+  font-size: 2.25rem;
+  margin-bottom: 50px;
+  font-weight: light;
 }
 
 /* Landing Intro */
@@ -204,7 +222,7 @@ footer a {
   text-align: center;
   width: 100%;
   font-weight: lighter;
-  font-size: 4.5em;
+  font-size: 4rem;
   margin-top: 0;
   margin-right: 5%;
 }
@@ -349,6 +367,37 @@ footer a {
 
   .custom-calendar {
     width: 100%;
+  }
+
+  .landing-welcome-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .landing-intro h1 {
+    font-size: 2rem;
+    text-align: left;
+    margin-bottom: 30px;
+  }
+
+  .landing-intro p {
+    font-size: 1.25rem;
+    line-height: 1.25;
+  }
+
+  .logo-container {
+    justify-content: space-evenly;
+  }
+
+  .logo-item {
+    margin: 2rem 1rem;
+    padding: 0;
+    margin: 0;
+    width: 125px;
+  }
+
+  .logo-item img {
+    width: 125px;
+    height: 125px;
   }
 }
 

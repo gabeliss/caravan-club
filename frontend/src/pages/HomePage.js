@@ -79,7 +79,7 @@ function HomePage() {
 
       {/* Trip Logos */}
       <div className='trip-logos'>
-        <h2>OUR TRIPS</h2>
+        <h2>Our Trips</h2>
         <div className='logo-container'>
           <div className='logo-item' onClick={() => handleLogoClick('washington')}>
             <img src='https://caravan-bucket.s3.us-east-2.amazonaws.com/images/triplogos/washington.png' alt='Washington' />

@@ -79,7 +79,7 @@
 
 .slide-content-text p, .slide-content-text strong, .slide-content-text ul, .slide-content-text li {
     white-space: pre-line;
-    font-size: 1.3rem;
+    font-size: 1.45rem;
     line-height: 1.5;
     margin: 0;
 }
@@ -111,6 +111,7 @@
 
 .arrow-btn svg {
     font-size: 3rem;
+    color: #423E3E;
 }
 
 
@@ -129,6 +130,10 @@
 @media (max-width: 768px) {
     .how-it-works-page {
         padding: 1rem 0;
+    }
+
+    .title-section-text {
+        font-size: 2rem;
     }
 
     .slide-content {
