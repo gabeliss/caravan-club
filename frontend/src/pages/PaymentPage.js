@@ -6,8 +6,6 @@ import { initiatePayment } from '../api/northernMichiganApi.js';
 import PaymentForm from './../components/pay/PaymentForm.js';
 import PaymentTripDetails from './../components/pay/PaymentTripDetails.js';
 import CustomLoader from '../components/general/CustomLoader';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import PersonIcon from '@mui/icons-material/Person';
 
 
 function PaymentPage() {
@@ -19,7 +17,9 @@ function PaymentPage() {
   
   const { 
     selectedAccommodations, 
-    totalPrice, 
+    totalPrice,
+    start_date,
+    end_date,
     num_adults, 
     num_kids, 
     segments,
@@ -128,7 +128,16 @@ function PaymentPage() {
             </div>
             <h1>Complete Booking</h1>
           </div>
-          <PaymentTripDetails />
+          <PaymentTripDetails 
+            startDate={start_date}
+            endDate={end_date}
+            numAdults={num_adults}
+            numKids={num_kids}
+            totalPrice={totalPrice}
+            segments={segments}
+            selectedAccommodations={selectedAccommodations}
+            placeDetails={placeDetails}
+          />
           <PaymentForm
             paymentInfo={paymentInfo}
             handleInputChange={handleInputChange}

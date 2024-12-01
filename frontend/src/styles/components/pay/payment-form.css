@@ -45,21 +45,21 @@
 
 .payment-button {
     height: 50px;
-    background-color: var(--secondary-color);
+    background-color: var(--midnight-blue);
+    color: var(--secondary-color);
     width: 40%;
     display: flex;
     justify-content: center;
     align-items: center;
     text-decoration: none;
     border-radius: 10px;
-    border: 2px solid var(--primary-color);
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .payment-button:hover {
-    background-color: rgb(221, 195, 89);
+    background-color: var(--primary-color-dark);
 }
 
 .payment-form-row {
@@ -91,4 +91,22 @@
 
 .payment-form-group input::placeholder, select.payment-form-input:invalid {
     color: #999;
+}
+
+.terms-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.terms-checkbox input[type="checkbox"] {
+    margin-top: 4px;
+}
+
+.terms-checkbox label {
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: normal;
 }

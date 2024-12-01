@@ -8,10 +8,12 @@
 
 .payment-trip-details h2 {
     color: var(--orange-color);
+    font-weight: bold;
 }
 
 .payment-trip-details h3 {
     color: black;
+    width: 100%;
 }
 
 .payment-dates-and-travelers {
@@ -25,19 +27,21 @@
 .payment-dates, .payment-travelers {
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 .payment-prices {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border-top: 1px solid black;
+    border-top: 1px solid var(--midnight-blue)
 }
 
 .payment-stay, .payment-taxes-and-fees {
     display: flex;
     align-items: flex-start;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid var(--midnight-blue);
+    flex-direction: column;
 }
 
 .payment-total {
@@ -60,4 +64,35 @@
     .payment-trip-details {
         width: 90%;
     }
+}
+
+.payment-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.price-and-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.arrow-icon {
+  transition: transform 0.3s ease;
+  color: var(--midnight-blue);
+}
+
+.arrow-icon.rotated {
+  transform: rotate(180deg);
+}
+
+.payment-details p {
+  color: var(--midnight-blue);
+  font-size: 0.85rem;
+  margin: 0;
+  margin-bottom: 16px;
 }

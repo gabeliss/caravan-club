@@ -1,8 +1,7 @@
 import React from 'react';
 import '../../styles/components/pay/payment-form.css';
 
-const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack, totalPrice }) => {
-  const caravanFee = parseFloat((parseFloat(totalPrice) * 0.03).toFixed(2)); // 3% fee
+const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack }) => {
 
   const handleExpiryDateChange = (e) => {
     let value = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters
@@ -213,11 +212,22 @@ const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack,
         </div>
       </div>
       <div className='payment-form-details'>
-        <h2>Caravan Club Fee: ${caravanFee}</h2>
-        <h2>Total Price: ${(parseFloat(totalPrice) + caravanFee).toFixed(2).toString()}</h2>
+        <div className='payment-form-group'>
+          <div className='terms-checkbox'>
+            <input
+              type="checkbox"
+              id="terms_agreement"
+              name="terms_agreement"
+              required
+            />
+            <label htmlFor="terms_agreement">
+              I agree that any booking changes must be made by directly contacting the campsite. Changes to reservations cannot be made through the website.
+            </label>
+          </div>
+        </div>
         <div className='payment-buttons'>
           <button className="payment-button" type="button" onClick={handleBack}>Back</button>
-          <button className="payment-button" type="submit">Submit Payment</button>
+          <button className="payment-button" type="submit">Book Now</button>
         </div>
       </div>
     </form>
