@@ -42,7 +42,7 @@
     margin-top: 0;
     margin-bottom: 2rem;
     font-weight: bold;
-    font-size: 1.75rem;
+    font-size: 1.7rem;
     color: var(--primary-color);
     text-align: center;
 }
@@ -84,7 +84,7 @@
     }
 
     .makes-different-item h3 {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
 }
 

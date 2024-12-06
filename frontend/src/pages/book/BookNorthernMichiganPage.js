@@ -189,7 +189,10 @@ function BookNorthernMichiganPage() {
           <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/welcome.png" alt="Northern Michigan" />
         </div>
         <div className='intro-text'>
-          <h1>{location.state.tripTitle.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} - {location.state.nights} Night Road Trip</h1>
+          <h1>
+            {location.state.tripTitle.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+            <span><span className="dash"> - </span>{location.state.nights} Night Road Trip</span>
+          </h1>
           <h3>We've simplified road trip planning, letting you focus on the fun instead of the details. Each accommodation is handpicked and vetted by the CaraVan Trip Plan team, saving you hours of searching for availability and the perfect place to stay. </h3>
         </div>
       </div>
