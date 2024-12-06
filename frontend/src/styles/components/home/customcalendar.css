@@ -2,7 +2,9 @@
     background-color: var(--secondary-color);
     border-radius: 8px;
     padding: 16px;
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
+    box-sizing: border-box;
   }
   
   .calendar-header {
@@ -69,6 +71,7 @@
   .date-input-active {
     cursor: pointer;
     background-color: #ffffff;
+    text-align: left;
   }
   
   .date-input-disabled {
@@ -91,4 +94,45 @@
   
   .past-date:hover {
     background-color: transparent;
+  }
+
+  @media (max-width: 480px) {
+    .custom-calendar {
+      max-width: 280px;
+      padding: 12px;
+    }
+
+    .calendar-header h3 {
+      font-size: 1rem;
+    }
+
+    .calendar-header button {
+      font-size: 16px;
+    }
+
+    .calendar-day {
+      height: 32px;
+      font-size: 14px;
+    }
+
+    .calendar-days {
+      gap: 4px;
+      font-size: 14px;
+    }
+
+    .calendar-grid {
+      gap: 4px;
+    }
+  }
+
+  @media (max-width: 320px) {
+    .custom-calendar {
+      max-width: 240px;
+      padding: 8px;
+    }
+
+    .calendar-day {
+      height: 28px;
+      font-size: 12px;
+    }
   }

@@ -11,20 +11,21 @@ const startDay = (date) => {
 };
 
 const createDate = (year, month, day) => {
-  return new Date(year, month, day);
+  return new Date(Date.UTC(year, month, day));
 };
+
 
 const isDateInPast = (date) => {
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return date < today;
+  const todayUTC = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+  return date < todayUTC;
 };
 
 const isSameDay = (date1, date2) => {
   return date1 && date2 &&
-    date1.getFullYear() === date2.getFullYear() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getDate() === date2.getDate();
+    date1.getUTCFullYear() === date2.getUTCFullYear() &&
+    date1.getUTCMonth() === date2.getUTCMonth() &&
+    date1.getUTCDate() === date2.getUTCDate();
 };
 
 const CustomCalendar = ({ startDate, endDate, onDateSelect, nights }) => {
@@ -47,12 +48,12 @@ const CustomCalendar = ({ startDate, endDate, onDateSelect, nights }) => {
   }, [selectedStartDate, nights]);
 
   const handleDateClick = (day) => {
-    const clickedDate = createDate(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+    const clickedDate = new Date(Date.UTC(currentMonth.getFullYear(), currentMonth.getMonth(), day));
     if (!isDateInPast(clickedDate)) {
       setSelectedStartDate(clickedDate);
       onDateSelect(clickedDate.toISOString().split('T')[0]);
     }
-  };
+  };  
 
   const handleDateHover = (day) => {
     const hoverDate = createDate(currentMonth.getFullYear(), currentMonth.getMonth(), day);
@@ -85,8 +86,8 @@ const CustomCalendar = ({ startDate, endDate, onDateSelect, nights }) => {
       
       const date = createDate(currentMonth.getFullYear(), currentMonth.getMonth(), day);
       const isPastDate = isDateInPast(date);
-      const isSelected = isSameDay(new Date(date.getTime() - 86400000), selectedStartDate);
-      const isEndDate = isSameDay(new Date(date.getTime() - 86400000), selectedEndDate);
+      const isSelected = isSameDay(date, selectedStartDate);
+      const isEndDate = isSameDay(date, selectedEndDate);
 
       return (
         <div

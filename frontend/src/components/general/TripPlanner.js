@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import tripMapping from '../../tripmapping.json';
 import CustomCalendar from './CustomCalendar';
 import PopupModal from './PopupModal';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import '../../styles/tripplanner.css';
 
 function TripPlanner() {
@@ -166,6 +167,16 @@ function TripPlanner() {
     navigate(`/book/${destination.toLowerCase()}`, { state: tripDetails });
   };
 
+  // Add this new function to format dates for display
+  const formatDateForDisplay = (dateString) => {
+    const date = new Date(dateString.replace(/-/g, '/'));
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+  };
+
   return (
     <div className="trip-planner">
       <div className="trip-planner-row">
@@ -187,26 +198,26 @@ function TripPlanner() {
         <div className="trip-planner-column date-column">
           <label>During:</label>
           <div className="date-input-wrapper">
-            <input
-              type="date"
-              value={startDate}
+            <div
+              className="date-display"
               onClick={() => {
                 setShowCalendar(true);
                 setCalendarMode('start');
               }}
-              className="date-input-active"
-              readOnly
-            />
-            <input
-              type="date"
-              value={endDate}
+            >
+              {startDate ? formatDateForDisplay(startDate) : 'Start Date'}
+              <CalendarMonthIcon className="calendar-icon" />
+            </div>
+            <div
+              className="date-display"
               onClick={() => {
                 setShowCalendar(true);
                 setCalendarMode('end');
               }}
-              className="date-input-active"
-              readOnly
-            />
+            >
+              {endDate ? formatDateForDisplay(endDate) : 'End Date'}
+              <CalendarMonthIcon className="calendar-icon" />
+            </div>
           </div>
           {showCalendar && (
             <div className="calendar-wrapper" ref={calendarRef}>
