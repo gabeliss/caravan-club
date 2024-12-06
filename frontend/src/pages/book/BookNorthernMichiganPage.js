@@ -46,7 +46,8 @@ function BookNorthernMichiganPage() {
   };
 
   const formatToReadableDate = (dateStr) => {
-    const options = { month: 'short', day: 'numeric' };
+    console.log('dateStr', dateStr);
+    const options = { month: 'short', day: 'numeric', timeZone: 'UTC' }; // Use UTC timezone to avoid date offset issues
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', options);
   };

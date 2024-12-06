@@ -19,6 +19,7 @@ function TripPlanner() {
   const [error, setError] = useState('');
   const [showMaxNightsModal, setShowMaxNightsModal] = useState(false);
   const [showDateLimitModal, setShowDateLimitModal] = useState(false);
+  const [showInvalidEndDateModal, setShowInvalidEndDateModal] = useState(false);
 
   useEffect(() => {
     const today = new Date();
@@ -82,11 +83,17 @@ function TripPlanner() {
     const startDateObj = new Date(startDate);
     const endDateObj = new Date(newEndDate);
 
+    // Check if end date is before start date
+    if (endDateObj < startDateObj) {
+      setShowInvalidEndDateModal(true);
+      return;
+    }
+
     // Get maxNights from the selected destination
     const maxNights = tripMapping[destination]?.maxNights || 6;
 
     // Ensure the end date is not more than maxNights past the start date
-    if (endDateObj > startDateObj && (endDateObj - startDateObj) / (1000 * 60 * 60 * 24) <= maxNights) {
+    if ((endDateObj - startDateObj) / (1000 * 60 * 60 * 24) <= maxNights) {
       setEndDate(newEndDate);
     } else {
       setShowMaxNightsModal(true);
@@ -267,6 +274,11 @@ function TripPlanner() {
         show={showDateLimitModal}
         message="We're sorry, but bookings are only available through November 2025 at this time."
         onClose={() => setShowDateLimitModal(false)}
+      />
+      <PopupModal
+        show={showInvalidEndDateModal}
+        message="End date cannot be before start date"
+        onClose={() => setShowInvalidEndDateModal(false)}
       />
     </div>
   );
