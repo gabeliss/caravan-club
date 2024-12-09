@@ -42,6 +42,10 @@
     /* border-radius: 10px; */
 }
 
+.nightstay h2 {
+    text-align: center;
+}
+
 .disclaimer {
     width: 80%;
     font-size: 1em;
@@ -109,10 +113,65 @@
     }
     .nightstays-container {
         padding: 0;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 600px; /* Adjust based on your needs */
     }
 
     .nightstay {
-        width: 90%; 
-        margin: 10px 25px;
+        width: 85%;
+        margin: 0;
+        position: absolute;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .nightstay.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .nightstay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .carousel-arrow {
+        display: block;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        z-index: 2;
+        font-size: 40px;
+    }
+
+    .carousel-arrow svg {
+        color: var(--charcoal-gray);
+    }
+
+    .carousel-arrow.left {
+        left: 10px;
+    }
+
+    .carousel-arrow.right {
+        right: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel-arrow.left {
+        left: 0;
+    }
+
+    .carousel-arrow.right {
+        right: 0;
+    }
+}
+
+@media (min-width: 767px) {
+    .nightstays-container svg {
+        display: none;
     }
 }

@@ -1,9 +1,10 @@
-import React from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate,useLocation, Link } from 'react-router-dom';
 import './../styles/payment-confirmation.css';
 
 function PaymentConfirmationPage() {
   const { state } = useLocation();
+  const navigate = useNavigate();
   const { paymentStatus } = state || {};
 
   const formatCamelCase = (text) => {
@@ -24,6 +25,14 @@ function PaymentConfirmationPage() {
       return null;
     }
   };
+
+  useEffect(() => {
+    if (!state) {
+      console.log('No location state found. Navigating to home.');
+    navigate('/');
+      return;
+    }
+  }, [state, navigate]);
 
   return (
     <div className='payment-confirmation-page center'>

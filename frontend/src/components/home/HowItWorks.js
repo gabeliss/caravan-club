@@ -99,8 +99,8 @@ function HowItWorks() {
     <div className="how-it-works-page">
       <section className="title-section">
         <div className="title-section-box">
-          <h2 className="title-section-text">How It Works 〰️ How It Works 〰️ How It Works 〰️</h2>
-          <h2 className="title-section-text">How It Works 〰️ How It Works 〰️ How It Works 〰️</h2>
+          <h2 className="title-section-text">How It Works 〰️ How It Works 〰️ How It Works 〰️ How It Works 〰️ How It Works 〰️ How It Works 〰️ How It Works 〰️ How It Works 〰️ How It Works 〰️</h2>
+          <h2 className="title-section-text">How It Works 〰️ How It Works 〰️ How It Works 〰️ How It Works 〰️ How It Works 〰️ How It Works 〰️ How It Works 〰️ How It Works 〰️ How It Works 〰️</h2>
         </div>
       </section>
       <div className="gallery-container">

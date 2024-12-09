@@ -26,7 +26,7 @@
     display: flex;
     align-items: center;
     transform: translateX(0);
-    animation: title-text-scroll 10s linear infinite;
+    animation: title-text-scroll 30s linear infinite;
 }
 @keyframes title-text-scroll {
     0% { transform: translate3d(0, 0, 0); }
@@ -110,7 +110,7 @@
 
 .arrow-btn svg {
     font-size: 3rem;
-    color: #423E3E;
+    color: var(--charcoal-gray);
 }
 
 
@@ -180,11 +180,11 @@
     }
 
     .slide-content {
-        min-height: 45vh;
+        min-height: 55vh;
     }
 
     .slide-content-text p, .slide-content-text strong, .slide-content-text ul, .slide-content-text li {
-        font-size: 0.9rem;
+        font-size: 1.1rem;
     }
 
     .arrow-btn svg {
