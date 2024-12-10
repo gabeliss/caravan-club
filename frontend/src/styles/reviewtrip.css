@@ -68,6 +68,7 @@
 .reviewtrip-button  {
     height: 60px;
     background-color: var(--secondary-color);
+    color: var(--primary-color-dark);
     margin-top: 20px;
     margin-bottom: 50px;
     width: 20%;
@@ -106,7 +107,7 @@
     }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 914px) {
     .header-title {
         font-size: 200%;
         margin: 8%;
@@ -121,7 +122,7 @@
     }
 
     .nightstay {
-        width: 85%;
+        width: 70%;
         margin: 0;
         position: absolute;
         transition: opacity 0.3s ease-in-out;
@@ -137,41 +138,44 @@
         pointer-events: auto;
     }
 
-    .carousel-arrow {
-        display: block;
+    .arrow-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        cursor: pointer;
         z-index: 2;
-        font-size: 40px;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
     }
 
-    .carousel-arrow svg {
+    .arrow-container.left {
+        left: 5%;
+    }
+
+    .arrow-container.right {
+        right: 5%;
+    }
+
+    .carousel-arrow {
         color: var(--charcoal-gray);
-    }
-
-    .carousel-arrow.left {
-        left: 10px;
-    }
-
-    .carousel-arrow.right {
-        right: 10px;
     }
 }
 
-@media (max-width: 480px) {
-    .carousel-arrow.left {
+@media (max-width: 600px) {
+    .arrow-container.left {
         left: 0;
     }
 
-    .carousel-arrow.right {
+    .arrow-container.right {
         right: 0;
     }
 }
 
-@media (min-width: 767px) {
-    .nightstays-container svg {
+@media (min-width: 915px) {
+    .arrow-container {
         display: none;
     }
 }

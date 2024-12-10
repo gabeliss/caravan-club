@@ -7,21 +7,30 @@ import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import './../styles/reviewtrip.css';
 
 function ReviewTripPage() {
-    const location = useLocation(); // Always call hooks at the top
+    const location = useLocation();
     const navigate = useNavigate();
 
     const [placeDetails, setPlaceDetails] = useState(accommodationsData);
     const [totals, setTotals] = useState({});
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 914);
 
-    // Redirect if location.state is null or undefined
+    // Listen for screen resize to update `isSmallScreen`
+    useEffect(() => {
+        const handleResize = () => {
+            setIsSmallScreen(window.innerWidth <= 914);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     useEffect(() => {
         if (!location.state) {
             navigate('/');
         }
     }, [location.state, navigate]);
 
-    // Destructure the state, use empty defaults to avoid conditional destructuring
     const {
         tripTitle = '',
         num_adults = 0,
@@ -32,7 +41,6 @@ function ReviewTripPage() {
         segments = {}
     } = location.state || {};
 
-    // Helper to calculate the number of nights
     const calculateNights = (startDate, endDate) => {
         const start = new Date(startDate);
         const end = new Date(endDate);
@@ -40,14 +48,12 @@ function ReviewTripPage() {
         return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     };
 
-    // Helper to format dates into a readable format
     const formatToReadableDate = (dateStr) => {
         const options = { month: 'short', day: 'numeric', timeZone: 'UTC' };
         const date = new Date(dateStr);
         return date.toLocaleDateString('en-US', options);
     };
 
-    // Helper to calculate night ranges
     const calculateNightRanges = (segments) => {
         const nightRanges = {};
         let currentNight = 1;
@@ -70,7 +76,6 @@ function ReviewTripPage() {
         return nightRanges;
     };
 
-    // Calculate totals when dependencies change
     useEffect(() => {
         if (selectedAccommodations && placeDetails && segments) {
             const newTotals = {};
@@ -92,12 +97,11 @@ function ReviewTripPage() {
     };
 
     const handleBack = () => {
-        navigate(-1); // Go back to the previous page
+        navigate(-1);
     };
 
     const handleConfirm = () => {
         const totalPrice = calculateTotalPriceWithFees();
-        console.log('Navigating to payment page with state:', location.state);
         navigate('/payments', {
             state: {
                 selectedAccommodations,
@@ -125,11 +129,6 @@ function ReviewTripPage() {
         );
     };
 
-    // Render logic
-    if (!location.state) {
-        return null; // Only conditionally return after hooks are defined
-    }
-
     return (
         <div className="review-trip-page">
             <h1 className="header-title">Review Your Road Trip</h1>
@@ -142,14 +141,15 @@ function ReviewTripPage() {
             <h3 className="header-info"><strong>Dates: </strong>{start_date && end_date ? formatDates(start_date, end_date) : 'Dates not available'}</h3>
 
             <div className="nightstays-container">
-                {window.innerWidth <= 767 ? (
-                    // Mobile view - show carousel with arrows
+                {isSmallScreen ? (
                     <>
-                        <ArrowCircleLeftIcon 
-                            className="carousel-arrow left" 
-                            onClick={handlePrevSlide}
-                            fontSize="large"
-                        />
+                        <div className="arrow-container left">
+                            <ArrowCircleLeftIcon 
+                                className="carousel-arrow" 
+                                onClick={handlePrevSlide}
+                                fontSize="large"
+                            />
+                        </div>
                         {Object.entries(segments).map(([city, dateRange], index) => {
                             const nightRanges = calculateNightRanges(segments);
                             const accommodation = placeDetails[city]?.tent[selectedAccommodations[city]];
@@ -179,14 +179,15 @@ function ReviewTripPage() {
                                 </div>
                             );
                         })}
-                        <ArrowCircleRightIcon 
-                            className="carousel-arrow right" 
-                            onClick={handleNextSlide}
-                            fontSize="large"
-                        />
+                        <div className="arrow-container right">
+                            <ArrowCircleRightIcon 
+                                className="carousel-arrow" 
+                                onClick={handleNextSlide}
+                                fontSize="large"
+                            />
+                        </div>
                     </>
                 ) : (
-                    // Desktop view - show all cards without arrows
                     Object.entries(segments).map(([city, dateRange]) => {
                         const nightRanges = calculateNightRanges(segments);
                         const accommodation = placeDetails[city]?.tent[selectedAccommodations[city]];
