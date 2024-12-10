@@ -143,13 +143,15 @@ function ReviewTripPage() {
             <div className="nightstays-container">
                 {isSmallScreen ? (
                     <>
-                        <div className="arrow-container left">
-                            <ArrowCircleLeftIcon 
-                                className="carousel-arrow" 
-                                onClick={handlePrevSlide}
-                                fontSize="large"
-                            />
-                        </div>
+                        {Object.keys(segments).length > 1 && (
+                            <div className="arrow-container left">
+                                <ArrowCircleLeftIcon 
+                                    className="carousel-arrow" 
+                                    onClick={handlePrevSlide}
+                                    fontSize="large"
+                                />
+                            </div>
+                        )}
                         {Object.entries(segments).map(([city, dateRange], index) => {
                             const nightRanges = calculateNightRanges(segments);
                             const accommodation = placeDetails[city]?.tent[selectedAccommodations[city]];
@@ -179,13 +181,15 @@ function ReviewTripPage() {
                                 </div>
                             );
                         })}
-                        <div className="arrow-container right">
-                            <ArrowCircleRightIcon 
-                                className="carousel-arrow" 
-                                onClick={handleNextSlide}
-                                fontSize="large"
-                            />
-                        </div>
+                        {Object.keys(segments).length > 1 && (
+                            <div className="arrow-container right">
+                                <ArrowCircleRightIcon 
+                                    className="carousel-arrow" 
+                                    onClick={handleNextSlide}
+                                    fontSize="large"
+                                />
+                            </div>
+                        )}
                     </>
                 ) : (
                     Object.entries(segments).map(([city, dateRange]) => {
