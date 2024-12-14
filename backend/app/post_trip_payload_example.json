@@ -1,0 +1,74 @@
+{
+    "user": {
+        "user_id": 1,
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john.doe@example.com",
+        "phone_number": "555-123-4567",
+        "street_address": "123 Main Street",
+        "city": "Ann Arbor",
+        "state": "Michigan",
+        "zip_code": "48104",
+        "country": "USA",
+        "cardholder_name": "John Doe",
+        "card_number": "4111111111111111",
+        "card_type": "Visa",
+        "expiry_date": "12/25",
+        "cvc": "123"
+    },
+    "trip": {
+        "trip_id": 1,
+        "user_id": 1,
+        "destination": "Northern Michigan",
+        "start_date": "2025-06-04",
+        "end_date": "2025-06-10",
+        "nights": 6,
+        "num_adults": 2,
+        "num_kids": 2,
+        "caravan_fee": 20.00,
+        "grand_total": 250.00,
+        "trip_fully_processed": true,
+        "segments": [
+            {
+                "segment_id": 1,
+                "trip_id": 1,
+                "name": "mackinacCity",
+                "selected_accommodation": "Mackinac City KOA",
+                "start_date": "2025-06-04",
+                "end_date": "2025-06-06",
+                "nights": 2,
+                "base_price": 90.00,
+                "tax": 10.00,
+                "total": 100.00,
+                "payment_successful": true
+            },
+            {
+                "segment_id": 2,
+                "trip_id": 1,
+                "name": "traverseCity",
+                "selected_accommodation": "Traverse City RV Resort",
+                "start_date": "2025-06-06",
+                "end_date": "2025-06-08",
+                "nights": 2,
+                "base_price": 40.00,
+                "tax": 10.00,
+                "total": 50.00,
+                "payment_successful": true
+            },
+            {
+                "segment_id": 3,
+                "trip_id": 1,
+                "name": "mackinacCity",
+                "selected_accommodation": "Mackinac City KOA",
+                "start_date": "2025-06-08",
+                "end_date": "2025-06-10",
+                "nights": 2,
+                "base_price": 70.00,
+                "tax": 10.00,
+                "total": 80.00,
+                "payment_successful": true
+            }
+        ]       
+    }
+}
+

@@ -1,0 +1,201 @@
+.admin-page {
+    background-color: var(--secondary-color);
+    padding: 20px;
+}
+
+.admin-container {
+    width: 80%;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-height: auto;
+    position: relative;
+    min-height: 50vh;
+}
+
+.admin-h1 {
+    text-align: center;
+    color: #333;
+    margin: 20px 0;
+    position: relative;
+}
+
+/* Move Logout button to the top-right */
+.admin-logout {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.admin-logout:hover {
+    background-color: #b02a37;
+}
+
+.admin-actions {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.admin-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.admin-button:hover {
+    background-color: #0056b3;
+}
+
+.admin-input {
+    padding: 8px;
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.admin-table thead {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.admin-table th, .admin-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.admin-error {
+    color: red;
+    margin-top: 10px;
+}
+
+.admin-label {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    margin-bottom: 5px;
+    align-items: flex-start;
+}
+
+.admin-trip-details {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.admin-trip-details h3 {
+    color: #333;
+    padding: 0;
+    text-decoration: underline;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.admin-trip-details p {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #555;
+}
+
+.admin-trip-details .user-info,
+.admin-trip-details .trip-info {
+    margin-bottom: 20px;
+}
+
+.admin-trip-details .user-info h4,
+.admin-trip-details .trip-info h4 {
+    font-size: 1.2rem;
+    color: #007bff;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.admin-trip-details .segments-table-container {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.admin-trip-details .segments-table {
+    width: 100%; /* Ensure the table takes full width of the container */
+    border-collapse: collapse;
+    margin: 0;
+    min-width: 600px; /* Ensures table columns don't shrink too much */
+}
+
+.admin-trip-details .segments-table th,
+.admin-trip-details .segments-table td {
+    text-align: center;
+}
+
+.admin-trip-details .segments-table th {
+    background-color: #007bff;
+    color: white;
+}
+
+.admin-trip-details .segments-table tbody tr:nth-child(even) {
+    background-color: #f1f1f1;
+}
+
+.admin-trip-details .segments-table tbody tr:hover {
+    background-color: #ddd;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .admin-trip-details .segments-table-container {
+        padding: 0; /* Remove extra padding around the table container */
+    }
+
+    .admin-trip-details .segments-table th,
+    .admin-trip-details .segments-table td {
+        font-size: 12px; /* Adjust font size for better fit */
+        padding: 8px; /* Reduce padding for compact display */
+    }
+    
+    .admin-trip-details h3 {
+        font-size: 1.25rem;
+    }
+}

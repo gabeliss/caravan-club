@@ -119,6 +119,10 @@ button, .header-right img {
     align-items: center;
   }
 
+  .dropdown-menu.open button {
+    color: var(--primary-color);
+  }
+
   .icon-container {
     text-decoration: none;
   }

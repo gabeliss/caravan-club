@@ -1,4 +1,3 @@
-from app import app
 from app.scrape_helpers.northernMichigan.traverseCity.tent.scrapeTimberRidgeTent import scrape_timberRidgeTent
 from app.scrape_helpers.northernMichigan.traverseCity.tent.scrapeLeelanauPinesTent import scrape_leelanauPinesTent
 from app.scrape_helpers.northernMichigan.mackinacCity.tent.scrapeIndianRiverTent import scrape_indianRiverTent
@@ -14,14 +13,223 @@ from app.payment_helpers.northernMichigan.picturedRocks.tent.payUncleDuckysTent 
 from app.payment_helpers.northernMichigan.picturedRocks.tent.payTouristParkTent import pay_touristParkTent
 from app.payment_helpers.northernMichigan.picturedRocks.tent.payFortSuperiorTent import pay_fortSuperiorTent
 import os, base64
-from flask import request, jsonify
+import jwt as pyjwt
 import logging
-from sqlalchemy import text
+from datetime import datetime, timedelta
+from flask import request, jsonify
+from functools import wraps
 from app import app, db
+from app.models import User, Trip, Segment
+
+SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "secure_password")
 
 @app.route('/api/hello')
 def index():
     return 'Hello, World - modified! Psyche, modified again!'
+
+@app.route('/api/caravan-admin/login', methods=['POST'])
+def admin_login():
+    data = request.json
+    if data.get("password") == ADMIN_PASSWORD:
+        token = pyjwt.encode({
+            "admin": True,
+            "exp": datetime.utcnow() + timedelta(hours=1)
+        }, SECRET_KEY, algorithm="HS256")
+        return jsonify({"token": token}), 200
+    return jsonify({"error": "Invalid password"}), 401
+
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token = request.headers.get("Authorization")
+        if not token:
+            return jsonify({"error": "Authorization required"}), 403
+        try:
+            decoded = pyjwt.decode(token.split(" ")[1], SECRET_KEY, algorithms=["HS256"])
+            if not decoded.get("admin"):
+                raise pyjwt.InvalidTokenError
+        except pyjwt.ExpiredSignatureError:
+            return jsonify({"error": "Token expired"}), 401
+        except pyjwt.InvalidTokenError:
+            return jsonify({"error": "Invalid token"}), 401
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+@app.route('/api/trip/<int:trip_id>', methods=['GET'])
+@admin_required
+def get_trip_details(trip_id):
+    # Fetch the trip by ID
+    trip = Trip.query.get(trip_id)
+    if not trip:
+        return {"error": "Trip not found"}, 404
+
+    # Fetch the associated user
+    user = trip.user
+
+    # Serialize and return the data
+    return {
+        "user": {
+            "user_id": user.user_id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "phone_number": user.phone_number,
+            "street_address": user.street_address,
+            "city": user.city,
+            "state": user.state,
+            "zip_code": user.zip_code,
+            "country": user.country,
+            "cardholder_name": user.cardholder_name,
+            "card_number": user.card_number,
+            "card_type": user.card_type,
+            "expiry_date": user.expiry_date,
+            "cvc": user.cvc
+        },
+        "trip": {
+            "trip_id": trip.trip_id,
+            "user_id": trip.user_id,
+            "destination": trip.destination,
+            "start_date": trip.start_date.strftime('%Y-%m-%d'),
+            "end_date": trip.end_date.strftime('%Y-%m-%d'),
+            "nights": trip.nights,
+            "num_adults": trip.num_adults,
+            "num_kids": trip.num_kids,
+            "caravan_fee": trip.caravan_fee,
+            "grand_total": trip.grand_total,
+            "trip_fully_processed": trip.trip_fully_processed,
+            "segments": [
+                {
+                    "segment_id": segment.segment_id,
+                    "trip_id": segment.trip_id,
+                    "name": segment.name,
+                    "selected_accommodation": segment.selected_accommodation,
+                    "start_date": segment.start_date.strftime('%Y-%m-%d'),
+                    "end_date": segment.end_date.strftime('%Y-%m-%d'),
+                    "nights": segment.nights,
+                    "base_price": segment.base_price,
+                    "tax": segment.tax,
+                    "total": segment.total,
+                    "payment_successful": segment.payment_successful
+                }
+                for segment in trip.segments
+            ]
+        }
+    }, 200
+
+
+@app.route('/api/trip', methods=['POST'])
+def create_trip():
+    data = request.json
+
+    # Validate user data
+    user_data = data.get("user")
+    if not user_data:
+        return {"error": "User data is required"}, 400
+
+    # Find or create the user
+    user = User.query.filter_by(email=user_data["email"]).first()
+    if not user:
+        user = User(
+            first_name=user_data["first_name"],
+            last_name=user_data["last_name"],
+            email=user_data["email"],
+            phone_number=user_data.get("phone_number"),
+            street_address=user_data.get("street_address"),
+            city=user_data.get("city"),
+            state=user_data.get("state"),
+            zip_code=user_data.get("zip_code"),
+            country=user_data.get("country"),
+            cardholder_name=user_data.get("cardholder_name"),
+            card_number=user_data.get("card_number"),
+            card_type=user_data.get("card_type"),
+            expiry_date=user_data.get("expiry_date"),
+            cvc=user_data.get("cvc"),
+        )
+        db.session.add(user)
+
+    # Validate trip data
+    trip_data = data.get("trip")
+    if not trip_data:
+        return {"error": "Trip data is required"}, 400
+
+    # Create the trip
+    trip = Trip(
+        user=user,
+        destination=trip_data["destination"],
+        start_date=datetime.strptime(trip_data["start_date"], "%Y-%m-%d"),
+        end_date=datetime.strptime(trip_data["end_date"], "%Y-%m-%d"),
+        nights=trip_data["nights"],
+        num_adults=trip_data["num_adults"],
+        num_kids=trip_data["num_kids"],
+        caravan_fee=trip_data["caravan_fee"],
+        grand_total=trip_data["grand_total"],
+        trip_fully_processed=trip_data["trip_fully_processed"]
+    )
+
+    # Add segments to the trip
+    segments_data = trip_data.get("segments", [])
+    for segment_data in segments_data:
+        segment = Segment(
+            trip=trip,
+            name=segment_data["name"],
+            selected_accommodation=segment_data["selected_accommodation"],
+            start_date=datetime.strptime(segment_data["start_date"], "%Y-%m-%d"),
+            end_date=datetime.strptime(segment_data["end_date"], "%Y-%m-%d"),
+            nights=segment_data["nights"],
+            base_price=segment_data["base_price"],
+            tax=segment_data["tax"],
+            total=segment_data["total"],
+            payment_successful=segment_data["payment_successful"]
+        )
+        db.session.add(segment)
+
+    # Commit the transaction
+    db.session.commit()
+
+    return {"message": "Trip created successfully", "trip_id": trip.trip_id}, 201
+
+
+@app.route('/api/trips', methods=['GET'])
+@admin_required
+def get_all_trips():
+    trips = Trip.query.all()
+    return {
+        "trips": [
+            {
+                "trip_id": trip.trip_id,
+                "user": {
+                    "first_name": trip.user.first_name,
+                    "last_name": trip.user.last_name,
+                    "email": trip.user.email
+                },
+                "destination": trip.destination,
+                "start_date": trip.start_date.strftime('%Y-%m-%d'),
+                "end_date": trip.end_date.strftime('%Y-%m-%d'),
+                "grand_total": trip.grand_total,
+                "trip_fully_processed": trip.trip_fully_processed
+            }
+            for trip in trips
+        ]
+    }, 200
+
+
+@app.route('/api/trip/<int:trip_id>', methods=['DELETE'])
+def delete_trip(trip_id):
+    # Fetch the trip by ID
+    trip = Trip.query.get(trip_id)
+    if not trip:
+        return {"error": "Trip not found"}, 404
+
+    # Delete the trip and its associated segments
+    db.session.delete(trip)
+    db.session.commit()
+
+    return {"message": f"Trip with ID {trip_id} has been successfully deleted."}, 200
+
+
 
 @app.route('/api/images')
 def serve_images():
@@ -156,14 +364,3 @@ def process_touristParkTent_payment():
 def process_fortSuperiorTent_payment():
     return process_payment(pay_fortSuperiorTent)
 
-
-#### Database Routes ####
-@app.route('/api/test-db')
-def test_db():
-    try:
-        # Use a connection to execute raw SQL
-        with db.engine.connect() as connection:
-            result = connection.execute(text("SELECT 1"))
-            return {"status": "connected"} if result.scalar() == 1 else {"status": "failed"}
-    except Exception as e:
-        return {"status": "error", "message": str(e)}, 500

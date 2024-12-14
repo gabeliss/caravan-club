@@ -16,8 +16,10 @@ import NorthernMichigan from './pages/trips/NorthernMichigan';
 import SmokyMountain from './pages/trips/SmokyMountain';
 import SouthernCalifornia from './pages/trips/SouthernCalifornia';
 import BookNorthernMichiganPage from "./pages/book/BookNorthernMichiganPage";
+import AdminPage from "./pages/AdminPage";
 import CustomLoader from './components/general/CustomLoader';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,6 +44,8 @@ function App() {
             <Route path="/trips/smokymountain" element={<SmokyMountain />} />
             <Route path="/trips/southerncalifornia" element={<SouthernCalifornia />} />
             <Route path="/book/northernmichigan" element={<BookNorthernMichiganPage />} />
+            <Route path="/caravan-admin" element={<AdminPage />} />
+            <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
       <Footer />
