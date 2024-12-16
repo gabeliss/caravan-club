@@ -4,7 +4,6 @@ from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, UserMixin
 from dotenv import load_dotenv
 
 # Load environment variables
