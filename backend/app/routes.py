@@ -31,6 +31,8 @@ def index():
 @app.route('/api/caravan-admin/login', methods=['POST'])
 def admin_login():
     data = request.json
+    print("data", data)
+    print("ADMIN_PASSWORD", ADMIN_PASSWORD)
     if data.get("password") == ADMIN_PASSWORD:
         token = pyjwt.encode({
             "admin": True,
