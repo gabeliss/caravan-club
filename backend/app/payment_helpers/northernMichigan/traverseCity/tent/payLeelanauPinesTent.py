@@ -18,6 +18,13 @@ def pay_leelanauPinesTent(start_date, end_date, num_adults, num_kids, payment_in
     start_date = datetime.strptime(start_date, '%m/%d/%y').strftime('%Y-%m-%d')
     end_date = datetime.strptime(end_date, '%m/%d/%y').strftime('%Y-%m-%d')
 
+    response_data = {
+        "base_price": 0,
+        "tax": 0,
+        "total": 0,
+        "payment_successful": False
+    }
+
     url = f"https://leelanaupinescampresort.com/stay/search?start={start_date}&end={end_date}"
 
     with sync_playwright() as p:
@@ -65,12 +72,39 @@ def pay_leelanauPinesTent(start_date, end_date, num_adults, num_kids, payment_in
             no_results = page.query_selector('div.flex.flex-col.items-center.justify-center.gap-8.rounded-lg.border')
             if no_results:
                 print("No results found. This should not happen. Investigate further.")
-                return False
+                return response_data
 
-            first_option = page.query_selector('div[class*="min-h-"]')
-            if first_option:
-                price_element = first_option.query_selector('div[class*="text-xl"][class*="font-bold"][class*="text-primary"]')
-                price_element.click()
+            options = page.query_selector_all('div[class*="min-h-"]')
+            first_option = None
+            lakefront_option = None
+
+            for option in options:
+                print("Found an option, checking for title...")
+                
+                title_element = option.query_selector('div.flex.flex-col.space-y-2 .wp-title-2')
+                
+                if not first_option:
+                    first_option = option
+                    print("Saved first option")
+                
+                if title_element:
+                    title_text = title_element.get_attribute('title') or title_element.inner_text()
+                    print(f"Found title: {title_text}")
+                    
+                    if 'Lakefront Basic RV' in title_text:
+                        print("Found Lakefront Basic RV option!")
+                        lakefront_option = option
+                        break
+
+            selected_option = lakefront_option or first_option
+
+            if selected_option:
+                price_element = selected_option.query_selector('div[class*="text-xl"][class*="font-bold"][class*="text-primary"]')
+                if price_element:
+                    price_element.click()
+                else:
+                    print("Price element not found. This should not happen. Investigate further.")
+                    return response_data
 
                 page.wait_for_selector('div.font-title.text-2xl:has-text("Choose Your Site")', timeout=5000)
 
@@ -86,10 +120,10 @@ def pay_leelanauPinesTent(start_date, end_date, num_adults, num_kids, payment_in
                         first_site_option.click()
                     else:
                         print("No available sites found. This should not happen. Investigate further.")
-                        return False
+                        return response_data
                 else:
                     print("Site selection input not found. This should not happen. Investigate further.")
-                    return False
+                    return response_data
 
                 page.wait_for_selector('span:has-text("Add To Cart")', timeout=30000)
                 page.click('span:has-text("Add To Cart")')
@@ -132,6 +166,15 @@ def pay_leelanauPinesTent(start_date, end_date, num_adults, num_kids, payment_in
 
                 page.click('label:has-text("Pay Total Balance")')
 
+                price_element = page.query_selector('div:has-text("Pay Total Balance") + div.flex.gap-3')
+                if price_element:
+                    price_text = price_element.inner_text()
+                    final_price = float(price_text.replace('$', ''))
+                    print(f"Final price: ${final_price}")
+                else:
+                    print("Could not find final price element")
+                    return response_data
+
                 card_number_frame = page.frame_locator('#tokenFrame')
                 card_number_input = card_number_frame.locator('input#ccnumfield')
                 card_number_input.fill(payment_info['card_number'])
@@ -147,15 +190,19 @@ def pay_leelanauPinesTent(start_date, end_date, num_adults, num_kids, payment_in
 
                 # page.wait_for_load_state('networkidle')
 
-                return True
+                response_data["payment_successful"] = True
+                response_data["base_price"] = final_price
+                response_data["tax"] = 0
+                response_data["total"] = final_price
+                return response_data
 
             else:
                 print("first_option not found. This should not happen. Investigate further.")
-                return False
+                return response_data
 
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
-            return False
+            return response_data
         finally:
             browser.close()
 
@@ -176,7 +223,7 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
-    leelanauPinesData = pay_leelanauPinesTent('10/15/24', '10/17/24', 5, 1, payment_info)
+    leelanauPinesData = pay_leelanauPinesTent('06/04/25', '06/06/25', 3, 1, payment_info)
     print(leelanauPinesData)
 
 if __name__ == '__main__':

@@ -107,7 +107,7 @@ def scrape_uncleDuckysTent(start_date, end_date, num_adults, num_kids):
 
 
 def main():
-    uncleDuckysData = scrape_uncleDuckysTent('06/07/25', '06/09/25', 1, 0)
+    uncleDuckysData = scrape_uncleDuckysTent('06/08/25', '06/10/25', 3, 1)
     print(uncleDuckysData)
 
 if __name__ == '__main__':

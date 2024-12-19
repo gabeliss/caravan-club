@@ -63,7 +63,7 @@ def scrape_fortSuperiorTent(start_date, end_date, num_adults, num_kids):
             
 
 def main():
-    fortSuperiorData = scrape_fortSuperiorTent('06/25/25', '06/27/25', 2, 1)
+    fortSuperiorData = scrape_fortSuperiorTent('06/08/25', '06/10/25', 2, 1)
     print(fortSuperiorData)
 
 if __name__ == '__main__':

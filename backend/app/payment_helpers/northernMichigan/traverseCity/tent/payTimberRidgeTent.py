@@ -8,6 +8,13 @@ def pay_timberRidgeTent(start_date, end_date, num_adults, num_kids, payment_info
     start_date_formatted = datetime.strptime(start_date, "%m/%d/%y").strftime("%d-%m-%y")
     end_date_formatted = datetime.strptime(end_date, "%m/%d/%y").strftime("%d-%m-%y")
 
+    response_data = {
+        "base_price": 0,
+        "tax": 0,
+        "total": 0,
+        "payment_successful": False
+    }
+
     url = f"https://bookingsus.newbook.cloud/timberridgeresort/index.php?available_from={start_date_formatted}&available_to={end_date_formatted}&adults={num_adults}&kids={num_kids}&equipment_type=3&equipment_length=20"
 
     with sync_playwright() as p:
@@ -135,7 +142,7 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
-    timberRidgeData = pay_timberRidgeTent('10/01/24', '10/03/24', 3, 1, payment_info)
+    timberRidgeData = pay_timberRidgeTent('06/04/25', '06/06/25', 3, 1, payment_info)
     print(timberRidgeData)
 
 if __name__ == '__main__':

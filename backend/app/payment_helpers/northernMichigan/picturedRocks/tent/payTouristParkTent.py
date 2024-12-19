@@ -20,6 +20,13 @@ def pay_touristParkTent(start_date, end_date, num_adults, num_kids, payment_info
     start_date_formatted = datetime.strptime(start_date, "%m/%d/%y").strftime("%Y-%m-%d")
     end_date_formatted = datetime.strptime(end_date, "%m/%d/%y").strftime("%Y-%m-%d")
 
+    response_data = {
+        "base_price": 0,
+        "tax": 0,
+        "total": 0,
+        "payment_successful": False
+    }
+
     url = f"https://www.campspot.com/book/munisingtouristparkcampground/search/{start_date_formatted}/{end_date_formatted}/guests{num_kids},{num_adults},0/list?campsiteCategory=Tent%20Sites"
 
     with sync_playwright() as p:
@@ -41,7 +48,7 @@ def pay_touristParkTent(start_date, end_date, num_adults, num_kids, payment_info
             no_availability_div = page.query_selector('div.search-results-none')
             if no_availability_div:
                 print("No availability found, investigate further.")
-                return False
+                return response_data
             
             place_containers = page.query_selector_all('ul.search-results-list li')
             place_container = None
@@ -130,19 +137,33 @@ def pay_touristParkTent(start_date, end_date, num_adults, num_kids, payment_info
                     terms_conditions_checkbox = checkout_div.query_selector("input#terms-and-conditions-accept")
                     terms_conditions_checkbox.click()
 
+                    # Get the total price
+                    total_price_element = checkout_div.query_selector(".checkout-summary-order-total")
+                    if total_price_element:
+                        price_text = total_price_element.inner_text().strip()
+                        # Convert "$72.00" to 72.00
+                        response_data["base_price"] = float(price_text.replace("$", ""))
+                        response_data["total"] = response_data["base_price"]
+                        response_data["tax"] = 0
+                    else:
+                        print("No total price found, investigating further")
+                        return response_data
+                    
                     place_order_button = checkout_div.query_selector("button.checkout-form-submit-button.mod-place-order.app-checkout-submit")
                     #place_order_button.click()
-                    return True
+
+                    response_data["payment_successful"] = True
+                    return response_data  # Changed to return response_data instead of True
                 else:
                     print("No price found, investigating further")
-                    return False
+                    return response_data
             else:
                 print("No place container found, investigating further")
-                return False
+                return response_data
 
         except Exception as e:
             print(f"An error occurred: {e}")
-            return False
+            return response_data
 
         finally:
             browser.close()
@@ -164,7 +185,7 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
-    touristParkData = pay_touristParkTent('10/15/24', '10/17/24', 2, 1, payment_info)
+    touristParkData = pay_touristParkTent('06/08/25', '06/10/25', 3, 1, payment_info)
     print(touristParkData)
 
 if __name__ == '__main__':

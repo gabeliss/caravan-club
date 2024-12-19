@@ -16,7 +16,14 @@ def pay_uncleDuckysTent(start_date, end_date, num_adults, num_kids, payment_info
     start_date_formatted = datetime.strptime(start_date, "%m/%d/%y").strftime("%Y-%m-%d")
     end_date_formatted = datetime.strptime(end_date, "%m/%d/%y").strftime("%Y-%m-%d")
 
-    url = f'https://paddlersvillage.checkfront.com/reserve/?start_date={start_date_formatted}&end_date={end_date_formatted}&category_id=4'
+    response_data = {
+        "base_price": 0,
+        "tax": 0,
+        "total": 0,
+        "payment_successful": False
+    }
+
+    url = f'https://paddlersvillage.checkfront.com/reserve/?start_date={start_date_formatted}&end_date={end_date_formatted}&category_id=14'
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -29,7 +36,7 @@ def pay_uncleDuckysTent(start_date, end_date, num_adults, num_kids, payment_info
             unavailable = page.query_selector("//p[contains(@class, 'cf-info')]//b[contains(text(), 'Nothing available for the dates selected.')]")
             if unavailable:
                 print('Unavailable, returning False')
-                return {"available": False, "price": None, "message": "No options available."}
+                return response_data
 
             first_option = page.query_selector_all('.cf-item-data')[0]
             if first_option:
@@ -77,6 +84,23 @@ def pay_uncleDuckysTent(start_date, end_date, num_adults, num_kids, payment_info
                     card_cvc_input = card_cvc_iframe.query_selector('input[name="cvc"]')
                     card_cvc_input.fill(payment_info["cvc"])
 
+                    # Find invoice table and extract pricing information
+                    invoice_table = page.wait_for_selector('.item_table', timeout=10000)
+                    
+                    # Get base price (sub-total)
+                    subtotal_row = invoice_table.query_selector('tr.sum-row:has-text("Sub-Total")')
+                    base_price = float(subtotal_row.query_selector('td').inner_text().replace('$', ''))
+                    response_data["base_price"] = base_price
+
+                    # Get tax amounts and sum them
+                    tax_rows = invoice_table.query_selector_all('tr.tax')
+                    total_tax = sum(float(row.query_selector('td:last-child').inner_text().replace('$', '')) for row in tax_rows)
+                    response_data["tax"] = total_tax
+
+                    # Get total amount
+                    total_amount = float(invoice_table.query_selector('.item_total_price').inner_text().replace('$', ''))
+                    response_data["total"] = total_amount
+
                     pay_button = page.query_selector("#process")
                     # uncomment to pay
                     # pay_button.click()
@@ -86,18 +110,19 @@ def pay_uncleDuckysTent(start_date, end_date, num_adults, num_kids, payment_info
                     clear_button = page.query_selector("#clear-pre")
                     clear_button.click()
                     clear_button.click()
-                    return True
+                    response_data["payment_successful"] = True
+                    return response_data
                 else:
                     print("No price found, investigating further")
-                    return False
+                    return response_data
             else:
                 print("No first option found, investigating further")
-                return False
+                return response_data
             
 
         except Exception as e:
             print(f"An error occurred: {e}")
-            return {"available": False, "price": None, "message": f"Error: {str(e)}"}
+            return response_data
 
         finally:
             browser.close()
@@ -120,7 +145,7 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
-    uncleDuckysData = pay_uncleDuckysTent('06/23/25', '06/25/25', 2, 1, payment_info)
+    uncleDuckysData = pay_uncleDuckysTent('06/08/25', '06/10/25', 3, 1, payment_info)
     print(uncleDuckysData)
 
 if __name__ == '__main__':

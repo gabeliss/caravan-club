@@ -80,7 +80,7 @@ def scrape_leelanauPinesTent(start_date, end_date, num_adults, num_kids):
 
 
 def main():
-    leelanauPinesData = scrape_leelanauPinesTent('06/04/25', '06/06/25', 2, 0)
+    leelanauPinesData = scrape_leelanauPinesTent('06/04/25', '06/06/25', 3, 1)
     print(leelanauPinesData)
 
 if __name__ == '__main__':

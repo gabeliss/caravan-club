@@ -47,14 +47,32 @@ def scrape_touristParkTent(start_date, end_date, num_adults, num_kids):
         data = response.json()
         if data == []:
             return {"available": False, "price": None, "message": "No options available."}
-        else:
-            return {"available": False, "price": None, "message": "Fix this. Ready to work."}
+        
+        # First, check for Waterfront Rustic Tent Site
+        for site in data:
+            if site['name'] == 'Waterfront Rustic Tent Site' and site['availability'] == 'AVAILABLE':
+                return {
+                    "available": True,
+                    "price": site['averagePricePerNight'],
+                    "message": f"${site['averagePricePerNight']:.2f} per night"
+                }
+        
+        # If waterfront not available, check for regular Rustic Tent Site
+        for site in data:
+            if site['name'] == 'Rustic Tent Site' and site['availability'] == 'AVAILABLE':
+                return {
+                    "available": True,
+                    "price": site['averagePricePerNight'],
+                    "message": f"${site['averagePricePerNight']:.2f} per night"
+                }
+        
+        return {"available": False, "price": None, "message": "No tent sites available"}
     else:
         print("Failed to retrieve data:", response)
         return {"available": False, "price": None, "message": "Failed to retrieve data"}
 
 def main():
-    touristParkData = scrape_touristParkTent('05/16/25', '05/18/25', 3, 1)
+    touristParkData = scrape_touristParkTent('06/08/25', '06/10/25', 3, 1)
     print(touristParkData)
 
 if __name__ == '__main__':

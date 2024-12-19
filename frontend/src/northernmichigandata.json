@@ -40,7 +40,7 @@
         "available": false,
         "price": 0,
         "name": "",
-        "taxRate": 0.06,
+        "taxRate": 0,
         "message": "Unavailable",
         "imageUrls": [
           "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/leelanauPines1.png",
@@ -163,7 +163,7 @@
       "available": false,
       "price": 0,
       "name": "",
-      "taxRate": 0.03,
+      "taxRate": 0,
       "message": "Unavailable",
       "imageUrls": [
         "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/touristPark1.png",

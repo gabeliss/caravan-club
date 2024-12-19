@@ -67,7 +67,7 @@ def scrape_indianRiverTent(start_date, end_date, num_adults, num_kids):
 def main():
     # indianRiverData = scrape_indianRiverTent('11/07/24', '11/09/24', 2, 1)
     # print(indianRiverData)
-    indianRiverData = scrape_indianRiverTent('05/07/25', '05/09/25', 2, 1)
+    indianRiverData = scrape_indianRiverTent('06/06/25', '06/08/25', 2, 1)
     print(indianRiverData)
 
 if __name__ == '__main__':
