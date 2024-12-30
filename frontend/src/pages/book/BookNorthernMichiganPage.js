@@ -138,10 +138,10 @@ function BookNorthernMichiganPage() {
     console.log('Location state found:', location.state);
   }, [location.state, navigate]);
 
-  const handleSelectStatus = (location, accommodationKey) => {
+  const handleSelectStatus = (location, selected_accommodation) => {
     setSelectedAccommodations(prev => ({
       ...prev,
-      [location]: prev[location] === accommodationKey ? null : accommodationKey
+      [location]: prev[location] === selected_accommodation ? null : selected_accommodation
     }));
   };
 

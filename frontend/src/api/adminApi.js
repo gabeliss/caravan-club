@@ -36,3 +36,22 @@ export const getAllTrips = () => {
         headers: { Authorization: `Bearer ${token}` },
     });
 };
+
+
+export const searchTripsByEmail = async (email) => {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${BASE_URL}/api/trips/search`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { email },
+    });
+    return response;
+};
+
+
+export const deleteTripById = async (tripId) => {
+    const token = localStorage.getItem("token");
+    const response = await axios.delete(`${BASE_URL}/api/trip/${tripId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response;
+};

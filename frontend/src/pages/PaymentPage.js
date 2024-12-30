@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './../styles/payment.css';
 import { convertDateFormat } from './../utils/helpers.js';
-import { initiatePayment } from '../api/northernMichiganApi.js';
+import { initiatePayment, createTrip } from '../api/northernMichiganApi.js';
 import PaymentForm from './../components/pay/PaymentForm.js';
 import PaymentTripDetails from './../components/pay/PaymentTripDetails.js';
 import CustomLoader from '../components/general/CustomLoader';
@@ -42,6 +42,7 @@ function PaymentPage() {
         totalPrice = 0,
         start_date = '',
         end_date = '',
+        nights = 0,
         num_adults = 0,
         num_kids = 0,
         segments = {},
@@ -61,32 +62,34 @@ function PaymentPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (!segments || !selectedAccommodations || !placeDetails) {
             console.error('Missing required state data');
             return;
         }
-
+    
         const segmentPayments = Object.entries(segments).map(([segmentName, dates]) => {
             const start_date = convertDateFormat(dates.start);
             const end_date = convertDateFormat(dates.end);
-            const accommodationKey = selectedAccommodations[segmentName];
-
+            const selected_accommodation = selectedAccommodations[segmentName];
+    
             return {
-                accommodationKey,
+                segmentName,
+                selected_accommodation,
                 start_date,
-                end_date
+                end_date,
             };
         });
-
+    
         console.log('segmentPayments', segmentPayments);
         setIsLoading(true);
-
+    
         try {
-            const responses = await Promise.allSettled(
-                segmentPayments.map(({ accommodationKey, start_date, end_date }) =>
+            // Call `initiatePayment` for all segments
+            const paymentResponses = await Promise.allSettled(
+                segmentPayments.map(({ selected_accommodation, start_date, end_date }) =>
                     initiatePayment(
-                        accommodationKey,
+                        selected_accommodation,
                         start_date,
                         end_date,
                         num_adults,
@@ -95,25 +98,63 @@ function PaymentPage() {
                     )
                 )
             );
-
-            const paymentStatus = Object.keys(segments).reduce((acc, segmentName, index) => {
-                const status = responses[index].status === 'fulfilled' ? 'success' : 'error';
-                acc[segmentName] = {
-                    status: status,
-                    accommodationKey: segmentPayments[index].accommodationKey
+            console.log('paymentResponses', paymentResponses);
+    
+            // Map payment responses to segment data
+            const processedSegments = segmentPayments.map(({ segmentName, start_date, end_date }, index) => {
+                const paymentResponse = paymentResponses[index];
+                if (paymentResponse.status === 'fulfilled') {
+                    console.log('Payment successful for segment:', segmentName);
+                } else {
+                    console.error(`Payment failed for segment: ${segmentName}`, paymentResponse.reason);
+                }
+                const { base_price, tax, total, payment_successful } = paymentResponse.value;
+    
+                return {
+                    name: segmentName.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
+                    selected_accommodation: selectedAccommodations[segmentName].replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
+                    start_date,
+                    end_date,
+                    nights: (new Date(end_date) - new Date(start_date)) / (1000 * 60 * 60 * 24),
+                    base_price,
+                    tax,
+                    total,
+                    payment_successful,
                 };
-                return acc;
-            }, {});
-            console.log('Final payment status object:', paymentStatus);
-
-            navigate('/payments-confirmation', { state: { paymentStatus } });
-
+            });
+            console.log('processedSegments', processedSegments);
+    
+            // Construct trip payload
+            const tripPayload = {
+                user: paymentInfo,
+                trip: {
+                    destination: tripTitle.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
+                    start_date,
+                    end_date,
+                    nights,
+                    num_adults,
+                    num_kids,
+                    caravan_fee: 0, // Adjust as needed
+                    grand_total: totalPrice,
+                    trip_fully_processed: processedSegments.every((seg) => seg.payment_successful),
+                    segments: processedSegments,
+                },
+            };
+            console.log('tripPayload', tripPayload);
+    
+            // Call `createTrip` API
+            const createTripResponse = await createTrip(tripPayload);
+            console.log('Trip created successfully:', createTripResponse);
+    
+            navigate('/payments-confirmation', { state: { tripId: createTripResponse.trip_id } });
+    
         } catch (error) {
-            console.error('Error in payment:', error);
+            console.error('Error in payment or trip creation:', error);
         } finally {
             setIsLoading(false);
         }
     };
+    
 
     // Render logic
     if (!location.state) {

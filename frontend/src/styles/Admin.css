@@ -48,6 +48,17 @@
     justify-content: space-between;
 }
 
+.admin-action {
+    margin-top: 30px;
+    border: 1px solid black;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
 .admin-button {
     background-color: #007bff;
     color: white;
@@ -111,7 +122,7 @@
     flex-direction: column;
     font-size: 14px;
     margin-bottom: 5px;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .admin-trip-details {
@@ -198,4 +209,10 @@
     .admin-trip-details h3 {
         font-size: 1.25rem;
     }
+}
+
+.admin-success {
+    color: green;
+    margin: 10px 0;
+    text-align: center;
 }

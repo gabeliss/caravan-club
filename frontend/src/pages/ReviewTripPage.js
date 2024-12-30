@@ -37,6 +37,7 @@ function ReviewTripPage() {
         num_kids = 0,
         start_date = '',
         end_date = '',
+        nights = 0,
         selectedAccommodations = {},
         segments = {}
     } = location.state || {};
@@ -80,11 +81,11 @@ function ReviewTripPage() {
         if (selectedAccommodations && placeDetails && segments) {
             const newTotals = {};
 
-            Object.entries(selectedAccommodations).forEach(([city, accommodationKey]) => {
+            Object.entries(selectedAccommodations).forEach(([city, selected_accommodation]) => {
                 const segment = segments[city];
                 if (segment) {
                     const numNights = calculateNights(segment.start, segment.end);
-                    newTotals[city] = calculateTotalForStay(city, accommodationKey, placeDetails, numNights);
+                    newTotals[city] = calculateTotalForStay(city, selected_accommodation, placeDetails, numNights);
                 }
             });
 
@@ -111,6 +112,7 @@ function ReviewTripPage() {
                 num_kids,
                 start_date,
                 end_date,
+                nights,
                 placeDetails,
                 tripTitle
             }

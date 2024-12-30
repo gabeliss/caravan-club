@@ -15,7 +15,7 @@ function PaymentConfirmationPage() {
 
   const renderPaymentStatus = (segmentName, details) => {
     const readableSegment = formatCamelCase(segmentName);
-    const readableAccommodation = formatCamelCase(details.accommodationKey);
+    const readableAccommodation = formatCamelCase(details.selected_accommodation);
     
     if (details.status === 'success') {
       return <div className="banner green">Payment for {readableSegment} - {readableAccommodation} succeeded!</div>;

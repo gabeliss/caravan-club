@@ -19,11 +19,12 @@ def pay_leelanauPinesTent(start_date, end_date, num_adults, num_kids, payment_in
     end_date = datetime.strptime(end_date, '%m/%d/%y').strftime('%Y-%m-%d')
 
     response_data = {
-        "base_price": 0,
-        "tax": 0,
-        "total": 0,
-        "payment_successful": False
+        "base_price": 10,
+        "tax": 5,
+        "total": 15,
+        "payment_successful": True
     }
+    return response_data
 
     url = f"https://leelanaupinescampresort.com/stay/search?start={start_date}&end={end_date}"
 

@@ -16,8 +16,8 @@ export function convertDateFormat(dateStr) {
     return `${month}/${day}/${year}`; // Format into MM/DD/YY
 }
 
-export function calculateTotalForStay(cityKey, accommodationKey, accommodationsData, numNights) {
-    const accommodation = accommodationsData[cityKey]?.tent[accommodationKey];
+export function calculateTotalForStay(cityKey, selected_accommodation, accommodationsData, numNights) {
+    const accommodation = accommodationsData[cityKey]?.tent[selected_accommodation];
 
     if (!accommodation) return { total: 0, payment: 0, disclaimer: '' };
 

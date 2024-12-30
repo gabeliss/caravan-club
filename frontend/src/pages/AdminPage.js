@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { adminLogin, getTripDetails, getAllTrips } from "../api/adminApi"; // Import API functions
+import { adminLogin, getTripDetails, getAllTrips, searchTripsByEmail, deleteTripById } from "../api/adminApi"; // Import API functions
 import { jwtDecode } from "jwt-decode"; // Correct import
 import "../styles/Admin.css";
 
@@ -10,7 +10,10 @@ function AdminPage() {
     const [tripId, setTripId] = useState("");
     const [tripData, setTripData] = useState(null);
     const [allTrips, setAllTrips] = useState(null);
+    const [deleteTripId, setDeleteTripId] = useState("");
+    const [email, setEmail] = useState("");
     const [error, setError] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     // Validate token on load
     useEffect(() => {
@@ -82,6 +85,39 @@ function AdminPage() {
         }
     };
 
+
+    const searchTrips = async () => {
+        try {
+            const response = await searchTripsByEmail(email);
+            console.log("search trips response", response);
+            setAllTrips(response.data.trips);
+            setTripData(null);
+            setError("");
+        } catch (err) {
+            handleError(err);
+        }
+    };
+
+
+    const handleDeleteTrip = async () => {
+        try {
+            await deleteTripById(deleteTripId);
+            setError(""); // Clear any previous errors
+            setSuccessMessage(`Trip with ID ${deleteTripId} deleted successfully.`);
+            setDeleteTripId(""); // Reset input
+            fetchAllTrips();
+        } catch (err) {
+            setSuccessMessage(""); // Clear any previous success message
+            if (err.response?.status === 404) {
+                setError("Trip not found.");
+            } else if (err.response?.status === 401) {
+                logout(); // Handle token expiration
+            } else {
+                setError("Something went wrong.");
+            }
+        }
+    };
+
     // Handle API errors
     const handleError = (err) => {
         if (err.response?.status === 401) {
@@ -118,12 +154,14 @@ function AdminPage() {
                 </button>
                 <h1 className="admin-h1">Admin Panel</h1>
                 <div className="admin-actions">
-                    <button className="admin-button" onClick={fetchAllTrips}>
-                        View All Trips
-                    </button>
-                    <div>
+                    <div className="admin-action">
+                        <button className="admin-button" onClick={fetchAllTrips}>
+                            View All Trips
+                        </button>
+                    </div>
+                    <div className="admin-action">
                         <label className="admin-label">
-                            Trip ID:
+                            Get Trip ID:
                             <input
                                 className="admin-input"
                                 type="text"
@@ -135,8 +173,37 @@ function AdminPage() {
                             Get Trip Details
                         </button>
                     </div>
+                    <div className="admin-action">
+                        <label className="admin-label">
+                            Email:
+                            <input
+                                className="admin-input"
+                                type="text"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </label>
+                        <button className="admin-button" onClick={searchTrips}>
+                            Search Trips by Email
+                        </button>
+                    </div>
+                    <div className="admin-action">
+                        <label className="admin-label">
+                            Delete Trip ID:
+                            <input
+                                className="admin-input"
+                                type="text"
+                                value={deleteTripId}
+                            onChange={(e) => setDeleteTripId(e.target.value)}
+                            />
+                        </label>
+                        <button className="admin-button" onClick={handleDeleteTrip}>
+                            Delete Trip
+                        </button>
+                    </div>
                 </div>
                 {error && <p className="admin-error">{error}</p>}
+                {successMessage && <p className="admin-success">{successMessage}</p>}
                 {allTrips && (
                     <div className="admin-trip-details">
                         <h2 className="admin-h2">All Trips</h2>
@@ -153,6 +220,7 @@ function AdminPage() {
                                             <th>Dates</th>
                                             <th>Total</th>
                                             <th>Status</th>
+                                            <th>Date Booked</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -168,6 +236,7 @@ function AdminPage() {
                                                         ? "Processed"
                                                         : "Pending"}
                                                 </td>
+                                                <td>{trip.date_booked}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -202,6 +271,7 @@ function AdminPage() {
                             <p><strong>Caravan Fee:</strong> ${tripData.trip.caravan_fee}</p>
                             <p><strong>Grand Total:</strong> ${tripData.trip.grand_total}</p>
                             <p><strong>Trip Fully Processed:</strong> {tripData.trip.trip_fully_processed ? "Yes" : "No"}</p>
+                            <p><strong>Date Booked:</strong> {tripData.trip.date_booked}</p>
 
                             <h3>Trip Segments</h3>
                             <div className="segments-table-container">

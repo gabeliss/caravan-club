@@ -63,15 +63,12 @@ def admin_required(f):
 @app.route('/api/trip/<int:trip_id>', methods=['GET'])
 @admin_required
 def get_trip_details(trip_id):
-    # Fetch the trip by ID
     trip = Trip.query.get(trip_id)
     if not trip:
         return {"error": "Trip not found"}, 404
 
-    # Fetch the associated user
     user = trip.user
 
-    # Serialize and return the data
     return {
         "user": {
             "user_id": user.user_id,
@@ -94,8 +91,9 @@ def get_trip_details(trip_id):
             "trip_id": trip.trip_id,
             "user_id": trip.user_id,
             "destination": trip.destination,
-            "start_date": trip.start_date.strftime('%Y-%m-%d'),
-            "end_date": trip.end_date.strftime('%Y-%m-%d'),
+            "start_date": trip.start_date.strftime('%m/%d/%y'),
+            "end_date": trip.end_date.strftime('%m/%d/%y'),
+            "date_booked": trip.date_booked.strftime('%m/%d/%y %H:%M:%S'),
             "nights": trip.nights,
             "num_adults": trip.num_adults,
             "num_kids": trip.num_kids,
@@ -108,8 +106,8 @@ def get_trip_details(trip_id):
                     "trip_id": segment.trip_id,
                     "name": segment.name,
                     "selected_accommodation": segment.selected_accommodation,
-                    "start_date": segment.start_date.strftime('%Y-%m-%d'),
-                    "end_date": segment.end_date.strftime('%Y-%m-%d'),
+                    "start_date": segment.start_date.strftime('%m/%d/%y'),
+                    "end_date": segment.end_date.strftime('%m/%d/%y'),
                     "nights": segment.nights,
                     "base_price": segment.base_price,
                     "tax": segment.tax,
@@ -161,14 +159,15 @@ def create_trip():
     trip = Trip(
         user=user,
         destination=trip_data["destination"],
-        start_date=datetime.strptime(trip_data["start_date"], "%Y-%m-%d"),
-        end_date=datetime.strptime(trip_data["end_date"], "%Y-%m-%d"),
+        start_date=trip_data["start_date"],
+        end_date=trip_data["end_date"],
         nights=trip_data["nights"],
         num_adults=trip_data["num_adults"],
         num_kids=trip_data["num_kids"],
         caravan_fee=trip_data["caravan_fee"],
         grand_total=trip_data["grand_total"],
-        trip_fully_processed=trip_data["trip_fully_processed"]
+        trip_fully_processed=trip_data["trip_fully_processed"],
+        date_booked=datetime.now()
     )
 
     # Add segments to the trip
@@ -178,8 +177,8 @@ def create_trip():
             trip=trip,
             name=segment_data["name"],
             selected_accommodation=segment_data["selected_accommodation"],
-            start_date=datetime.strptime(segment_data["start_date"], "%Y-%m-%d"),
-            end_date=datetime.strptime(segment_data["end_date"], "%Y-%m-%d"),
+            start_date=segment_data["start_date"],
+            end_date=segment_data["end_date"],
             nights=segment_data["nights"],
             base_price=segment_data["base_price"],
             tax=segment_data["tax"],
@@ -208,14 +207,49 @@ def get_all_trips():
                     "email": trip.user.email
                 },
                 "destination": trip.destination,
-                "start_date": trip.start_date.strftime('%Y-%m-%d'),
-                "end_date": trip.end_date.strftime('%Y-%m-%d'),
+                "start_date": trip.start_date.strftime('%m/%d/%y'),
+                "end_date": trip.end_date.strftime('%m/%d/%y'),
+                "date_booked": trip.date_booked.strftime('%m/%d/%y %H:%M:%S'),
                 "grand_total": trip.grand_total,
                 "trip_fully_processed": trip.trip_fully_processed
             }
             for trip in trips
         ]
     }, 200
+
+
+@app.route('/api/trips/search', methods=['GET'])
+@admin_required
+def search_trips_by_email():
+    email = request.args.get("email")
+    if not email:
+        return {"error": "Email is required"}, 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return {"error": "User not found"}, 404
+
+    trips = Trip.query.filter_by(user_id=user.user_id).all()
+    return {
+        "trips": [
+            {
+                "trip_id": trip.trip_id,
+                "user": {
+                    "first_name": trip.user.first_name,
+                    "last_name": trip.user.last_name,
+                    "email": trip.user.email
+                },
+                "destination": trip.destination,
+                "start_date": trip.start_date.strftime('%m/%d/%y'),
+                "end_date": trip.end_date.strftime('%m/%d/%y'),
+                "date_booked": trip.date_booked.strftime('%m/%d/%y %H:%M:%S'),
+                "grand_total": trip.grand_total,
+                "trip_fully_processed": trip.trip_fully_processed
+            }
+            for trip in trips
+        ]
+    }, 200
+
 
 
 @app.route('/api/trip/<int:trip_id>', methods=['DELETE'])
@@ -303,7 +337,7 @@ def process_payment(api_function):
     }
     
     result = api_function(start_date, end_date, num_adults, num_kids, payment_info)
-    return jsonify(success=result)
+    return jsonify(result)
 
 
 #### SCRAPES - Northern Michigan - Tent ####

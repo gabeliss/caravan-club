@@ -23,12 +23,12 @@ const PaymentTripDetails = ({ startDate, endDate, numAdults, numKids, totalPrice
         const end_date = new Date(dates.end);
         const numNights = (end_date - start_date) / (1000 * 60 * 60 * 24);
 
-        const accommodationKey = selectedAccommodations?.[segmentName];
-        const pricePerNight = placeDetails?.[segmentName]?.tent?.[accommodationKey]?.price || 0;
+        const selected_accommodation = selectedAccommodations?.[segmentName];
+        const pricePerNight = placeDetails?.[segmentName]?.tent?.[selected_accommodation]?.price || 0;
         const segmentPrice = pricePerNight * numNights;
         const formattedDateRange = `${formatDate(dates.start)} - ${formatDate(dates.end)}`;
         
-        const taxRate = placeDetails?.[segmentName]?.tent?.[accommodationKey]?.taxRate || 0;
+        const taxRate = placeDetails?.[segmentName]?.tent?.[selected_accommodation]?.taxRate || 0;
         const segmentTax = segmentPrice * taxRate;
 
         return {

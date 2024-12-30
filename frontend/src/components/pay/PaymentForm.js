@@ -1,7 +1,14 @@
 import React from 'react';
 import '../../styles/components/pay/payment-form.css';
 
-const PaymentForm = ({ paymentInfo, handleInputChange, handleSubmit, handleBack }) => {
+const PaymentForm = ({ 
+  paymentInfo, 
+  handleInputChange, 
+  handleSubmit, 
+  handleBack, 
+  totalPrice, 
+  tripData, // NEW PROP
+}) => {
 
   const handleExpiryDateChange = (e) => {
     let value = e.target.value.replace(/\D/g, ''); // Remove all non-digit characters

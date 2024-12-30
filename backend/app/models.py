@@ -40,6 +40,7 @@ class Trip(db.Model):
     caravan_fee = db.Column(db.Float, nullable=False)
     grand_total = db.Column(db.Float, nullable=False)
     trip_fully_processed = db.Column(db.Boolean, default=False, nullable=False)
+    date_booked = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     # Relationships
     user = db.relationship('User', back_populates='trips')
