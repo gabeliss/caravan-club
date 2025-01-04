@@ -20,6 +20,8 @@ from flask import request, jsonify
 from functools import wraps
 from app import app, db
 from app.models import User, Trip, Segment
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "secure_password")
@@ -190,7 +192,67 @@ def create_trip():
     # Commit the transaction
     db.session.commit()
 
+    # Send confirmation email
+    send_trip_confirmation_email(user_data["email"], trip)
+
     return {"message": "Trip created successfully", "trip_id": trip.trip_id}, 201
+
+
+def send_trip_confirmation_email(email, trip):
+    """
+    Sends a confirmation email after the trip is created using SendGrid.
+    """
+    try:
+        trip_details = """
+            Hello {first_name},
+
+            Thank you for booking your trip with us! Here are your trip details:
+
+            - Destination: {destination}
+            - Start Date: {start_date}
+            - End Date: {end_date}
+            - Number of Nights: {nights}
+            - Number of Adults: {num_adults}
+            - Number of Kids: {num_kids}
+            - Total Cost: ${grand_total:.2f}
+
+            Segments:
+            {segments}
+
+            Please contact us if you have any questions.
+
+            Best regards,
+            Caravan Club
+            """.format(
+                first_name=trip.user.first_name,
+                destination=trip.destination,
+                start_date=trip.start_date.strftime('%B %d, %Y'),
+                end_date=trip.end_date.strftime('%B %d, %Y'),
+                nights=trip.nights,
+                num_adults=trip.num_adults,
+                num_kids=trip.num_kids,
+                grand_total=trip.grand_total,
+                segments="".join(
+                    "  - {name}: {start} to {end}, ${total:.2f}\n".format(
+                        name=segment.name,
+                        start=segment.start_date.strftime('%B %d'),
+                        end=segment.end_date.strftime('%B %d'),
+                        total=segment.total
+                    ) for segment in trip.segments
+                )
+            )
+
+        message = Mail(
+            from_email='gabeliss17@gmail.com',
+            to_emails=email,
+            subject='Your Caravan Trip Confirmation',
+            plain_text_content=trip_details
+        )
+        sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        logging.info(f"Email sent to {email}. Status code: {response.status_code}, Body: {response.body}, Headers: {response.headers}")
+    except Exception as e:
+        logging.error(f"Failed to send email to {email}: {str(e)}")
 
 
 @app.route('/api/trips', methods=['GET'])
