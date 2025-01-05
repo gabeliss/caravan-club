@@ -20,16 +20,12 @@
   }
   
   .modal-close-button {
-    background: #4CAF50;
+    background: var(--primary-color);
     border: none;
     padding: 10px 20px;
     margin-top: 10px;
     color: white;
     cursor: pointer;
     border-radius: 5px;
-  }
-  
-  .modal-close-button:hover {
-    background: #45a049;
   }
   

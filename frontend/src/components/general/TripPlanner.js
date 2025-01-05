@@ -194,11 +194,9 @@ function TripPlanner() {
             value={destination}
             onChange={(e) => setDestination(e.target.value)}
           >
-            {Object.keys(tripMapping).map((key) => (
-              <option key={key} value={key}>
-                {capitalizeFirstLetter(key.replace(/([A-Z])/g, ' $1').trim())}
-              </option>
-            ))}
+            <option value="northernMichigan">
+              Northern Michigan
+            </option>
           </select>
         </div>
 

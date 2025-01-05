@@ -189,10 +189,10 @@ footer a {
   background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)),
               url('https://caravan-bucket.s3.us-east-2.amazonaws.com/images/header/background.jpg') center/cover no-repeat;
   height: auto;
-  min-height: 75vh;
+  min-height: 65vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: start;
 }
 
 .landing-welcome-content {
@@ -210,14 +210,15 @@ footer a {
   font-size: 2.25rem;
   margin-bottom: 50px;
   font-weight: light;
+  width: 80%;
+  margin-left: 10%;
 }
 
 /* Landing Intro */
 .landing-intro {
   display: flex;
   flex-direction: column;
-  padding-top: 10vh;
-  padding: 8%;
+  padding: 5% 8%;
   background-color: var(--secondary-color);
 }
 
@@ -408,4 +409,23 @@ footer a {
 /* Blur Effect */
 .blur-effect {
   filter: blur(5px); /* Adjust the blur value as needed */
+}
+
+.learn-more-btn {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.learn-more-btn:hover {
+  background-color: var(--primary-color-dark);
+}
+
+.coming-soon {
+  background-color: white;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
 }

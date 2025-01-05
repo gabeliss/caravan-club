@@ -47,17 +47,8 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
                         dots={true}
                         infinite={false}
                         speed={500}
-                        slidesToShow={Math.min(details.imageUrls.length, 3)}
+                        slidesToShow={1}
                         slidesToScroll={1}
-                        responsive={[
-                            {
-                                breakpoint: 768,
-                                settings: {
-                                    slidesToShow: 1,
-                                    slidesToScroll: 1,
-                                },
-                            },
-                        ]}
                     >
                         {details.imageUrls.map((url, index) => (
                             <div key={index} className="carousel-slide">

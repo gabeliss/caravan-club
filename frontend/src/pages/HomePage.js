@@ -81,20 +81,25 @@ function HomePage() {
       <div className='trip-logos'>
         <h2>Our Trips</h2>
         <div className='logo-container'>
-          <div className='logo-item' onClick={() => handleLogoClick('washington')}>
-            <img src='https://caravan-bucket.s3.us-east-2.amazonaws.com/images/triplogos/washington.png' alt='Washington' />
-          </div>
           <div className='logo-item' onClick={() => handleLogoClick('northernmichigan')}>
             <img src='https://caravan-bucket.s3.us-east-2.amazonaws.com/images/triplogos/northernmichigan.png' alt='Northern Michigan' />
+            <button className="learn-more-btn">Learn More</button>
           </div>
-          <div className='logo-item' onClick={() => handleLogoClick('arizona')}>
+          <div className='logo-item disabled'>
+            <img src='https://caravan-bucket.s3.us-east-2.amazonaws.com/images/triplogos/washington.png' alt='Washington' />
+            <button className="learn-more-btn coming-soon">Coming Soon</button>
+          </div>
+          <div className='logo-item disabled'>
             <img src='https://caravan-bucket.s3.us-east-2.amazonaws.com/images/triplogos/arizona.png' alt='Arizona' />
+            <button className="learn-more-btn coming-soon">Coming Soon</button>
           </div>
-          <div className='logo-item' onClick={() => handleLogoClick('southerncalifornia')}>
+          <div className='logo-item disabled'>
             <img src='https://caravan-bucket.s3.us-east-2.amazonaws.com/images/triplogos/southerncalifornia.png' alt='Southern California' />
+            <button className="learn-more-btn coming-soon">Coming Soon</button>
           </div>
-          <div className='logo-item' onClick={() => handleLogoClick('smokymountain')}>
+          <div className='logo-item disabled'>
             <img src='https://caravan-bucket.s3.us-east-2.amazonaws.com/images/triplogos/smokynationalpark.png' alt='Smoky National Park' />
+            <button className="learn-more-btn coming-soon">Coming Soon</button>
           </div>
         </div>
       </div>

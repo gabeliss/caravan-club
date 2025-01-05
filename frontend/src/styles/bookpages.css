@@ -192,7 +192,8 @@
 }
 
 .availability-status.available {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color-light);
+    color: white;
 }
 
 .availability-status.not-available {
@@ -202,8 +203,8 @@
 .availability-status.available:hover, .availability-status.available.selected {
     background-color: var(--primary-color);
     color: white;
-    border: 1px solid #333;
-    transform: scale(1.1);
+    border: 2px solid black;
+    transform: scale(1.2);
     box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
 }
 
@@ -245,7 +246,7 @@
 }
 
 .image-carousel {
-    width: 100%;
+    width: 40%;
     margin-top: 10px;
     margin-bottom: 40px; /* Vertical spacing between carousel and content below */
 }
