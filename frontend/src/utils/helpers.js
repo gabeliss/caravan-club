@@ -27,9 +27,12 @@ export function calculateTotalForStay(cityKey, selected_accommodation, accommoda
     const taxRate = accommodation.taxRate || 0;
     const totalForStay = priceForStay + (priceForStay * taxRate);
 
-    let paymentAmount = totalForStay;
+    const fixedFee = accommodation.fixedFee || 0;
+    const totalForStayWithFee = totalForStay + fixedFee;
+
+    let paymentAmount = totalForStayWithFee;
     if (accommodation.partialPayment) {
-        paymentAmount = totalForStay / 2;
+        paymentAmount = totalForStayWithFee / 2;
     }
 
     return {

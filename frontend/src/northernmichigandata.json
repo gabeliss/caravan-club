@@ -7,7 +7,8 @@
         "available": false,
         "price": 0,
         "name": "",
-        "taxRate": 0.11,
+        "taxRate": 0,
+        "fixedFee": 3,
         "message": "Unavailable",
         "imageUrls": [
           "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/timberRidge1.png",
@@ -41,6 +42,7 @@
         "price": 0,
         "name": "",
         "taxRate": 0,
+        "fixedFee": 0,
         "message": "Unavailable",
         "imageUrls": [
           "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/leelanauPines1.png",
@@ -80,6 +82,7 @@
         "price": 0,
         "name": "",
         "taxRate": 0,
+        "fixedFee": 0,
         "message": "Unavailable",
         "imageUrls": [
           "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/indianRiver1.png",
@@ -112,6 +115,7 @@
         "price": 0,
         "name": "",
         "taxRate": 0,
+        "fixedFee": 0,
         "message": "Unavailable"
       },
       "fakePlace": {
@@ -121,6 +125,7 @@
         "price": 85,
         "name": "",
         "taxRate": 0,
+        "fixedFee": 0,
         "message": "$85.00 per night"  
       }
     },
@@ -135,6 +140,7 @@
       "price": 0,
       "name": "",
       "taxRate": 0.07,
+      "fixedFee": 0,
       "message": "Unavailable",
       "imageUrls": [
         "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/uncleDuckys1.png"
@@ -164,6 +170,7 @@
       "price": 0,
       "name": "",
       "taxRate": 0,
+      "fixedFee": 0,
       "message": "Unavailable",
       "imageUrls": [
         "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/touristPark1.png",
@@ -195,6 +202,7 @@
       "price": 0,
       "name": "",
       "taxRate": 0.05,
+      "fixedFee": 0,
       "message": "Unavailable",
       "imageUrls": [
         "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/fortSuperior1.png",

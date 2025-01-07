@@ -30,6 +30,7 @@ def pay_timberRidgeTent(start_date, end_date, num_adults, num_kids, payment_info
             first_option = page.query_selector('.newbook_online_category_box')
 
             if first_option:
+                first_option.wait_for_selector('.newbook_online_from_price_text', timeout=30000)
                 price_element = first_option.query_selector('.newbook_online_from_price_text')
 
                 if price_element:
@@ -41,12 +42,20 @@ def pay_timberRidgeTent(start_date, end_date, num_adults, num_kids, payment_info
 
                         main_container = page.locator('#newbook_content')
                         main_container.wait_for(state='visible', timeout=5000)
-                        child_container = page.locator('.newbook_online_footer')
-                        child_container.wait_for(state='visible', timeout=5000)
-                        next_step_button = child_container.locator('button#generic_button_3')
-                        next_step_button.wait_for(state='visible', timeout=5000)
-                        next_step_button.click()
+                        
+                        # Click confirm site selection button
+                        confirm_button = main_container.locator('#generic_button_109')
+                        confirm_button.wait_for(state='visible', timeout=5000)
+                        confirm_button.click()
                         time.sleep(1)
+
+                        # Click checkout button
+                        # footer_container = page.locator('.newbook_online_footer')
+                        # footer_container.wait_for(state='visible', timeout=5000)
+                        # checkout_button = footer_container.locator('#generic_button_2')
+                        # checkout_button.wait_for(state='visible', timeout=5000)
+                        # checkout_button.click()
+                        # time.sleep(1)
 
                         # fill out payment info
                         main_container = page.locator('#newbook_content')
@@ -97,9 +106,19 @@ def pay_timberRidgeTent(start_date, end_date, num_adults, num_kids, payment_info
                         card_name_input.wait_for(state='visible', timeout=5000)
                         card_name_input.fill(payment_info['cardholder_name'])
 
-                        agree_checkbox = main_container.locator('#agree')
+                        agree_checkbox = main_container.locator('.newbook_checkout_checkbox').nth(2)
                         agree_checkbox.wait_for(state='visible', timeout=5000)
-                        agree_checkbox.click()
+                        # Get the label element and click on a safe area that's not a hyperlink
+                        label = agree_checkbox.locator('label[for="agree"]')
+                        # Click on the beginning of the label text which contains "I/We have read"
+                        label.click(position={"x": 10, "y": 10})
+
+                        # Get the total price
+                        total_element = page.locator('.sidebar_cart_total')
+                        total_element.wait_for(state='visible', timeout=5000)
+                        total_price = total_element.inner_text()
+                        total_price = float(total_price.replace('$', '').strip())    
+                        response_data["total"] = total_price
 
                         place_booking_button = main_container.locator('#place_booking_full')
                         place_booking_button.wait_for(state='visible', timeout=5000)
@@ -107,7 +126,10 @@ def pay_timberRidgeTent(start_date, end_date, num_adults, num_kids, payment_info
                         # place_booking_button.click()
                         # time.sleep(2)
 
-                        return True 
+                        response_data["base_price"] = total_price - 3
+                        response_data["tax"] = 3
+                        response_data["payment_successful"] = True
+                        return response_data 
                     else:
                         print("Book button not found. This should not happen. Investigate further.")
                         return False
@@ -142,7 +164,7 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
-    timberRidgeData = pay_timberRidgeTent('06/04/25', '06/06/25', 3, 1, payment_info)
+    timberRidgeData = pay_timberRidgeTent('06/04/25', '06/11/25', 3, 1, payment_info)
     print(timberRidgeData)
 
 if __name__ == '__main__':

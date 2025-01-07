@@ -4,9 +4,9 @@ from bs4 import BeautifulSoup
 
 
 def scrape_timberRidgeTent(start_date, end_date, num_adults, num_kids):
-    start_month, start_day, start_year = map(int, start_date.split('/'))
-    if start_year < 30 or (start_year == 25 and (start_month < 5)):
-        return {"available": False, "price": None, "message": "Website availablitity is not populated yet for 2025"}
+    # start_month, start_day, start_year = map(int, start_date.split('/'))
+    # if (start_year == 25 and (start_month < 5)):
+    #     return {"available": False, "price": None, "message": "Not available before May 25, 2025"}
     
     url = "https://bookingsus.newbook.cloud/timberridgeresort/api.php"
     headers = {
@@ -50,6 +50,11 @@ def scrape_timberRidgeTent(start_date, end_date, num_adults, num_kids):
         container = all_containers[0]
         a_tag = container.find("h3").find("a") if container.find("h3") else None
         if a_tag:
+            # Check for "Book now" button by looking for a button containing a span with "Book now" text
+            book_now_button = container.find("button", class_="button", attrs={"aria-label": "Book now"})
+            if not book_now_button:
+                return {"available": False, "price": None, "message": "Minimum stay requirement not met"}
+            
             price_span = container.find_all("span", class_="newbook_online_from_price_text")
             if price_span:
                 price = float(price_span[0].text.lstrip("$"))
@@ -68,7 +73,7 @@ def scrape_timberRidgeTent(start_date, end_date, num_adults, num_kids):
 
 
 def main():
-    timberRidgeData = scrape_timberRidgeTent('10/25/24', '10/27/24', 3, 1)
+    timberRidgeData = scrape_timberRidgeTent('06/04/25', '06/06/25', 3, 1)
     print(timberRidgeData)
 
 if __name__ == '__main__':
