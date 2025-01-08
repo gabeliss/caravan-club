@@ -7,6 +7,13 @@ def pay_fortSuperiorTent(start_date, end_date, num_adults, num_kids, payment_inf
     start_timestamp = int(datetime.strptime(start_date, '%m/%d/%y').timestamp() * 1000)
     end_timestamp = int(datetime.strptime(end_date, '%m/%d/%y').timestamp() * 1000)
 
+    response_data = {
+        "base_price": 0,
+        "tax": 0,
+        "total": 0,
+        "payment_successful": False
+    }
+
     url = f"https://www.fortsuperiorcampground.com/campsites/rooms/%3FcheckIn%3D{start_timestamp}%26checkOut%3D{end_timestamp}%26adults%3D{num_adults}"
 
     with sync_playwright() as p:
@@ -29,7 +36,7 @@ def pay_fortSuperiorTent(start_date, end_date, num_adults, num_kids, payment_inf
                 li_elements = iframe.wait_for_selector("li.room", state="attached", timeout=5000)
             except Exception as e:
                 print("li_elements not found")
-                return {"available": False, "price": None, "message": "Not available for selected dates."}
+                return response_data
 
             li_elements = iframe.query_selector_all("li.room")
 
@@ -66,6 +73,26 @@ def pay_fortSuperiorTent(start_date, end_date, num_adults, num_kids, payment_inf
                     country_select = details_form.query_selector("select#country")
                     country_select.select_option(value='string:us')
 
+                    payment_div = page.wait_for_selector("div.payment", timeout=10000)
+                    if payment_div:
+                        # Get base price from first row of breakdown table
+                        base_price_element = payment_div.query_selector("table.breakdown-table tr:first-child td:last-child")
+                        if base_price_element:
+                            base_price_text = base_price_element.inner_text().strip()
+                            response_data["base_price"] = float(base_price_text.replace("$", ""))
+
+                        # Get processing fee from second row
+                        fee_element = payment_div.query_selector("table.breakdown-table tr:nth-child(2) td:last-child")
+                        if fee_element:
+                            fee_text = fee_element.inner_text().strip()
+                            response_data["tax"] = float(fee_text.replace("$", ""))
+
+                        # Get total from final row
+                        total_element = payment_div.query_selector("tfoot tr td.total-value")
+                        if total_element:
+                            total_text = total_element.inner_text().strip()
+                            response_data["total"] = float(total_text.replace("$", ""))
+
                     continue_button = details_form.query_selector("button.pay-now")
                     continue_button.click()
                     time.sleep(1)
@@ -85,14 +112,15 @@ def pay_fortSuperiorTent(start_date, end_date, num_adults, num_kids, payment_inf
                     # Continue with submitting the payment if necessary
                     complete_checkout_button = form_details.query_selector("button[data-hook='cashier-payments-method-pay-button']")
                     # complete_checkout_button.click() #uncomment to pay
-                    return True
+                    response_data['payment_successful'] = True
+                    return response_data
 
             
-            return False
+            return response_data
 
         except Exception as e:
             print(f"An error occurred: {e}")
-            return False
+            return response_data
 
         finally:
             browser.close()
@@ -115,7 +143,7 @@ def main():
         "expiry_date": "01/30",
         "cvc": "1234"
     }
-    fortSuperiorData = pay_fortSuperiorTent('10/9/24', '10/11/24', 2, 1, payment_info)
+    fortSuperiorData = pay_fortSuperiorTent('06/08/25', '06/10/25', 2, 1, payment_info)
     print(fortSuperiorData)
 
 if __name__ == '__main__':

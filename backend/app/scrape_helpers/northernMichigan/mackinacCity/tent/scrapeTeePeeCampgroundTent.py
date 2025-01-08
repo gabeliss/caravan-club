@@ -12,8 +12,8 @@ def get_initial_cookies(url):
 def scrape_teePeeCampgroundTent(start_date, end_date, num_adults, num_kids):
     # Check if start date is before May 1, 2025
     start_month, start_day, start_year = map(int, start_date.split('/'))
-    if start_year < 30 or (start_year == 25 and start_month < 5):
-        return {"available": False, "price": None, "message": "Website availablitity is not populated yet for 2025"}
+    if start_year < 25 or (start_year == 25 and (start_month < 5)):
+        return {"available": False, "price": None, "message": "Not available before May 1, 2025"}
 
     file_path = os.path.join(os.path.dirname(__file__), "date_to_pk_mapping.json")
 
@@ -22,7 +22,8 @@ def scrape_teePeeCampgroundTent(start_date, end_date, num_adults, num_kids):
     
     pk = date_to_pk_dict.get(start_date)
 
-    url = f"https://fareharbor.com/api/v1/companies/teepeecampground/total-sheets/238778/pricing/Availability/{pk}/"
+    url = f"https://fareharbor.com/api/v1/companies/teepeecampground/total-sheets/2/pricing/Availability/{pk}/"
+    url = f"https://fareharbor.com/embeds/book/teepeecampground/items/74239/availability/{pk}/book/?full-items=yes&flow=35388"
 
     session = get_initial_cookies(url)
     
@@ -44,7 +45,10 @@ def scrape_teePeeCampgroundTent(start_date, end_date, num_adults, num_kids):
     try:
         response = session.get(url, headers=headers)
         response.raise_for_status() 
-        data = response.json() 
+        # Save response text to file for analysis
+        debug_file = os.path.join(os.path.dirname(__file__), "teepee_response.html")
+        with open(debug_file, "w", encoding="utf-8") as f:
+            f.write(response.text)
         # Revisit when site is populated
         print("Site is not populated yet.")
         return {"available": False, "price": None, "message": "Site is not populated yet."}
@@ -54,7 +58,7 @@ def scrape_teePeeCampgroundTent(start_date, end_date, num_adults, num_kids):
 
 
 def main():
-    teePeeCampgroundData = scrape_teePeeCampgroundTent('05/15/25', '05/17/25', 2, 1)
+    teePeeCampgroundData = scrape_teePeeCampgroundTent('06/06/25', '06/08/25', 2, 1)
     print(teePeeCampgroundData)
 
 if __name__ == '__main__':

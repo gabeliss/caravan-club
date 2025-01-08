@@ -4,8 +4,8 @@ import requests
 
 def scrape_fortSuperiorTent(start_date, end_date, num_adults, num_kids):
     start_month, start_day, start_year = map(int, start_date.split('/'))
-    if start_year < 30 or (start_year == 25 and (start_month < 5)):
-        return {"available": False, "price": None, "message": "Website availablitity is not populated yet for 2025"}
+    if start_year < 25 or (start_year == 25 and (start_month < 5 or (start_month == 5 and start_day < 16))):
+        return {"available": False, "price": None, "message": "Not available before May 16, 2025"}
     # Convert dates to timestamps in milliseconds
     start_timestamp = int(datetime.strptime(start_date, '%m/%d/%y').timestamp() * 1000)
     end_timestamp = int(datetime.strptime(end_date, '%m/%d/%y').timestamp() * 1000)
@@ -48,11 +48,11 @@ def scrape_fortSuperiorTent(start_date, end_date, num_adults, num_kids):
     if response.status_code == 200:
         inventory = response.json()
         for room in inventory:
-            if room['availableUnits'] == None:
-                continue
+            # if room['availableUnits'] == None:
+            #     continue
 
             if "Canvas Tent Barrack" not in room['room']['name']:
-                price = room['room']['offer']['perNight']
+                price = room['offer']['perNight']
                 return {"available": True, "price": price, "message": f"${price:.2f} per night"}
         
         return {"available": False, "price": None, "message": "No options available."}
