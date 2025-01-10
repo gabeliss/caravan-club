@@ -1,22 +1,29 @@
-service: caravan-scrapers-lambda
+service: caravan-scraper # Matches the name in the AWS Console
+
 provider:
   name: aws
+  runtime: nodejs22.x
   region: us-east-2
+  memorySize: 2048
+  timeout: 300
   architecture: x86_64
-  ecr:
-    images:
-      scrapeFunction:
-        path: . # Docker image
-  memorySize: 3008 # 10 GB (maximum allowed for Lambda)
-  timeout: 180
 
 functions:
   scrapeFunction:
-    image:
-      uri: 445567091402.dkr.ecr.us-east-2.amazonaws.com/caravan-scrapers:latest
+    name: caravan-scraper # Explicitly set function name to match AWS Console
+    handler: handler.scrapeHandler
     events:
       - http:
           path: scrape
           method: post
-          cors: true # Enable CORS if needed
-          async: true
+
+package:
+  patterns:
+    - "node_modules/**"
+    - "handler.js"
+
+    # - "node_modules/puppeteer-core/**"
+    # - "node_modules/extract-zip/**"
+    # - "node_modules/debug/**"
+    # - "node_modules/ms/**"
+    # - "node_modules/get-stream/**"

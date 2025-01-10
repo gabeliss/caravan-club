@@ -23,3 +23,7 @@ backend/.env.production
 
 backend/app/caravan-scrapers-lambda/.serverless/
 backend/app/caravan-scrapers-lambda/layer/
+backend/app/caravan-scrapers-lambda/node_modules/
+
+backend/app/scrapers-local-testing/node_modules/
+backend/app/scrapers-local-testing/chromium-v131.0.1-pack/

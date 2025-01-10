@@ -1,0 +1,10 @@
+{
+  "name": "caravan-scrapers-lambda",
+  "version": "1.0.0",
+  "main": "handler.js",
+  "dependencies": {
+    "@sparticuz/chromium": "^131.0.1",
+    "ms": "^2.1.3",
+    "puppeteer-core": "^10.1.0"
+  }
+}

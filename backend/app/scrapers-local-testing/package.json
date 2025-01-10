@@ -1,0 +1,16 @@
+{
+  "name": "scrapers-local-testing",
+  "version": "1.0.0",
+  "main": "scrape_teePeeCampgroundTent.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "puppeteer": "^24.0.0",
+    "puppeteer-core": "^24.0.0"
+  }
+}
