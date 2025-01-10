@@ -20,3 +20,6 @@ frontend/build/
 
 backend/.env.local
 backend/.env.production
+
+backend/app/caravan-scrapers-lambda/.serverless/
+backend/app/caravan-scrapers-lambda/layer/
