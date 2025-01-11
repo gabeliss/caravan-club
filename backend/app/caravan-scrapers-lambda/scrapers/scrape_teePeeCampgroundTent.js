@@ -187,23 +187,40 @@ async function scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids
     });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: 'networkidle2' });
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    console.log("Page loaded successfully");
 
-    // Find price element
-    const priceElement = await page.$(`div[data-test-id='${numNights}-night-reservation-customer-type-rate'] span.price-wrap`);
+    // Wait for price element to be present
+    const priceSelector = `div[data-test-id='${numNights}-night-reservation-customer-type-rate'] span.price-wrap`;
+    await page.waitForSelector(priceSelector, { timeout: 10000 });
+    console.log("Price element found");
+
+    const priceElement = await page.$(priceSelector);
     if (!priceElement) {
-      throw new Error("Price element not found");
+      console.error("Price element not found after waiting");
+      throw new Error("Price element not found after waiting");
     }
 
     const priceText = await page.evaluate(el => el.textContent, priceElement);
     const price = parseFloat(priceText.replace(/[^0-9.]/g, ''));
 
     await browser.close();
-    return { available: true, price: price, message: `$${price.toFixed(2)} per night` };
+    const responseData = {
+      available: true,
+      price: price,
+      message: `$${price.toFixed(2)} per night`
+    }
+    console.log("Response data: ", responseData);
+    return responseData;
 
   } catch (error) {
     console.error(`Error: ${error.message}`);
-    return { available: false, price: null, message: `Error occurred: ${error.message}` };
+    const responseData = {
+      available: false,
+      price: null,
+      message: `Error occurred: ${error.message}`
+    }
+    console.log("Response data: ", responseData);
+    return responseData;
   }
 }
 

@@ -9,21 +9,24 @@ provider:
   architecture: x86_64
 
 functions:
-  scrapeFunction:
-    name: caravan-scraper # Explicitly set function name to match AWS Console
-    handler: handler.scrapeHandler
+  teePeeScraper:
+    name: teePeeCampgroundScraper
+    handler: handler.scrapeTeePee
     events:
       - http:
-          path: scrape
+          path: scrape/teePeeCampgroundTent
+          method: post
+
+  payUncleDuckys:
+    name: payUncleDuckysTent
+    handler: handler.payUncleDuckys
+    events:
+      - http:
+          path: pay/uncleDuckysTent
           method: post
 
 package:
   patterns:
     - "node_modules/**"
     - "handler.js"
-
-    # - "node_modules/puppeteer-core/**"
-    # - "node_modules/extract-zip/**"
-    # - "node_modules/debug/**"
-    # - "node_modules/ms/**"
-    # - "node_modules/get-stream/**"
+    - "scrapers/**"
