@@ -244,7 +244,7 @@ def send_trip_confirmation_email(email, trip):
             )
 
         message = Mail(
-            from_email='gabeliss17@gmail.com',
+            from_email='caravantripplan@gmail.com',
             to_emails=email,
             subject='Your Caravan Trip Confirmation',
             plain_text_content=trip_details
@@ -447,9 +447,9 @@ def process_indianRiverTent_payment():
 def process_teePeeCampgroundTent_payment():
     return process_payment(pay_teePeeCampgroundTent)
 
-@app.route('/api/pay/uncleDuckysTent')
-def process_uncleDuckysTent_payment():
-    return process_payment(pay_uncleDuckysTent)
+# @app.route('/api/pay/uncleDuckysTent')
+# def process_uncleDuckysTent_payment():
+#     return process_payment(pay_uncleDuckysTent)
 
 @app.route('/api/pay/touristParkTent')
 def process_touristParkTent_payment():
@@ -471,7 +471,7 @@ def get_teePeeCampgroundTent_price():
         end_date = request.args.get('end_date', default='', type=str)
 
         # Lambda API endpoint for scraping
-        lambda_endpoint = "https://jpyd3i6zfg.execute-api.us-east-2.amazonaws.com/dev/scrape"
+        lambda_endpoint = "https://jpyd3i6zfg.execute-api.us-east-2.amazonaws.com/dev/scrape/teePeeCampgroundTent"
 
         # Payload for Lambda function
         payload = {
@@ -492,4 +492,37 @@ def get_teePeeCampgroundTent_price():
 
     except Exception as e:
         logging.error(f"Error in get_teePeeCampgroundTent_price: {e}")
+        return {"error": "Internal server error"}, 500
+    
+
+
+@app.route('/api/pay/uncleDuckysTent', methods=['POST'])
+def pay_uncleDuckysTent():
+    try:
+        # Extract parameters from request body
+        payload = request.json
+        num_adults = payload.get('num_adults', 1)
+        num_kids = payload.get('num_kids', 0)
+        start_date = payload.get('start_date', '')
+        end_date = payload.get('end_date', '')
+        payment_info = payload.get('payment_info', {})
+
+        # Lambda API endpoint
+        lambda_endpoint = "https://jpyd3i6zfg.execute-api.us-east-2.amazonaws.com/dev/pay/uncleDuckysTent"
+
+        # Payload for Lambda function
+        payload = {
+            "startDate": start_date,
+            "endDate": end_date,
+            "numAdults": num_adults,
+            "numKids": num_kids,
+            "paymentInfo": payment_info
+        }
+
+        # Make the request to Lambda
+        response = requests.post(lambda_endpoint, json=payload)
+        return jsonify(response.json()), response.status_code
+
+    except Exception as e:
+        logging.error(f"Error in pay_uncleDuckysTent: {e}")
         return {"error": "Internal server error"}, 500

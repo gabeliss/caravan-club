@@ -189,17 +189,18 @@ async function scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids
       const page = await browser.newPage();
       await page.goto(url, { waitUntil: 'networkidle2' });
       console.log("Page loaded successfully");
-  
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log("Waited 2 seconds");
-  
-      // Find price element
-      const priceElement = await page.$(`div[data-test-id='${numNights}-night-reservation-customer-type-rate'] span.price-wrap`);
+
+      // Wait for price element to be present
+      const priceSelector = `div[data-test-id='${numNights}-night-reservation-customer-type-rate'] span.price-wrap`;
+      await page.waitForSelector(priceSelector, { timeout: 10000 });
+      console.log("Price element found");
+
+      const priceElement = await page.$(priceSelector);
       if (!priceElement) {
-        console.error("Price element not found");
-        throw new Error("Price element not found");
+        console.error("Price element not found after waiting");
+        throw new Error("Price element not found after waiting");
       }
-  
+
       const priceText = await page.evaluate(el => el.textContent, priceElement);
       const price = parseFloat(priceText.replace(/[^0-9.]/g, ''));
   
