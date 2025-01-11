@@ -15,6 +15,7 @@ from app.payment_helpers.northernMichigan.picturedRocks.tent.payFortSuperiorTent
 import os, base64
 import jwt as pyjwt
 import logging
+import requests
 from datetime import datetime, timedelta
 from flask import request, jsonify
 from functools import wraps
@@ -416,10 +417,6 @@ def get_leelanauPinesTent_price():
 def get_indianRiverTent_price():
     return get_price('Indian River', 1, 8, scrape_indianRiverTent)
 
-@app.route('/api/scrape/teePeeCampgroundTent')
-def get_teePeeCampgroundTent_price():
-    return get_price('Tee Pee Campground', 1, 6, scrape_teePeeCampgroundTent)
-
 @app.route('/api/scrape/uncleDuckysTent')
 def get_uncleDuckysTent_price():
     return get_price('Uncle Duckys', 1, 5, scrape_uncleDuckysTent)
@@ -462,3 +459,37 @@ def process_touristParkTent_payment():
 def process_fortSuperiorTent_payment():
     return process_payment(pay_fortSuperiorTent)
 
+
+#### AWS Lambda SCRAPES - Northern Michigan - Teepee ####
+@app.route('/api/scrape/teePeeCampgroundTent')
+def get_teePeeCampgroundTent_price():
+    try:
+        # Extract parameters from request
+        num_adults = request.args.get('num_adults', default=1, type=int)
+        num_kids = request.args.get('num_kids', default=0, type=int)
+        start_date = request.args.get('start_date', default='', type=str)
+        end_date = request.args.get('end_date', default='', type=str)
+
+        # Lambda API endpoint for scraping
+        lambda_endpoint = "https://jpyd3i6zfg.execute-api.us-east-2.amazonaws.com/dev/scrape"
+
+        # Payload for Lambda function
+        payload = {
+            "startDate": start_date,
+            "endDate": end_date,
+            "numAdults": num_adults,
+            "numKids": num_kids
+        }
+
+        # Call the Lambda function
+        response = requests.post(lambda_endpoint, json=payload)
+
+        # Return the Lambda response directly
+        if response.status_code == 200:
+            return jsonify(response.json()), 200
+        else:
+            return jsonify({"error": "Failed to get price from Tee Pee Campground"}), response.status_code
+
+    except Exception as e:
+        logging.error(f"Error in get_teePeeCampgroundTent_price: {e}")
+        return {"error": "Internal server error"}, 500
