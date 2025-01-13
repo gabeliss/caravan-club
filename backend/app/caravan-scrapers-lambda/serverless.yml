@@ -8,21 +8,33 @@ provider:
   timeout: 300
   architecture: x86_64
 
+  logs:
+    restApi: true # Enable API Gateway logging
+    retentionInDays: 14
+
 functions:
-  teePeeScraper:
-    name: teePeeCampgroundScraper
-    handler: handler.scrapeTeePee
+  scrapeTeePeeCampgroundTent:
+    name: scrapeTeePeeCampgroundTent
+    handler: handler.scrapeTeePeeCampgroundTent
     events:
       - http:
           path: scrape/teePeeCampgroundTent
           method: post
 
-  payUncleDuckys:
+  payUncleDuckysTent:
     name: payUncleDuckysTent
-    handler: handler.payUncleDuckys
+    handler: handler.payUncleDuckysTent
     events:
       - http:
           path: pay/uncleDuckysTent
+          method: post
+
+  payLeelanauPinesTent:
+    name: payLeelanauPinesTent
+    handler: handler.payLeelanauPinesTent
+    events:
+      - http:
+          path: pay/leelanauPinesTent
           method: post
 
 package:
@@ -30,3 +42,26 @@ package:
     - "node_modules/**"
     - "handler.js"
     - "scrapers/**"
+
+resources:
+  Resources:
+    PayLeelanauPinesTentLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-payLeelanauPinesTent
+        RetentionInDays: 14 # Optional: Set log retention period
+      DeletionPolicy: Retain # Prevents log group from being deleted during updates
+
+    PayUncleDuckysTentLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-payUncleDuckysTent
+        RetentionInDays: 14
+      DeletionPolicy: Retain
+
+    ScrapeTeePeeCampgroundTentLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-scrapeTeePeeCampgroundTent
+        RetentionInDays: 14
+      DeletionPolicy: Retain

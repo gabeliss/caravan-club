@@ -1,7 +1,8 @@
 const { scrapeTeePeeCampgroundTent } = require('./scrapers/scrape_teePeeCampgroundTent');
 const { payUncleDuckysTent } = require('./scrapers/pay_uncleDuckysTent');
+const { payLeelanauPinesTent } = require('./scrapers/pay_leelanauPinesTent');
 
-exports.scrapeTeePee = async (event) => {
+exports.scrapeTeePeeCampgroundTent = async (event) => {
   try {
     const body = JSON.parse(event.body);
     const { startDate, endDate, numAdults, numKids } = body;
@@ -20,7 +21,7 @@ exports.scrapeTeePee = async (event) => {
   }
 };
 
-exports.payUncleDuckys = async (event) => {
+exports.payUncleDuckysTent = async (event) => {
   try {
     const body = JSON.parse(event.body);
     const { startDate, endDate, numAdults, numKids, paymentInfo } = body;
@@ -32,6 +33,25 @@ exports.payUncleDuckys = async (event) => {
     };
   } catch (error) {
     console.error(`Error in payUncleDuckys: ${error.message}`);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    };
+  }
+};
+
+exports.payLeelanauPinesTent = async (event) => {
+  try {
+    const body = JSON.parse(event.body);
+    const { startDate, endDate, numAdults, numKids, paymentInfo } = body;
+
+    const result = await payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paymentInfo);
+    return {
+      statusCode: 200,
+      body: JSON.stringify(result),
+    };
+  } catch (error) {
+    console.error(`Error in payLeelanauPines: ${error.message}`);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message }),

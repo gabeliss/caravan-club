@@ -16,6 +16,7 @@ import os, base64
 import jwt as pyjwt
 import logging
 import requests
+import pytz
 from datetime import datetime, timedelta
 from flask import request, jsonify
 from functools import wraps
@@ -133,7 +134,22 @@ def create_trip():
         return {"error": "User data is required"}, 400
 
     # Find or create the user
-    user = User.query.filter_by(email=user_data["email"]).first()
+    user = User.query.filter_by(
+        first_name=user_data["first_name"],
+        last_name=user_data["last_name"], 
+        email=user_data["email"],
+        phone_number=user_data.get("phone_number"),
+        street_address=user_data.get("street_address"),
+        city=user_data.get("city"),
+        state=user_data.get("state"),
+        zip_code=user_data.get("zip_code"),
+        country=user_data.get("country"),
+        cardholder_name=user_data.get("cardholder_name"),
+        card_number=user_data.get("card_number"),
+        card_type=user_data.get("card_type"),
+        expiry_date=user_data.get("expiry_date"),
+        cvc=user_data.get("cvc")
+    ).first()
     if not user:
         user = User(
             first_name=user_data["first_name"],
@@ -170,7 +186,7 @@ def create_trip():
         caravan_fee=trip_data["caravan_fee"],
         grand_total=trip_data["grand_total"],
         trip_fully_processed=trip_data["trip_fully_processed"],
-        date_booked=datetime.now()
+        date_booked=datetime.now(pytz.timezone('US/Eastern')).strftime('%Y-%m-%d %I:%M %p EST')
     )
 
     # Add segments to the trip
@@ -471,7 +487,7 @@ def get_teePeeCampgroundTent_price():
         end_date = request.args.get('end_date', default='', type=str)
 
         # Lambda API endpoint for scraping
-        lambda_endpoint = "https://jpyd3i6zfg.execute-api.us-east-2.amazonaws.com/dev/scrape/teePeeCampgroundTent"
+        lambda_endpoint = "https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/scrape/teePeeCampgroundTent"
 
         # Payload for Lambda function
         payload = {
@@ -508,7 +524,7 @@ def pay_uncleDuckysTent():
         payment_info = payload.get('payment_info', {})
 
         # Lambda API endpoint
-        lambda_endpoint = "https://jpyd3i6zfg.execute-api.us-east-2.amazonaws.com/dev/pay/uncleDuckysTent"
+        lambda_endpoint = "https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/pay/uncleDuckysTent"
 
         # Payload for Lambda function
         payload = {
