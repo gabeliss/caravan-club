@@ -28,7 +28,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
 
   try {
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     const page = await browser.newPage();
@@ -246,6 +246,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         }
 
         if (noThanksButton) {
+            console.log('"No Thanks" button found, clicking...');
             await noThanksButton.click();
             console.log('Clicked "No Thanks" button.');
             await page.waitForTimeout(1000);
