@@ -39,6 +39,14 @@ functions:
           path: pay/leelanauPinesTent
           method: post
 
+  payTeePeeCampgroundTent:
+    name: payTeePeeCampgroundTent
+    handler: handler.payTeePeeCampgroundTent
+    events:
+      - http:
+          path: pay/teePeeCampgroundTent
+          method: post
+
 package:
   patterns:
     - "node_modules/**"
@@ -65,5 +73,12 @@ resources:
       Type: AWS::Logs::LogGroup
       Properties:
         LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-scrapeTeePeeCampgroundTent
+        RetentionInDays: 14
+      DeletionPolicy: Retain
+
+    PayTeePeeCampgroundTentLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-payTeePeeCampgroundTent
         RetentionInDays: 14
       DeletionPolicy: Retain
