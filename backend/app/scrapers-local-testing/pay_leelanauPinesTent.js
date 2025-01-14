@@ -32,13 +32,26 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     const page = await browser.newPage();
+    console.log("Created new page");
+    
+    console.log("Navigating to URL:", url);
     await page.goto(url, { waitUntil: 'networkidle2' });
+    console.log("Page loaded");
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log("Waited 1 second");
 
+    console.log("Looking for Sort & Filter button...");
     const buttons = await page.$$('span.mantine-Button-label');
+    console.log(`Found ${buttons.length} buttons with class mantine-Button-label`);
+    
     for (const button of buttons) {
         const text = await page.evaluate(el => el.innerText, button);
+        console.log("Button text:", text);
         if (text.includes('Sort & Filter')) {
-            await button.click();
+            console.log("Found Sort & Filter button, clicking with eval method...");
+            await button.evaluate(b => b.click());
+            console.log("Clicked Sort & Filter button");
             break;
         }
     }
@@ -147,7 +160,6 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         break;
     }
     }
-    await page.waitForNetworkIdle();
 
     const noResults = await page.$('div.flex.flex-col.items-center.justify-center.gap-8.rounded-lg.border');
     if (noResults) {
@@ -166,6 +178,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
       if (titleElement) {
         const title = await titleElement.evaluate(el => el.innerText);
         if (title === 'LAKEFRONT BASIC RV') {
+          console.log("Found Lakefront Basic RV option");
           selectedOption = option;
           lakefrontFound = true;
           break;
@@ -176,66 +189,75 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
     // If no lakefront found, use first option
     if (!lakefrontFound) {
       selectedOption = options.length > 0 ? options[0] : null;
+      console.log("No Lakefront Basic RV option found, using first option");
     }
 
     if (selectedOption) {
         const priceElement = await selectedOption.$('div.text-xl.font-bold.text-primary');
         if (priceElement) {
-        await priceElement.click();
+            console.log("Price element found, clicking...");
+            await priceElement.click(); 
+            console.log("Clicked price element");
         } else {
-        console.log("Price element not found.");
-        await browser.close();
-        return responseData;
+            console.log("Price element not found.");
+            await browser.close();
+            console.log("Response data:", responseData);
+            return responseData;
         }
 
         await page.waitForSelector('div.font-title.text-2xl.uppercase.tracking-wide', { visible: true, timeout: 10000 });
         const siteInput = await page.$('div.mb-1.space-y-3.p-6 input[readonly]');
 
         if (siteInput) {
-        await siteInput.click();
-        console.log('Clicked the site input field.');
-        await page.waitForSelector('.mantine-Select-dropdown .mantine-Select-item', { visible: true, timeout: 5000 });
-        const firstSiteOption = await page.$('.mantine-Select-dropdown .mantine-Select-item');
+            console.log("Site input field found, clicking...");
+            await siteInput.click();
+            console.log('Clicked the site input field.');
+            await page.waitForSelector('.mantine-Select-dropdown .mantine-Select-item', { visible: true, timeout: 5000 });
+            const firstSiteOption = await page.$('.mantine-Select-dropdown .mantine-Select-item');
 
-        if (firstSiteOption) {
-            await firstSiteOption.click();
-            console.log('Selected the first available site.');
+            if (firstSiteOption) {
+                console.log("First available site found, clicking...");
+                await firstSiteOption.click();
+                console.log('Selected the first available site.');
+            } else {
+                console.log("No available sites found.");
+                await browser.close();
+                console.log("Response data:", responseData);
+                return responseData;
+            }
         } else {
-            console.log("No available sites found.");
+            console.log("Site selection input not found.");
             await browser.close();
+            console.log("Response data:", responseData);
             return responseData;
-        }
-        } else {
-        console.log("Site selection input not found.");
-        await browser.close();
-        return responseData;
         }
 
         await page.waitForSelector('button.mantine-Button-root', { visible: true, timeout: 10000 });
-
         const addToCartButtons = await page.$$('button.mantine-Button-root');
         let addToCartButton = null;
         for (const button of addToCartButtons) {
             const text = await page.evaluate(el => el.innerText.trim(), button);
             if (text === 'ADD TO CART') {
+                console.log("Add to cart button found, clicking...");
                 addToCartButton = button;
                 break;
             }
         }
 
         if (addToCartButton) {
+            console.log('"Add To Cart" button found, clicking...');
             await addToCartButton.click();
             console.log('Clicked "Add To Cart" button.');
         } else {
             console.log('"Add To Cart" button not found.');
             await browser.close();
+            console.log("Response data:", responseData);
             return responseData;
         }
 
         await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 });
 
         const modalButtons = await page.$$('.mantine-Modal-body button');
-
         let noThanksButton = null;
         for (const button of modalButtons) {
             const text = await page.evaluate(el => el.innerText.trim(), button);
@@ -247,9 +269,10 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
 
         if (noThanksButton) {
             console.log('"No Thanks" button found, clicking...');
-            await noThanksButton.click();
+            // await noThanksButton.click();
+            await noThanksButton.evaluate(b => b.click());
             console.log('Clicked "No Thanks" button.');
-            await page.waitForTimeout(1000);
+            await page.evaluate(() => new Promise(r => setTimeout(r, 1000)));
         } else {
             console.log('"No Thanks" button not found.');
         }
@@ -269,10 +292,13 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         }
 
         if (cartButton) {
-            await cartButton.click();
+            // await cartButton.click();
+            console.log('"Go To Shopping Cart" button found, clicking...');
+            await cartButton.evaluate(b => b.click());
             console.log('Clicked "Go To Shopping Cart" button');
         } else {
-            throw new Error('"Go To Shopping Cart" button not found');
+            // throw new Error('"Go To Shopping Cart" button not found');
+            console.log('"Go To Shopping Cart" button not found.');
         }
 
         // Wait for the cart page to load and collect price information
@@ -285,6 +311,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         let taxes = 0;
         let total = 0;
 
+        console.log("Extracting price information...");
         for (const element of priceElements) {
             const text = await page.evaluate(el => el.firstElementChild?.textContent || '', element);
             const priceText = await page.evaluate(el => el.lastElementChild?.textContent || '', element);
@@ -322,6 +349,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
                 return label ? label.textContent.trim() : '';
             }, button);
             if (buttonText === 'Proceed to Checkout') {
+                console.log('"Proceed to Checkout" button found, clicking...');
                 checkoutButton = button;
                 break;
             }
@@ -341,6 +369,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         const inputs = await page.$$('input[id^="mantine-"][type="text"]');
         
         // Fill out each field by checking its label
+        console.log("Filling out input fields...");
         for (const input of inputs) {
             const labelId = await input.evaluate(el => el.id + '-label');
             const labelText = await page.$eval(`label[id="${labelId}"]`, label => label.textContent);
@@ -365,6 +394,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         const locationInputs = await page.$$('input[type="search"]');
         
         for (const input of locationInputs) {
+            console.log("Handling country and state selection");
             const labelId = await input.evaluate(el => el.id + '-label');
             const labelElement = await page.$(`label[id="${labelId}"]`);
             if (labelElement) {
@@ -375,6 +405,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
                         const wrapper = await input.evaluateHandle(el => el.closest('.mantine-Select-wrapper'));
                         const svgChevron = await wrapper.$('div.mantine-Select-rightSection svg[data-chevron="true"]');
                         await svgChevron.click({ delay: 100 });
+                        console.log("Clicked chevron");
                         // Wait for dropdown options and find United States
                         const options = await page.$$('div[role="option"]');
                         for (const option of options) {
@@ -382,6 +413,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
                             if (text.includes('United States')) {
                                 await option.click();
                                 await page.evaluate(() => new Promise(r => setTimeout(r, 1000)));
+                                console.log("Clicked United States");
                                 break;
                             }
                         }
@@ -401,6 +433,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
                             if (text.includes(fullStateName)) {
                                 await option.click();
                                 await page.evaluate(() => new Promise(r => setTimeout(r, 1000)));
+                                console.log("Clicked state");
                                 break;
                             }
                         }
@@ -415,13 +448,17 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         await page.waitForSelector('input[type="radio"][value="total"]');
         const totalBalanceRadio = await page.$('input[type="radio"][value="total"]');
         if (totalBalanceRadio) {
+            console.log("Total balance radio button found, clicking...");
             await totalBalanceRadio.click();
+            console.log("Clicked total balance radio button");
         }
 
         // Handle card number iframe
         const cardNumberFrame = await page.$('#tokenFrame');
         if (cardNumberFrame) {
+            console.log("Card number iframe found, waiting for 1 second...");
             await page.evaluate(() => new Promise(r => setTimeout(r, 1000)));
+            console.log("Card number iframe found, typing card number...");
             await cardNumberFrame.contentFrame().then(async frame => {
                 await frame.type('input', paymentInfo.card_number);
             });
@@ -430,12 +467,16 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         // Handle card expiry and CVV
         const expiryInput = await page.$('input[placeholder="MM/YY"]');
         if (expiryInput) {
+            console.log("Card expiry input found, typing expiry date...");
             await expiryInput.type(paymentInfo.expiry_date);
+            console.log("Typed expiry date");
         }
 
         const cvvInput = await page.$('input[placeholder="***"]');
         if (cvvInput) {
+            console.log("CVV input found, typing CVV...");
             await cvvInput.type(paymentInfo.cvc);
+            console.log("Typed CVV");
         }
 
         // Ensure "Billing information is same as guest" checkbox is checked
@@ -443,7 +484,9 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         if (billingCheckbox) {
             const isChecked = await page.$eval('input[type="checkbox"]', checkbox => checkbox.checked);
             if (!isChecked) {
+                console.log("Billing information is not the same as guest, clicking checkbox...");
                 await billingCheckbox.click();
+                console.log("Clicked billing information checkbox");
             }
         }
 
@@ -456,6 +499,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
                 return label ? label.textContent.trim() : '';
             }, button);
             if (buttonText === 'Place Order') {
+                console.log('"Place Order" button found, clicking...');
                 placeOrderButton = button;
                 break;
             }
@@ -475,20 +519,22 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         // await page.click('button:has-text("Place Order")');
 
         await browser.close();
+        console.log("Response data:", responseData);
         return responseData;
 
     } else {
       console.log("No options available.");
       await browser.close();
+      console.log("Response data:", responseData);
       return responseData;
     }
 
   } catch (error) {
     console.error(`Error during payment: ${error.message}`);
+    console.log("Response data:", responseData);
     return responseData;
   }
 }
-
 if (require.main === module) {
   (async () => {
     const paymentInfo = {

@@ -12,6 +12,8 @@ provider:
     restApi: true # Enable API Gateway logging
     retentionInDays: 14
 
+  endpointType: regional
+
 functions:
   scrapeTeePeeCampgroundTent:
     name: scrapeTeePeeCampgroundTent

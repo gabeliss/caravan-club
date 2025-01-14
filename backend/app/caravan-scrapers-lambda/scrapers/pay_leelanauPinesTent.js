@@ -262,10 +262,10 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 });
 
         const modalButtons = await page.$$('.mantine-Modal-body button');
-
         let noThanksButton = null;
         for (const button of modalButtons) {
             const text = await page.evaluate(el => el.innerText.trim(), button);
+            console.log("No Thanks button text:", text);
             if (text === 'NO THANKS') {
                 noThanksButton = button;
                 break;
@@ -274,10 +274,9 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
 
         if (noThanksButton) {
             console.log('"No Thanks" button found, clicking...');
-            // await noThanksButton.click();
             await noThanksButton.evaluate(b => b.click());
             console.log('Clicked "No Thanks" button.');
-            await page.waitForTimeout(1000);
+            await page.evaluate(() => new Promise(r => setTimeout(r, 1000)));
         } else {
             console.log('"No Thanks" button not found.');
         }
@@ -290,6 +289,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
                 const label = el.querySelector('.mantine-Button-label');
                 return label ? label.textContent.trim() : '';
             }, button);
+            console.log("Go To Shopping Cart button text:", buttonText);
             if (buttonText.includes('Go To Shopping Cart')) {
                 cartButton = button;
                 break;
@@ -297,12 +297,11 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         }
 
         if (cartButton) {
-            // await cartButton.click();
             console.log('"Go To Shopping Cart" button found, clicking...');
             await cartButton.evaluate(b => b.click());
             console.log('Clicked "Go To Shopping Cart" button');
         } else {
-            throw new Error('"Go To Shopping Cart" button not found');
+            console.log('"Go To Shopping Cart" button not found.');
         }
 
         // Wait for the cart page to load and collect price information
@@ -373,8 +372,8 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         const inputs = await page.$$('input[id^="mantine-"][type="text"]');
         
         // Fill out each field by checking its label
+        console.log("Filling out input fields...");
         for (const input of inputs) {
-            console.log("Filling out input field...");
             const labelId = await input.evaluate(el => el.id + '-label');
             const labelText = await page.$eval(`label[id="${labelId}"]`, label => label.textContent);
             
@@ -391,7 +390,6 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
             } else if (labelText.includes('Phone Number')) {
                 await input.type(paymentInfo.phone_number);
             }
-            console.log("Filled out input field");
         }
 
         // Handle Country and State selection
