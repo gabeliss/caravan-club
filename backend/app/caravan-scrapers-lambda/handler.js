@@ -2,6 +2,7 @@ const { scrapeTeePeeCampgroundTent } = require('./scrapers/scrape_teePeeCampgrou
 const { payUncleDuckysTent } = require('./scrapers/pay_uncleDuckysTent');
 const { payLeelanauPinesTent } = require('./scrapers/pay_leelanauPinesTent');
 const { payTeePeeCampgroundTent } = require('./scrapers/pay_teePeeCampgroundTent');
+const { payIndianRiverTent } = require('./scrapers/pay_indianRiverTent');
 
 exports.scrapeTeePeeCampgroundTent = async (event) => {
   try {
@@ -71,6 +72,24 @@ exports.payTeePeeCampgroundTent = async (event) => {
     };
   } catch (error) {
     console.error(`Error in payTeePee: ${error.message}`);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    };
+  }
+};
+
+exports.payIndianRiverTent = async (event) => {
+  try {
+    const body = JSON.parse(event.body);
+    const { startDate, endDate, numAdults, numKids, paymentInfo } = body;
+    const result = await payIndianRiverTent(startDate, endDate, numAdults, numKids, paymentInfo);
+    return {
+      statusCode: 200,
+      body: JSON.stringify(result),
+    };
+  } catch (error) {
+    console.error(`Error in payIndianRiver: ${error.message}`);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message }),

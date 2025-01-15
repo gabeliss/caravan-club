@@ -22,12 +22,11 @@ def pay_indianRiverTent(start_date, end_date, num_adults, num_kids, payment_info
     end_date_formatted = datetime.strptime(end_date, "%m/%d/%y").strftime("%Y-%m-%d")
 
     response_data = {
-        "base_price": 30,
+        "base_price": 0,
         "tax": 0,
-        "total": 30,
-        "payment_successful": True
+        "total": 0,
+        "payment_successful": False
     }
-    return response_data
 
     url = f"https://www.campspot.com/book/indianriverrv/search/{start_date_formatted}/{end_date_formatted}/guests{num_kids},{num_adults},0/list?campsiteCategory=Tent%20Sites"
 

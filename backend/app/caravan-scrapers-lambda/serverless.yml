@@ -47,6 +47,14 @@ functions:
           path: pay/teePeeCampgroundTent
           method: post
 
+  payIndianRiverTent:
+    name: payIndianRiverTent
+    handler: handler.payIndianRiverTent
+    events:
+      - http:
+          path: pay/indianRiverTent
+          method: post
+
 package:
   patterns:
     - "node_modules/**"
@@ -80,5 +88,12 @@ resources:
       Type: AWS::Logs::LogGroup
       Properties:
         LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-payTeePeeCampgroundTent
+        RetentionInDays: 14
+      DeletionPolicy: Retain
+
+    PayIndianRiverTentLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-payIndianRiverTent
         RetentionInDays: 14
       DeletionPolicy: Retain
