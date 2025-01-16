@@ -447,10 +447,6 @@ def get_touristParkTent_price():
 def process_timberRidgeTent_payment():
     return process_payment(pay_timberRidgeTent)
 
-@app.route('/api/pay/fortSuperiorTent')
-def process_fortSuperiorTent_payment():
-    return process_payment(pay_fortSuperiorTent)
-
 
 #### AWS Lambda SCRAPES - Northern Michigan - Teepee ####
 @app.route('/api/scrape/teePeeCampgroundTent')
