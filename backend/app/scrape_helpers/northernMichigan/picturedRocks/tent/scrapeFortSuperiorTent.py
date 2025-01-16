@@ -17,7 +17,7 @@ def scrape_fortSuperiorTent(start_date, end_date, num_adults, num_kids):
     payload = {
         "checkIn": str(start_timestamp),
         "checkOut": str(end_timestamp),
-        "adults": str(num_adults)
+        "adults": str(num_adults + num_kids)
     }
 
     # Headers

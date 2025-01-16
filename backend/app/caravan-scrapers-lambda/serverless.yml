@@ -63,6 +63,14 @@ functions:
           path: pay/touristParkTent
           method: post
 
+  payFortSuperiorTent:
+    name: payFortSuperiorTent
+    handler: handler.payFortSuperiorTent
+    events:
+      - http:
+          path: pay/fortSuperiorTent
+          method: post
+
 package:
   patterns:
     - "node_modules/**"
@@ -110,5 +118,12 @@ resources:
       Type: AWS::Logs::LogGroup
       Properties:
         LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-payTouristParkTent
+        RetentionInDays: 14
+      DeletionPolicy: Retain
+
+    PayFortSuperiorTentLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-payFortSuperiorTent
         RetentionInDays: 14
       DeletionPolicy: Retain

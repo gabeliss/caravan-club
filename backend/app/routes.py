@@ -441,10 +441,6 @@ def get_uncleDuckysTent_price():
 def get_touristParkTent_price():
     return get_price('Tourist Park', 1, 6, scrape_touristParkTent)
 
-@app.route('/api/scrape/fortSuperiorTent')
-def get_fortSuperiorTent_price():
-    return get_price('Fort Superior', 1, 6, scrape_fortSuperiorTent)
-
 #### PAYMENTS - Northern Michigan - Tent ####
 
 @app.route('/api/pay/timberRidgeTent')
@@ -617,4 +613,36 @@ def process_touristParkTent_payment():
 
     except Exception as e:
         logging.error(f"Error in process_touristParkTent_payment: {e}")
+        return {"error": "Internal server error"}, 500
+    
+
+@app.route('/api/pay/fortSuperiorTent')
+def process_fortSuperiorTent_payment():
+    try:
+        # Extract parameters from request body
+        payload = request.json
+        num_adults = payload.get('num_adults', 1)
+        num_kids = payload.get('num_kids', 0)
+        start_date = payload.get('start_date', '')
+        end_date = payload.get('end_date', '')
+        payment_info = payload.get('payment_info', {})
+
+        # Lambda API endpoint
+        lambda_endpoint = "https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/pay/fortSuperiorTent"
+
+        # Payload for Lambda function
+        payload = {
+            "startDate": start_date,
+            "endDate": end_date,
+            "numAdults": num_adults,
+            "numKids": num_kids,
+            "paymentInfo": payment_info
+        }
+
+        # Make the request to Lambda
+        response = requests.post(lambda_endpoint, json=payload)
+        return jsonify(response.json()), response.status_code
+
+    except Exception as e:
+        logging.error(f"Error in process_fortSuperiorTent_payment: {e}")
         return {"error": "Internal server error"}, 500
