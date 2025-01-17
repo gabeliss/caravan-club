@@ -490,6 +490,7 @@ def process_payment_lambda(place_name, lambda_path):
         start_date = payload.get('start_date', '')
         end_date = payload.get('end_date', '')
         payment_info = payload.get('payment_info', {})
+        execute_payment = payload.get('executePayment', False)  # Default to False for safety
 
         # Lambda API endpoint
         lambda_endpoint = f"https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/pay/{lambda_path}"
@@ -500,7 +501,8 @@ def process_payment_lambda(place_name, lambda_path):
             "endDate": end_date,
             "numAdults": num_adults,
             "numKids": num_kids,
-            "paymentInfo": payment_info
+            "paymentInfo": payment_info,
+            "executePayment": execute_payment
         }
 
         # Make the request to Lambda
@@ -534,3 +536,15 @@ def pay_fortSuperiorTent():
 @app.route('/api/pay/timberRidgeTent', methods=['POST'])
 def pay_timberRidgeTent():
     return process_payment_lambda("Timber Ridge", "timberRidgeTent")
+
+
+@app.route('/api/run-payment-tests', methods=['POST'])
+async def run_payment_tests():
+    try:
+        # Import the test module
+        test_module = __import__('app.caravan-scrapers-lambda.tests.test_payment_routes', fromlist=['runDailyTests'])
+        # Run the tests
+        results = await test_module.runDailyTests()
+        return jsonify({"message": "Payment tests completed successfully", "results": results}), 200
+    except Exception as e:
+        return jsonify({"error": f"Failed to run payment tests: {str(e)}"}), 500

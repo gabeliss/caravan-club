@@ -14,7 +14,7 @@ const STATE_MAPPING = {
     'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
 };
 
-async function payIndianRiverTent(startDate, endDate, numAdults, numKids, paymentInfo) {
+async function payIndianRiverTent(startDate, endDate, numAdults, numKids, paymentInfo, executePayment = false) {
   const responseData = {
     base_price: 0,
     tax: 0,
@@ -249,11 +249,19 @@ async function payIndianRiverTent(startDate, endDate, numAdults, numKids, paymen
       responseData.total = responseData.base_price;
     }
     console.log("Total price found");
-    // Uncomment to actually place the order
-    // const placeOrderButton = await page.waitForSelector("button.checkout-form-submit-button.mod-place-order.app-checkout-submit");
-    // await placeOrderButton.click();
 
-    responseData.payment_successful = true;
+    const placeOrderButton = await page.waitForSelector("button.checkout-form-submit-button.mod-place-order.app-checkout-submit");
+
+    if (executePayment) {
+      console.log("Executing payment...");
+      await placeOrderButton.click();
+      await page.waitForNavigation({ waitUntil: 'networkidle0' });
+      console.log("Payment submitted successfully");
+    } else {
+      console.log("Test mode: Payment execution skipped");
+    }
+
+    responseData.payment_successful = true;  // True if all steps completed successfully
     await browser.close();
     console.log("Browser closed");
     console.log("Response data:", responseData);

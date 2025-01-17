@@ -7,18 +7,51 @@ const { payTouristParkTent } = require('./scrapers/pay_touristParkTent');
 const { payFortSuperiorTent } = require('./scrapers/pay_fortSuperiorTent');
 const { payTimberRidgeTent } = require('./scrapers/pay_timberRidgeTent');
 
-exports.scrapeTeePeeCampgroundTent = async (event) => {
+const createPaymentHandler = (operation, operationName) => async (event) => {
+  try {
+    const body = JSON.parse(event.body);
+    const { startDate, endDate, numAdults, numKids, paymentInfo, executePayment = false } = body;
+
+    const result = await operation(
+      startDate, 
+      endDate, 
+      numAdults, 
+      numKids, 
+      paymentInfo,
+      executePayment
+    );
+    
+    return {
+      statusCode: 200,
+      body: JSON.stringify(result),
+    };
+  } catch (error) {
+    console.error(`Error in ${operationName}: ${error.message}`);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    };
+  }
+};
+
+const createScrapeHandler = (operation, operationName) => async (event) => {
   try {
     const body = JSON.parse(event.body);
     const { startDate, endDate, numAdults, numKids } = body;
 
-    const result = await scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids);
+    const result = await operation(
+      startDate, 
+      endDate, 
+      numAdults, 
+      numKids
+    );
+    
     return {
       statusCode: 200,
       body: JSON.stringify(result),
     };
   } catch (error) {
-    console.error(`Error in scrapeTeePee: ${error.message}`);
+    console.error(`Error in ${operationName}: ${error.message}`);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message }),
@@ -26,130 +59,44 @@ exports.scrapeTeePeeCampgroundTent = async (event) => {
   }
 };
 
-exports.payUncleDuckysTent = async (event) => {
-  try {
-    const body = JSON.parse(event.body);
-    const { startDate, endDate, numAdults, numKids, paymentInfo } = body;
+// Export scrape handler
+exports.scrapeTeePeeCampgroundTent = createScrapeHandler(
+  scrapeTeePeeCampgroundTent,
+  'scrapeTeePee'
+);
 
-    const result = await payUncleDuckysTent(startDate, endDate, numAdults, numKids, paymentInfo);
-    return {
-      statusCode: 200,
-      body: JSON.stringify(result),
-    };
-  } catch (error) {
-    console.error(`Error in payUncleDuckys: ${error.message}`);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-    };
-  }
-};
+// Export payment handlers
+exports.payUncleDuckysTent = createPaymentHandler(
+  payUncleDuckysTent,
+  'payUncleDuckys'
+);
 
-exports.payLeelanauPinesTent = async (event) => {
-  try {
-    const body = JSON.parse(event.body);
-    const { startDate, endDate, numAdults, numKids, paymentInfo } = body;
+exports.payLeelanauPinesTent = createPaymentHandler(
+  payLeelanauPinesTent,
+  'payLeelanauPines'
+);
 
-    const result = await payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paymentInfo);
-    return {
-      statusCode: 200,
-      body: JSON.stringify(result),
-    };
-  } catch (error) {
-    console.error(`Error in payLeelanauPines: ${error.message}`);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-    };
-  }
-};
+exports.payTeePeeCampgroundTent = createPaymentHandler(
+  payTeePeeCampgroundTent,
+  'payTeePee'
+);
 
-exports.payTeePeeCampgroundTent = async (event) => {
-  try {
-    const body = JSON.parse(event.body);
-    const { startDate, endDate, numAdults, numKids, paymentInfo } = body;
-    const result = await payTeePeeCampgroundTent(startDate, endDate, numAdults, numKids, paymentInfo);
-    return {
-      statusCode: 200,
-      body: JSON.stringify(result),
-    };
-  } catch (error) {
-    console.error(`Error in payTeePee: ${error.message}`);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-    };
-  }
-};
+exports.payIndianRiverTent = createPaymentHandler(
+  payIndianRiverTent,
+  'payIndianRiver'
+);
 
-exports.payIndianRiverTent = async (event) => {
-  try {
-    const body = JSON.parse(event.body);
-    const { startDate, endDate, numAdults, numKids, paymentInfo } = body;
-    const result = await payIndianRiverTent(startDate, endDate, numAdults, numKids, paymentInfo);
-    return {
-      statusCode: 200,
-      body: JSON.stringify(result),
-    };
-  } catch (error) {
-    console.error(`Error in payIndianRiver: ${error.message}`);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-    };
-  }
-};
+exports.payTouristParkTent = createPaymentHandler(
+  payTouristParkTent,
+  'payTouristPark'
+);
 
-exports.payTouristParkTent = async (event) => {
-  try {
-    const body = JSON.parse(event.body);
-    const { startDate, endDate, numAdults, numKids, paymentInfo } = body;
-    const result = await payTouristParkTent(startDate, endDate, numAdults, numKids, paymentInfo);
-    return {
-      statusCode: 200,
-      body: JSON.stringify(result),
-    };
-  } catch (error) {
-    console.error(`Error in payTouristPark: ${error.message}`);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-    };
-  }
-};
+exports.payFortSuperiorTent = createPaymentHandler(
+  payFortSuperiorTent,
+  'payFortSuperior'
+);
 
-exports.payFortSuperiorTent = async (event) => {
-  try {
-    const body = JSON.parse(event.body);
-    const { startDate, endDate, numAdults, numKids, paymentInfo } = body;
-    const result = await payFortSuperiorTent(startDate, endDate, numAdults, numKids, paymentInfo);
-    return {
-      statusCode: 200,
-      body: JSON.stringify(result),
-    };
-  } catch (error) {
-    console.error(`Error in payFortSuperior: ${error.message}`);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-    };
-  }
-};
-
-exports.payTimberRidgeTent = async (event) => {
-  try {
-    const body = JSON.parse(event.body);
-    const { startDate, endDate, numAdults, numKids, paymentInfo } = body;
-    const result = await payTimberRidgeTent(startDate, endDate, numAdults, numKids, paymentInfo);
-    return {
-      statusCode: 200,
-      body: JSON.stringify(result),
-    };
-  } catch (error) {
-    console.error(`Error in payTimberRidge: ${error.message}`);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message }),
-    };
-  }
-};
+exports.payTimberRidgeTent = createPaymentHandler(
+  payTimberRidgeTent,
+  'payTimberRidge'
+);

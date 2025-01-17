@@ -1,7 +1,9 @@
 {
   "dependencies": {
+    "@sendgrid/mail": "^8.1.4",
     "axios": "^1.6.4",
     "chrome-aws-lambda": "^10.1.0",
+    "dotenv": "^16.4.7",
     "puppeteer-core": "^10.1.0",
     "serverless-plugin-chrome": "^1.0.0-55.3"
   },

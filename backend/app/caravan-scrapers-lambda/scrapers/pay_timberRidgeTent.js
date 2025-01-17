@@ -1,7 +1,7 @@
 const chromium = require('@sparticuz/chromium');
 const puppeteer = require('puppeteer-core');
 
-async function payTimberRidgeTent(startDate, endDate, numAdults, numKids, paymentInfo) {
+async function payTimberRidgeTent(startDate, endDate, numAdults, numKids, paymentInfo, executePayment = false) {
   console.log('Starting Timber Ridge Tent booking process...');
   const responseData = {
     base_price: 0,
@@ -122,12 +122,20 @@ async function payTimberRidgeTent(startDate, endDate, numAdults, numKids, paymen
                 responseData.total = totalPrice;
                 responseData.base_price = totalPrice - 3;
                 responseData.tax = 3;
-                responseData.payment_successful = true;
+                
+                if (executePayment) {
+                    console.log('Executing payment...');
+                    await page.click('#place_booking_full');
+                    await page.waitForNavigation({ waitUntil: 'networkidle0' });
+                    console.log('Payment submitted successfully');
+                } else {
+                    console.log('Test mode: Payment execution skipped');
+                }
 
-                // Uncomment to actually place booking
-                // console.log('Placing final booking...');
-                // await page.click('#place_booking_full');
-                // await new Promise(resolve => setTimeout(resolve, 2000));
+                responseData.payment_successful = true;
+                console.log("Booking process completed. Response data: ", responseData);
+                await browser.close();
+                return responseData;
             }
         }
     }

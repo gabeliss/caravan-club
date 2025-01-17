@@ -14,7 +14,7 @@ const stateMapping = {
   'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
 };
 
-async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paymentInfo) {
+async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paymentInfo, executePayment = false) {
   const responseData = {
     base_price: 0,
     tax: 0,
@@ -509,17 +509,19 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         }
 
         if (placeOrderButton) {
-            console.log('Found "Place Order" button');
-            // Uncomment to actually place the order
-            // await placeOrderButton.click();
+            if (executePayment) {
+                console.log('Executing payment...');
+                await placeOrderButton.click();
+                await page.waitForNavigation({ waitUntil: 'networkidle0' });
+                console.log('Payment submitted successfully');
+            } else {
+                console.log('Test mode: Payment execution skipped');
+            }
         } else {
             console.log('"Place Order" button not found');
         }
 
         responseData.payment_successful = true;
-
-        // Uncomment to make the actual payment
-        // await page.click('button:has-text("Place Order")');
 
         await browser.close();
         console.log("Response data:", responseData);

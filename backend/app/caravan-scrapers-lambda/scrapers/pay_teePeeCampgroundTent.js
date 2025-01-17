@@ -162,7 +162,7 @@ date_to_pk_dict = {
     "10/05/25": "1565248146"
 }
 
-async function payTeePeeCampgroundTent(startDate, endDate, numAdults, numKids, paymentInfo) {
+async function payTeePeeCampgroundTent(startDate, endDate, numAdults, numKids, paymentInfo, executePayment = false) {
     const responseData = {
         base_price: 0,
         tax: 0,
@@ -255,17 +255,20 @@ async function payTeePeeCampgroundTent(startDate, endDate, numAdults, numKids, p
         const total = await page.$eval(totalSelector, el => parseFloat(el.textContent.replace(/[^0-9.]/g, '')));
 
         // Update responseData with price information
-        const responseData = {
-            base_price: basePrice,
-            tax: tax,
-            total: total,
-            payment_successful: false
-        };
+        responseData.base_price = basePrice;
+        responseData.tax = tax;
+        responseData.total = total;
 
+        if (executePayment) {
+            console.log('Executing payment...');
+            await page.click('button[data-test-id="complete-and-pay"]');
+            await page.waitForNavigation({ waitUntil: 'networkidle0' });
+            console.log('Payment submitted successfully');
+        } else {
+            console.log('Test mode: Payment execution skipped');
+        }
 
-        // Uncomment to actually pay
-        // await page.click('button[data-test-id="complete-and-pay"]');
-        responseData.payment_successful = true;
+        responseData.payment_successful = true;  // True if all steps completed successfully
         await browser.close();
         console.log("Browser closed");
         console.log("Response data:", responseData);

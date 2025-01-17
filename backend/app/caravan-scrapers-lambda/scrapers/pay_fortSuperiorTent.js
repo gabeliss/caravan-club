@@ -1,7 +1,7 @@
 const chromium = require('@sparticuz/chromium');
 const puppeteer = require('puppeteer-core');
 
-async function payFortSuperiorTent(startDate, endDate, numAdults, numKids, paymentInfo) {
+async function payFortSuperiorTent(startDate, endDate, numAdults, numKids, paymentInfo, executePayment = false) {
   const responseData = {
     base_price: 0,
     tax: 0,
@@ -121,7 +121,16 @@ async function payFortSuperiorTent(startDate, endDate, numAdults, numKids, payme
         console.log('Filled out payment information');
 
         const checkoutButton = await page.$("button[data-hook='cashier-payments-method-pay-button']");
-        // await checkoutButton.click(); // uncomment to actually pay
+        
+        if (executePayment) {
+          console.log('Executing payment...');
+          await checkoutButton.click();
+          // Wait for navigation to complete after payment
+          await page.waitForNavigation({ waitUntil: 'networkidle0' });
+          console.log('Payment submitted successfully');
+        } else {
+          console.log('Test mode: Payment execution skipped');
+        }
         
         responseData.payment_successful = true;
         console.log("ResponseData", responseData);
