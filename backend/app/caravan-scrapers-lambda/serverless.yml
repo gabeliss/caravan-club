@@ -71,6 +71,14 @@ functions:
           path: pay/fortSuperiorTent
           method: post
 
+  payTimberRidgeTent:
+    name: payTimberRidgeTent
+    handler: handler.payTimberRidgeTent
+    events:
+      - http:
+          path: pay/timberRidgeTent
+          method: post
+
 package:
   patterns:
     - "node_modules/**"
@@ -125,5 +133,12 @@ resources:
       Type: AWS::Logs::LogGroup
       Properties:
         LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-payFortSuperiorTent
+        RetentionInDays: 14
+      DeletionPolicy: Retain
+
+    PayTimberRidgeTentLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-payTimberRidgeTent
         RetentionInDays: 14
       DeletionPolicy: Retain

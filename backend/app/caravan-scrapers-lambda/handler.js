@@ -5,6 +5,7 @@ const { payTeePeeCampgroundTent } = require('./scrapers/pay_teePeeCampgroundTent
 const { payIndianRiverTent } = require('./scrapers/pay_indianRiverTent');
 const { payTouristParkTent } = require('./scrapers/pay_touristParkTent');
 const { payFortSuperiorTent } = require('./scrapers/pay_fortSuperiorTent');
+const { payTimberRidgeTent } = require('./scrapers/pay_timberRidgeTent');
 
 exports.scrapeTeePeeCampgroundTent = async (event) => {
   try {
@@ -128,6 +129,24 @@ exports.payFortSuperiorTent = async (event) => {
     };
   } catch (error) {
     console.error(`Error in payFortSuperior: ${error.message}`);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    };
+  }
+};
+
+exports.payTimberRidgeTent = async (event) => {
+  try {
+    const body = JSON.parse(event.body);
+    const { startDate, endDate, numAdults, numKids, paymentInfo } = body;
+    const result = await payTimberRidgeTent(startDate, endDate, numAdults, numKids, paymentInfo);
+    return {
+      statusCode: 200,
+      body: JSON.stringify(result),
+    };
+  } catch (error) {
+    console.error(`Error in payTimberRidge: ${error.message}`);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message }),

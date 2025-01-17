@@ -443,11 +443,6 @@ def get_touristParkTent_price():
 
 #### PAYMENTS - Northern Michigan - Tent ####
 
-@app.route('/api/pay/timberRidgeTent')
-def process_timberRidgeTent_payment():
-    return process_payment(pay_timberRidgeTent)
-
-
 #### AWS Lambda SCRAPES - Northern Michigan - Teepee ####
 @app.route('/api/scrape/teePeeCampgroundTent')
 def get_teePeeCampgroundTent_price():
@@ -483,162 +478,59 @@ def get_teePeeCampgroundTent_price():
         return {"error": "Internal server error"}, 500
     
 
+def process_payment_lambda(place_name, lambda_path):
+    """
+    Generic function to process payments through AWS Lambda
+    """
+    try:
+        # Extract parameters from request body
+        payload = request.json
+        num_adults = payload.get('num_adults', 1)
+        num_kids = payload.get('num_kids', 0)
+        start_date = payload.get('start_date', '')
+        end_date = payload.get('end_date', '')
+        payment_info = payload.get('payment_info', {})
+
+        # Lambda API endpoint
+        lambda_endpoint = f"https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/pay/{lambda_path}"
+
+        # Payload for Lambda function
+        lambda_payload = {
+            "startDate": start_date,
+            "endDate": end_date,
+            "numAdults": num_adults,
+            "numKids": num_kids,
+            "paymentInfo": payment_info
+        }
+
+        # Make the request to Lambda
+        response = requests.post(lambda_endpoint, json=lambda_payload)
+        return jsonify(response.json()), response.status_code
+
+    except Exception as e:
+        logging.error(f"Error in process_payment for {place_name}: {e}")
+        return {"error": "Internal server error"}, 500
 
 @app.route('/api/pay/uncleDuckysTent', methods=['POST'])
 def pay_uncleDuckysTent():
-    try:
-        # Extract parameters from request body
-        payload = request.json
-        num_adults = payload.get('num_adults', 1)
-        num_kids = payload.get('num_kids', 0)
-        start_date = payload.get('start_date', '')
-        end_date = payload.get('end_date', '')
-        payment_info = payload.get('payment_info', {})
-
-        # Lambda API endpoint
-        lambda_endpoint = "https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/pay/uncleDuckysTent"
-
-        # Payload for Lambda function
-        payload = {
-            "startDate": start_date,
-            "endDate": end_date,
-            "numAdults": num_adults,
-            "numKids": num_kids,
-            "paymentInfo": payment_info
-        }
-
-        # Make the request to Lambda
-        response = requests.post(lambda_endpoint, json=payload)
-        return jsonify(response.json()), response.status_code
-
-    except Exception as e:
-        logging.error(f"Error in pay_uncleDuckysTent: {e}")
-        return {"error": "Internal server error"}, 500
-    
+    return process_payment_lambda("Uncle Duckys", "uncleDuckysTent")
 
 @app.route('/api/pay/leelanauPinesTent', methods=['POST'])
 def pay_leelanauPinesTent():
-    try:
-        # Extract parameters from request body
-        payload = request.json
-        num_adults = payload.get('num_adults', 1)
-        num_kids = payload.get('num_kids', 0)
-        start_date = payload.get('start_date', '')
-        end_date = payload.get('end_date', '')
-        payment_info = payload.get('payment_info', {})
-
-        # Lambda API endpoint
-        lambda_endpoint = "https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/pay/leelanauPinesTent"
-
-        # Payload for Lambda function
-        payload = {
-            "startDate": start_date,
-            "endDate": end_date,
-            "numAdults": num_adults,
-            "numKids": num_kids,
-            "paymentInfo": payment_info
-        }
-
-        # Make the request to Lambda
-        response = requests.post(lambda_endpoint, json=payload)
-        return jsonify(response.json()), response.status_code
-
-    except Exception as e:
-        logging.error(f"Error in pay_leelanauPinesTent: {e}")
-        return {"error": "Internal server error"}, 500
-
+    return process_payment_lambda("Leelanau Pines", "leelanauPinesTent")
 
 @app.route('/api/pay/indianRiverTent', methods=['POST'])
 def pay_indianRiverTent():
-    try:
-        # Extract parameters from request body
-        payload = request.json
-        num_adults = payload.get('num_adults', 1)
-        num_kids = payload.get('num_kids', 0)
-        start_date = payload.get('start_date', '')
-        end_date = payload.get('end_date', '')
-        payment_info = payload.get('payment_info', {})
+    return process_payment_lambda("Indian River", "indianRiverTent")
 
-        # Lambda API endpoint
-        lambda_endpoint = "https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/pay/indianRiverTent"
+@app.route('/api/pay/touristParkTent', methods=['POST'])
+def pay_touristParkTent():
+    return process_payment_lambda("Tourist Park", "touristParkTent")
 
-        # Payload for Lambda function
-        payload = {
-            "startDate": start_date,
-            "endDate": end_date,
-            "numAdults": num_adults,
-            "numKids": num_kids,
-            "paymentInfo": payment_info
-        }
+@app.route('/api/pay/fortSuperiorTent', methods=['POST'])
+def pay_fortSuperiorTent():
+    return process_payment_lambda("Fort Superior", "fortSuperiorTent")
 
-        # Make the request to Lambda
-        response = requests.post(lambda_endpoint, json=payload)
-        return jsonify(response.json()), response.status_code
-
-    except Exception as e:
-        logging.error(f"Error in pay_indianRiverTent: {e}")
-        return {"error": "Internal server error"}, 500
-    
-
-@app.route('/api/pay/touristParkTent')
-def process_touristParkTent_payment():
-    try:
-        # Extract parameters from request body
-        payload = request.json
-        num_adults = payload.get('num_adults', 1)
-        num_kids = payload.get('num_kids', 0)
-        start_date = payload.get('start_date', '')
-        end_date = payload.get('end_date', '')
-        payment_info = payload.get('payment_info', {})
-
-        # Lambda API endpoint
-        lambda_endpoint = "https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/pay/touristParkTent"
-
-        # Payload for Lambda function
-        payload = {
-            "startDate": start_date,
-            "endDate": end_date,
-            "numAdults": num_adults,
-            "numKids": num_kids,
-            "paymentInfo": payment_info
-        }
-
-        # Make the request to Lambda
-        response = requests.post(lambda_endpoint, json=payload)
-        return jsonify(response.json()), response.status_code
-
-    except Exception as e:
-        logging.error(f"Error in process_touristParkTent_payment: {e}")
-        return {"error": "Internal server error"}, 500
-    
-
-@app.route('/api/pay/fortSuperiorTent')
-def process_fortSuperiorTent_payment():
-    try:
-        # Extract parameters from request body
-        payload = request.json
-        num_adults = payload.get('num_adults', 1)
-        num_kids = payload.get('num_kids', 0)
-        start_date = payload.get('start_date', '')
-        end_date = payload.get('end_date', '')
-        payment_info = payload.get('payment_info', {})
-
-        # Lambda API endpoint
-        lambda_endpoint = "https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/pay/fortSuperiorTent"
-
-        # Payload for Lambda function
-        payload = {
-            "startDate": start_date,
-            "endDate": end_date,
-            "numAdults": num_adults,
-            "numKids": num_kids,
-            "paymentInfo": payment_info
-        }
-
-        # Make the request to Lambda
-        response = requests.post(lambda_endpoint, json=payload)
-        return jsonify(response.json()), response.status_code
-
-    except Exception as e:
-        logging.error(f"Error in process_fortSuperiorTent_payment: {e}")
-        return {"error": "Internal server error"}, 500
+@app.route('/api/pay/timberRidgeTent', methods=['POST'])
+def pay_timberRidgeTent():
+    return process_payment_lambda("Timber Ridge", "timberRidgeTent")
