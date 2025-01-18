@@ -13,7 +13,7 @@ const stateMapping = {
   'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming'
 };
 
-async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paymentInfo) {
+async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paymentInfo, executePayment = false) {
   const responseData = {
     base_price: 0,
     tax: 0,
@@ -27,9 +27,10 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
   const url = `https://leelanaupinescampresort.com/stay/search?start=${startDateFormatted}&end=${endDateFormatted}`;
 
   try {
+    console.log("Launching browser...");
     const browser = await puppeteer.launch({
-      headless: false,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+        headless: true,
+        args: ["--no-sandbox", "--disable-setuid-sandbox"]
     });
     const page = await browser.newPage();
     console.log("Created new page");
@@ -192,68 +193,67 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
       console.log("No Lakefront Basic RV option found, using first option");
     }
 
-    if (selectedOption) {
-        const priceElement = await selectedOption.$('div.text-xl.font-bold.text-primary');
-        if (priceElement) {
-            console.log("Price element found, clicking...");
-            await priceElement.click(); 
-            console.log("Clicked price element");
-        } else {
-            console.log("Price element not found.");
-            await browser.close();
-            console.log("Response data:", responseData);
-            return responseData;
-        }
+    if (!selectedOption) {
+        console.log("No site options available.");
+        await browser.close();
+        console.log("Response data:", responseData);
+        return responseData;
+    }
 
-        await page.waitForSelector('div.font-title.text-2xl.uppercase.tracking-wide', { visible: true, timeout: 10000 });
-        const siteInput = await page.$('div.mb-1.space-y-3.p-6 input[readonly]');
+    const priceElement = await selectedOption.$('div.text-xl.font-bold.text-primary');
+    if (!priceElement) {
+        console.log("Price element not found.");
+        await browser.close();
+        console.log("Response data:", responseData);
+        return responseData;
+    }
 
-        if (siteInput) {
-            console.log("Site input field found, clicking...");
-            await siteInput.click();
-            console.log('Clicked the site input field.');
-            await page.waitForSelector('.mantine-Select-dropdown .mantine-Select-item', { visible: true, timeout: 5000 });
-            const firstSiteOption = await page.$('.mantine-Select-dropdown .mantine-Select-item');
+    console.log("Price element found, clicking...");
+    await priceElement.click(); 
+    console.log("Clicked price element");
 
-            if (firstSiteOption) {
-                console.log("First available site found, clicking...");
-                await firstSiteOption.click();
-                console.log('Selected the first available site.');
-            } else {
-                console.log("No available sites found.");
-                await browser.close();
-                console.log("Response data:", responseData);
-                return responseData;
-            }
-        } else {
-            console.log("Site selection input not found.");
-            await browser.close();
-            console.log("Response data:", responseData);
-            return responseData;
-        }
+    await page.waitForSelector('div.font-title.text-2xl.uppercase.tracking-wide', { visible: true, timeout: 10000 });
+    const siteInput = await page.$('div.mb-1.space-y-3.p-6 input[readonly]');
+
+    if (!siteInput) {
+        console.log("Site selection input not found.");
+        await browser.close();
+        console.log("Response data:", responseData);
+        return responseData;
+    }
+
+    console.log("Site input field found, clicking...");
+    await siteInput.click();
+    console.log('Clicked the site input field.');
+
+    await page.waitForSelector('.mantine-Select-dropdown .mantine-Select-item', { visible: true, timeout: 5000 });
+    const siteOptions = await page.$$('.mantine-Select-dropdown .mantine-Select-item');
+
+    for (const siteOption of siteOptions) {
+        console.log("Trying next available site...");
+        await siteOption.click();
+        console.log('Selected a site.');
 
         await page.waitForSelector('button.mantine-Button-root', { visible: true, timeout: 10000 });
+        console.log("Add to cart button found, clicking...");
         const addToCartButtons = await page.$$('button.mantine-Button-root');
         let addToCartButton = null;
         for (const button of addToCartButtons) {
             const text = await page.evaluate(el => el.innerText.trim(), button);
             if (text === 'ADD TO CART') {
-                console.log("Add to cart button found, clicking...");
                 addToCartButton = button;
                 break;
             }
         }
 
-        if (addToCartButton) {
-            console.log('"Add To Cart" button found, clicking...');
-            await addToCartButton.click();
-            console.log('Clicked "Add To Cart" button.');
-        } else {
+        if (!addToCartButton) {
             console.log('"Add To Cart" button not found.');
-            await browser.close();
-            console.log("Response data:", responseData);
-            return responseData;
+            continue;
         }
+
+        console.log('"Add To Cart" button found, clicking...');
+        await addToCartButton.click();
+        console.log('Clicked "Add To Cart" button.');
 
         await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 });
 
@@ -261,6 +261,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         let noThanksButton = null;
         for (const button of modalButtons) {
             const text = await page.evaluate(el => el.innerText.trim(), button);
+            console.log("No Thanks button text:", text);
             if (text === 'NO THANKS') {
                 noThanksButton = button;
                 break;
@@ -269,12 +270,21 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
 
         if (noThanksButton) {
             console.log('"No Thanks" button found, clicking...');
-            // await noThanksButton.click();
             await noThanksButton.evaluate(b => b.click());
             console.log('Clicked "No Thanks" button.');
             await page.evaluate(() => new Promise(r => setTimeout(r, 1000)));
         } else {
             console.log('"No Thanks" button not found.');
+        }
+
+        // Check for error message
+        const errorElement = await page.$('div.input-error-text.mt-2');
+        if (errorElement) {
+            const errorText = await page.evaluate(el => el.textContent, errorElement);
+            if (errorText.includes('site is no longer available')) {
+                console.log('Site no longer available, trying next option...');
+                continue;
+            }
         }
 
         // Find and click "Go To Shopping Cart" button
@@ -285,6 +295,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
                 const label = el.querySelector('.mantine-Button-label');
                 return label ? label.textContent.trim() : '';
             }, button);
+            console.log("Go To Shopping Cart button text:", buttonText);
             if (buttonText.includes('Go To Shopping Cart')) {
                 cartButton = button;
                 break;
@@ -292,242 +303,249 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         }
 
         if (cartButton) {
-            // await cartButton.click();
             console.log('"Go To Shopping Cart" button found, clicking...');
             await cartButton.evaluate(b => b.click());
             console.log('Clicked "Go To Shopping Cart" button');
+            break; // Successfully found an available site
         } else {
-            // throw new Error('"Go To Shopping Cart" button not found');
-            console.log('"Go To Shopping Cart" button not found.');
+            console.log('"Go To Shopping Cart" button not found, trying next site...');
         }
-
-        // Wait for the cart page to load and collect price information
+    }
+    // Wait for the cart page to load and collect price information
+    try {
         await page.waitForSelector('.flex.items-center.justify-between.gap-6', { visible: true, timeout: 10000 });
-        
-        // Extract price information using selectors
-        const priceElements = await page.$$('div.flex.items-center.justify-between.gap-6');
-        let basePrice = 0;
-        let fees = 0;
-        let taxes = 0;
-        let total = 0;
-
-        console.log("Extracting price information...");
-        for (const element of priceElements) {
-            const text = await page.evaluate(el => el.firstElementChild?.textContent || '', element);
-            const priceText = await page.evaluate(el => el.lastElementChild?.textContent || '', element);
-            const price = parseFloat(priceText.replace('$', ''));
-
-            if (text.includes('Night')) {
-                basePrice = price;
-            } else if (text.includes('Fees')) {
-                fees = price;
-            } else if (text === 'Taxes') {
-                taxes = price;
-            } else if (text === 'Total') {
-                total = price;
-            }
-        }
-
-        // Update responseData
-        responseData.base_price = basePrice;
-        responseData.tax = fees + taxes;
-        responseData.total = total;
-
-        console.log('Price information collected:', {
-            basePrice,
-            fees,
-            taxes,
-            total
-        });
-
-        // Find and click "Proceed to Checkout" button
-        const checkoutButtons = await page.$$('button.mantine-Button-root');
-        let checkoutButton = null;
-        for (const button of checkoutButtons) {
+    } catch (error) {
+        console.log('Could not find price elements, printing all buttons:');
+        const allButtons = await page.$$('button');
+        for (const button of allButtons) {
             const buttonText = await page.evaluate(el => {
                 const label = el.querySelector('.mantine-Button-label');
-                return label ? label.textContent.trim() : '';
+                return label ? label.textContent.trim() : el.textContent.trim();
             }, button);
-            if (buttonText === 'Proceed to Checkout') {
-                console.log('"Proceed to Checkout" button found, clicking...');
-                checkoutButton = button;
-                break;
-            }
+            console.log('Button text:', buttonText);
         }
+        throw error;
+    }
+    
+    // Extract price information using selectors
+    const priceElements = await page.$$('div.flex.items-center.justify-between.gap-6');
+    let basePrice = 0;
+    let fees = 0;
+    let taxes = 0;
+    let total = 0;
 
-        if (checkoutButton) {
-            await checkoutButton.click();
-            console.log('Clicked "Proceed to Checkout" button');
-        } else {
-            throw new Error('"Proceed to Checkout" button not found');
+    console.log("Extracting price information...");
+    for (const element of priceElements) {
+        const text = await page.evaluate(el => el.firstElementChild?.textContent || '', element);
+        const priceText = await page.evaluate(el => el.lastElementChild?.textContent || '', element);
+        const price = parseFloat(priceText.replace('$', ''));
+
+        if (text.includes('Night')) {
+            basePrice = price;
+        } else if (text.includes('Fees')) {
+            fees = price;
+        } else if (text === 'Taxes') {
+            taxes = price;
+        } else if (text === 'Total') {
+            total = price;
         }
+    }
 
-        // Fill guest information
-        await page.waitForSelector('input[id^="mantine-"][type="text"]', { visible: true });
+    // Update responseData
+    responseData.base_price = basePrice;
+    responseData.tax = fees + taxes;
+    responseData.total = total;
+
+    console.log('Price information collected:', {
+        basePrice,
+        fees,
+        taxes,
+        total
+    });
+
+    // Find and click "Proceed to Checkout" button
+    const checkoutButtons = await page.$$('button.mantine-Button-root');
+    let checkoutButton = null;
+    for (const button of checkoutButtons) {
+        const buttonText = await page.evaluate(el => {
+            const label = el.querySelector('.mantine-Button-label');
+            return label ? label.textContent.trim() : '';
+        }, button);
+        if (buttonText === 'Proceed to Checkout') {
+            console.log('"Proceed to Checkout" button found, clicking...');
+            checkoutButton = button;
+            break;
+        }
+    }
+
+    if (checkoutButton) {
+        await checkoutButton.click();
+        console.log('Clicked "Proceed to Checkout" button');
+    } else {
+        throw new Error('"Proceed to Checkout" button not found');
+    }
+
+    // Fill guest information
+    await page.waitForSelector('input[id^="mantine-"][type="text"]', { visible: true });
+    
+    // Find all input fields
+    const inputs = await page.$$('input[id^="mantine-"][type="text"]');
+    
+    // Fill out each field by checking its label
+    console.log("Filling out input fields...");
+    for (const input of inputs) {
+        const labelId = await input.evaluate(el => el.id + '-label');
+        const labelText = await page.$eval(`label[id="${labelId}"]`, label => label.textContent);
         
-        // Find all input fields
-        const inputs = await page.$$('input[id^="mantine-"][type="text"]');
-        
-        // Fill out each field by checking its label
-        console.log("Filling out input fields...");
-        for (const input of inputs) {
-            const labelId = await input.evaluate(el => el.id + '-label');
-            const labelText = await page.$eval(`label[id="${labelId}"]`, label => label.textContent);
+        if (labelText.includes('Full Name')) {
+            await input.type(`${paymentInfo.first_name} ${paymentInfo.last_name}`);
+        } else if (labelText.includes('Address - Line 1')) {
+            await input.type(paymentInfo.street_address);
+        } else if (labelText.includes('City')) {
+            await input.type(paymentInfo.city);
+        } else if (labelText.includes('Postal Code')) {
+            await input.type(paymentInfo.zip_code);
+        } else if (labelText.includes('Email Address')) {
+            await input.type(paymentInfo.email);
+        } else if (labelText.includes('Phone Number')) {
+            await input.type(paymentInfo.phone_number);
+        }
+    }
+
+    // Handle Country and State selection
+    await page.waitForSelector('input[type="search"]');
+    const locationInputs = await page.$$('input[type="search"]');
+    
+    for (const input of locationInputs) {
+        console.log("Handling country and state selection");
+        const labelId = await input.evaluate(el => el.id + '-label');
+        const labelElement = await page.$(`label[id="${labelId}"]`);
+        if (labelElement) {
+            const labelText = await labelElement.evaluate(el => el.textContent);
             
-            if (labelText.includes('Full Name')) {
-                await input.type(`${paymentInfo.first_name} ${paymentInfo.last_name}`);
-            } else if (labelText.includes('Address - Line 1')) {
-                await input.type(paymentInfo.street_address);
-            } else if (labelText.includes('City')) {
-                await input.type(paymentInfo.city);
-            } else if (labelText.includes('Postal Code')) {
-                await input.type(paymentInfo.zip_code);
-            } else if (labelText.includes('Email Address')) {
-                await input.type(paymentInfo.email);
-            } else if (labelText.includes('Phone Number')) {
-                await input.type(paymentInfo.phone_number);
-            }
-        }
-
-        // Handle Country and State selection
-        await page.waitForSelector('input[type="search"]');
-        const locationInputs = await page.$$('input[type="search"]');
-        
-        for (const input of locationInputs) {
-            console.log("Handling country and state selection");
-            const labelId = await input.evaluate(el => el.id + '-label');
-            const labelElement = await page.$(`label[id="${labelId}"]`);
-            if (labelElement) {
-                const labelText = await labelElement.evaluate(el => el.textContent);
-                
-                if (labelText.includes('Country')) {
-                    try {
-                        const wrapper = await input.evaluateHandle(el => el.closest('.mantine-Select-wrapper'));
-                        const svgChevron = await wrapper.$('div.mantine-Select-rightSection svg[data-chevron="true"]');
-                        await svgChevron.click({ delay: 100 });
-                        console.log("Clicked chevron");
-                        // Wait for dropdown options and find United States
-                        const options = await page.$$('div[role="option"]');
-                        for (const option of options) {
-                            const text = await page.evaluate(el => el.textContent, option);
-                            if (text.includes('United States')) {
-                                await option.click();
-                                await page.evaluate(() => new Promise(r => setTimeout(r, 1000)));
-                                console.log("Clicked United States");
-                                break;
-                            }
+            if (labelText.includes('Country')) {
+                try {
+                    const wrapper = await input.evaluateHandle(el => el.closest('.mantine-Select-wrapper'));
+                    const svgChevron = await wrapper.$('div.mantine-Select-rightSection svg[data-chevron="true"]');
+                    await svgChevron.click({ delay: 100 });
+                    console.log("Clicked chevron");
+                    // Wait for dropdown options and find United States
+                    const options = await page.$$('div[role="option"]');
+                    for (const option of options) {
+                        const text = await page.evaluate(el => el.textContent, option);
+                        if (text.includes('United States')) {
+                            await option.click();
+                            await page.evaluate(() => new Promise(r => setTimeout(r, 1000)));
+                            console.log("Clicked United States");
+                            break;
                         }
-                    } catch (error) {
-                        console.error('Error selecting country:', error);
                     }
-                } else if (labelText.includes('State')) {
-                    try {
-                        const wrapper = await input.evaluateHandle(el => el.closest('.mantine-Select-wrapper'));
-                        const svgChevron = await wrapper.$('div.mantine-Select-rightSection svg[data-chevron="true"]');
-                        await svgChevron.click({ delay: 100 });
-                        
-                        const fullStateName = stateMapping[paymentInfo.state] || paymentInfo.state;
-                        const options = await page.$$('div[role="option"]');
-                        for (const option of options) {
-                            const text = await page.evaluate(el => el.textContent, option);
-                            if (text.includes(fullStateName)) {
-                                await option.click();
-                                await page.evaluate(() => new Promise(r => setTimeout(r, 1000)));
-                                console.log("Clicked state");
-                                break;
-                            }
+                } catch (error) {
+                    console.error('Error selecting country:', error);
+                }
+            } else if (labelText.includes('State')) {
+                try {
+                    const wrapper = await input.evaluateHandle(el => el.closest('.mantine-Select-wrapper'));
+                    const svgChevron = await wrapper.$('div.mantine-Select-rightSection svg[data-chevron="true"]');
+                    await svgChevron.click({ delay: 100 });
+                    
+                    const fullStateName = stateMapping[paymentInfo.state] || paymentInfo.state;
+                    const options = await page.$$('div[role="option"]');
+                    for (const option of options) {
+                        const text = await page.evaluate(el => el.textContent, option);
+                        if (text.includes(fullStateName)) {
+                            await option.click();
+                            await page.evaluate(() => new Promise(r => setTimeout(r, 1000)));
+                            console.log("Clicked state");
+                            break;
                         }
-                    } catch (error) {
-                        console.error('Error selecting state:', error);
                     }
+                } catch (error) {
+                    console.error('Error selecting state:', error);
                 }
             }
         }
-
-        // Select "Pay Total Balance" radio button
-        await page.waitForSelector('input[type="radio"][value="total"]');
-        const totalBalanceRadio = await page.$('input[type="radio"][value="total"]');
-        if (totalBalanceRadio) {
-            console.log("Total balance radio button found, clicking...");
-            await totalBalanceRadio.click();
-            console.log("Clicked total balance radio button");
-        }
-
-        // Handle card number iframe
-        const cardNumberFrame = await page.$('#tokenFrame');
-        if (cardNumberFrame) {
-            console.log("Card number iframe found, waiting for 1 second...");
-            await page.evaluate(() => new Promise(r => setTimeout(r, 1000)));
-            console.log("Card number iframe found, typing card number...");
-            await cardNumberFrame.contentFrame().then(async frame => {
-                await frame.type('input', paymentInfo.card_number);
-            });
-        }
-
-        // Handle card expiry and CVV
-        const expiryInput = await page.$('input[placeholder="MM/YY"]');
-        if (expiryInput) {
-            console.log("Card expiry input found, typing expiry date...");
-            await expiryInput.type(paymentInfo.expiry_date);
-            console.log("Typed expiry date");
-        }
-
-        const cvvInput = await page.$('input[placeholder="***"]');
-        if (cvvInput) {
-            console.log("CVV input found, typing CVV...");
-            await cvvInput.type(paymentInfo.cvc);
-            console.log("Typed CVV");
-        }
-
-        // Ensure "Billing information is same as guest" checkbox is checked
-        const billingCheckbox = await page.$('input[type="checkbox"] + svg');
-        if (billingCheckbox) {
-            const isChecked = await page.$eval('input[type="checkbox"]', checkbox => checkbox.checked);
-            if (!isChecked) {
-                console.log("Billing information is not the same as guest, clicking checkbox...");
-                await billingCheckbox.click();
-                console.log("Clicked billing information checkbox");
-            }
-        }
-
-        // Find and click "Place Order" button (commented out for testing)
-        const placeOrderButtons = await page.$$('button.mantine-Button-root');
-        let placeOrderButton = null;
-        for (const button of placeOrderButtons) {
-            const buttonText = await page.evaluate(el => {
-                const label = el.querySelector('.mantine-Button-label');
-                return label ? label.textContent.trim() : '';
-            }, button);
-            if (buttonText === 'Place Order') {
-                console.log('"Place Order" button found, clicking...');
-                placeOrderButton = button;
-                break;
-            }
-        }
-
-        if (placeOrderButton) {
-            console.log('Found "Place Order" button');
-            // Uncomment to actually place the order
-            // await placeOrderButton.click();
-        } else {
-            console.log('"Place Order" button not found');
-        }
-
-        responseData.payment_successful = true;
-
-        // Uncomment to make the actual payment
-        // await page.click('button:has-text("Place Order")');
-
-        await browser.close();
-        console.log("Response data:", responseData);
-        return responseData;
-
-    } else {
-      console.log("No options available.");
-      await browser.close();
-      console.log("Response data:", responseData);
-      return responseData;
     }
+
+    // Select "Pay Total Balance" radio button
+    await page.waitForSelector('input[type="radio"][value="total"]');
+    const totalBalanceRadio = await page.$('input[type="radio"][value="total"]');
+    if (totalBalanceRadio) {
+        console.log("Total balance radio button found, clicking...");
+        await totalBalanceRadio.click();
+        console.log("Clicked total balance radio button");
+    }
+
+    // Handle card number iframe
+    const cardNumberFrame = await page.$('#tokenFrame');
+    if (cardNumberFrame) {
+        console.log("Card number iframe found, waiting for 1 second...");
+        await page.evaluate(() => new Promise(r => setTimeout(r, 1000)));
+        console.log("Card number iframe found, typing card number...");
+        await cardNumberFrame.contentFrame().then(async frame => {
+            await frame.type('input', paymentInfo.card_number);
+        });
+    }
+
+    // Handle card expiry and CVV
+    const expiryInput = await page.$('input[placeholder="MM/YY"]');
+    if (expiryInput) {
+        console.log("Card expiry input found, typing expiry date...");
+        await expiryInput.type(paymentInfo.expiry_date);
+        console.log("Typed expiry date");
+    }
+
+    const cvvInput = await page.$('input[placeholder="***"]');
+    if (cvvInput) {
+        console.log("CVV input found, typing CVV...");
+        await cvvInput.type(paymentInfo.cvc);
+        console.log("Typed CVV");
+    }
+
+    // Ensure "Billing information is same as guest" checkbox is checked
+    const billingCheckbox = await page.$('input[type="checkbox"] + svg');
+    if (billingCheckbox) {
+        const isChecked = await page.$eval('input[type="checkbox"]', checkbox => checkbox.checked);
+        if (!isChecked) {
+            console.log("Billing information is not the same as guest, clicking checkbox...");
+            await billingCheckbox.click();
+            console.log("Clicked billing information checkbox");
+        }
+    }
+
+    // Find and click "Place Order" button (commented out for testing)
+    const placeOrderButtons = await page.$$('button.mantine-Button-root');
+    let placeOrderButton = null;
+    for (const button of placeOrderButtons) {
+        const buttonText = await page.evaluate(el => {
+            const label = el.querySelector('.mantine-Button-label');
+            return label ? label.textContent.trim() : '';
+        }, button);
+        if (buttonText === 'Place Order') {
+            console.log('"Place Order" button found, clicking...');
+            placeOrderButton = button;
+            break;
+        }
+    }
+
+    if (placeOrderButton) {
+        if (executePayment) {
+            console.log('Executing payment...');
+            await placeOrderButton.click();
+            await page.waitForNavigation({ waitUntil: 'networkidle0' });
+            console.log('Payment submitted successfully');
+        } else {
+            console.log('Test mode: Payment execution skipped');
+        }
+    } else {
+        console.log('"Place Order" button not found');
+    }
+
+    responseData.payment_successful = true;
+
+    await browser.close();
+    console.log("Response data:", responseData);
+    return responseData;
 
   } catch (error) {
     console.error(`Error during payment: ${error.message}`);
@@ -535,25 +553,28 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
     return responseData;
   }
 }
+
 if (require.main === module) {
-  (async () => {
-    const paymentInfo = {
-      first_name: "Lebron",
-      last_name: "James",
-      email: "lebronjames@gmail.com",
-      phone_number: "3134321234",
-      street_address: "1234 Rocky Rd",
-      city: "San Francisco",
-      state: "CA",
-      zip_code: "45445",
-      cardholder_name: "Lebron James",
-      card_number: "2342943844322224",
-      expiry_date: "01/30",
-      cvc: "123"
-    };
-    const result = await payLeelanauPinesTent("06/04/25", "06/06/25", 3, 1, paymentInfo);
-    console.log("Scrape result:", result);
-  })();
+    (async () => {
+        const paymentInfo = {
+            first_name: "Lebron",
+            last_name: "James",
+            email: "lebronjames@gmail.com",
+            phone_number: "3134321234",
+            street_address: "1234 Rocky Rd",
+            city: "San Francisco",
+            state: "CA",
+            zip_code: "45445",
+            country: "USA",
+            cardholder_name: "Lebron James",
+            card_number: "2342943844322224",
+            card_type: "Visa",
+            expiry_date: "01/30",
+            cvc: "1234"
+        }
+        const result = await payLeelanauPinesTent("06/04/25", "06/06/25", 2, 1, paymentInfo);
+        console.log("Pay result:", result);
+    })();
 }
 
 module.exports = { payLeelanauPinesTent };

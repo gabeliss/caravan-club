@@ -39,11 +39,38 @@ const testPaymentRoute = async (routeName, paymentData) => {
 };
 
 const runTests = async (parallel = false) => {
+  // Helper function to generate random dates
+  const generateRandomDates = () => {
+    const startMin = new Date('2025-05-25');
+    const startMax = new Date('2025-08-28');
+    const randomStart = new Date(startMin.getTime() + Math.random() * (startMax.getTime() - startMin.getTime()));
+    
+    const stayDuration = Math.random() < 0.5 ? 1 : 2; // Randomly choose 1 or 2 days
+    const randomEnd = new Date(randomStart);
+    randomEnd.setDate(randomStart.getDate() + stayDuration);
+
+    return {
+      startDate: randomStart.toLocaleDateString('en-US'),
+      endDate: randomEnd.toLocaleDateString('en-US')
+    };
+  };
+
+  // Helper function to generate random guest numbers
+  const generateRandomGuests = () => {
+    const maxTotal = 6;
+    const numAdults = Math.floor(Math.random() * 6) + 1; // 1-6 adults
+    const maxKids = Math.min(5, maxTotal - numAdults); // Ensure total doesn't exceed 6
+    const numKids = maxKids > 0 ? Math.floor(Math.random() * (maxKids + 1)) : 0; // 0-5 kids, or 0 if no room
+    return { numAdults, numKids };
+  };
+
+  const dates = generateRandomDates();
+  const guests = generateRandomGuests();
   const testData = {
-    startDate: "06/08/25",
-    endDate: "06/10/25",
-    numAdults: 2,
-    numKids: 1,
+    startDate: dates.startDate,
+    endDate: dates.endDate,
+    numAdults: guests.numAdults,
+    numKids: guests.numKids,
     executePayment: false,
     paymentInfo: {
       first_name: "Test",
@@ -80,21 +107,43 @@ const runTests = async (parallel = false) => {
   }
 
   const totalDuration = new Date() - startTime;
-  return { results, totalDuration };
+  return { results, totalDuration, testData };
 };
 
-const formatTestResults = (results, totalDuration) => {
+const formatTestResults = (results, totalDuration, testData) => {
+  // Helper function to convert route name to readable place name
+  const formatPlaceName = (routeName) => {
+    return routeName
+      // Remove 'Tent' from the end
+      .replace(/Tent$/, '')
+      // Split by capital letters and add spaces
+      .replace(/([A-Z])/g, ' $1')
+      // Handle special cases for first word capitalization
+      .replace(/^([a-z])/, (match) => match.toUpperCase())
+      // Fix specific cases
+      .replace(/Tee Pee/, 'TeePee')
+      .trim();
+  };
+
   let html = `
     <h2>Payment Route Test Results</h2>
-    <p>Total Duration: ${totalDuration}ms</p>
+    <p>Total Duration: ${(totalDuration / 1000).toFixed(2)} seconds</p>
     <p>Test Date: ${new Date().toLocaleString()}</p>
+    <h3>Test Parameters:</h3>
+    <ul>
+      <li>Start Date: ${testData.startDate}</li>
+      <li>End Date: ${testData.endDate}</li>
+      <li>Number of Adults: ${testData.numAdults}</li>
+      <li>Number of Children: ${testData.numKids}</li>
+      <li>Execute Payment: ${testData.executePayment ? 'Yes' : 'No'}</li>
+    </ul>
     <table border="1" style="border-collapse: collapse; width: 100%;">
       <tr style="background-color: #f2f2f2;">
-        <th>Route</th>
+        <th>Place</th>
         <th>Status</th>
         <th>Duration</th>
         <th>Base Price</th>
-        <th>Tax</th>
+        <th>Taxes and Fees</th>
         <th>Total</th>
         <th>Payment Status</th>
         <th>Error</th>
@@ -103,11 +152,12 @@ const formatTestResults = (results, totalDuration) => {
 
   results.forEach(result => {
     const data = result.data || {};
+    const durationInSeconds = parseFloat(result.duration) / 1000;
     html += `
       <tr>
-        <td>${result.routeName}</td>
+        <td>${formatPlaceName(result.routeName)}</td>
         <td style="color: ${result.status === 'SUCCESS' ? 'green' : 'red'}">${result.status}</td>
-        <td>${result.duration}</td>
+        <td>${durationInSeconds.toFixed(2)}s</td>
         <td>${data.base_price || 'N/A'}</td>
         <td>${data.tax || 'N/A'}</td>
         <td>${data.total || 'N/A'}</td>
@@ -144,11 +194,11 @@ const sendEmailReport = async (htmlContent) => {
 const runDailyTests = async () => {
   try {
     console.log('Starting daily payment route tests...');
-    const { results, totalDuration } = await runTests(true); // true for parallel execution
-    const htmlReport = formatTestResults(results, totalDuration);
+    const { results, totalDuration, testData } = await runTests(true); // true for parallel execution
+    const htmlReport = formatTestResults(results, totalDuration, testData);
     await sendEmailReport(htmlReport);
     console.log('Daily tests completed and report sent');
-    return { results, totalDuration };
+    return { results, totalDuration, testData };
   } catch (error) {
     console.error('Error in daily test run:', error);
     throw error;
@@ -159,8 +209,14 @@ const runDailyTests = async () => {
 const runManualTest = async (parallel = false) => {
   try {
     console.log('Running manual test...');
-    const { results, totalDuration } = await runTests(parallel);
+    const { results, totalDuration, testData } = await runTests(parallel);
     console.log('\nTest Results:');
+    console.log('\nTest Parameters:');
+    console.log(`Start Date: ${testData.startDate}`);
+    console.log(`End Date: ${testData.endDate}`);
+    console.log(`Number of Adults: ${testData.numAdults}`);
+    console.log(`Number of Children: ${testData.numKids}`);
+    console.log(`Execute Payment: ${testData.executePayment ? 'Yes' : 'No'}\n`);
     results.forEach(result => {
       console.log(`\n${result.routeName}:`);
       console.log(`Status: ${result.status}`);
@@ -176,7 +232,7 @@ const runManualTest = async (parallel = false) => {
       }
     });
     console.log(`\nTotal Duration: ${totalDuration}ms`);
-    return { results, totalDuration };
+    return { results, totalDuration, testData };
   } catch (error) {
     console.error('Error in manual test:', error);
     throw error;
