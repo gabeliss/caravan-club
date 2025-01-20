@@ -1,22 +1,15 @@
-from app.scrape_helpers.northernMichigan.traverseCity.tent.scrapeTimberRidgeTent import scrape_timberRidgeTent
-from app.scrape_helpers.northernMichigan.traverseCity.tent.scrapeLeelanauPinesTent import scrape_leelanauPinesTent
-from app.scrape_helpers.northernMichigan.mackinacCity.tent.scrapeIndianRiverTent import scrape_indianRiverTent
-from app.scrape_helpers.northernMichigan.mackinacCity.tent.scrapeTeePeeCampgroundTent import scrape_teePeeCampgroundTent
-from app.scrape_helpers.northernMichigan.picturedRocks.tent.scrapeUncleDuckysTent import scrape_uncleDuckysTent
-from app.scrape_helpers.northernMichigan.picturedRocks.tent.scrapeTouristParkTent import scrape_touristParkTent
-from app.scrape_helpers.northernMichigan.picturedRocks.tent.scrapeFortSuperiorTent import scrape_fortSuperiorTent
-from app.payment_helpers.northernMichigan.traverseCity.tent.payTimberRidgeTent import pay_timberRidgeTent
-from app.payment_helpers.northernMichigan.traverseCity.tent.payLeelanauPinesTent import pay_leelanauPinesTent
-from app.payment_helpers.northernMichigan.mackinacCity.tent.payIndianRiverTent import pay_indianRiverTent
-from app.payment_helpers.northernMichigan.mackinacCity.tent.payTeePeeCampgroundTent import pay_teePeeCampgroundTent
-from app.payment_helpers.northernMichigan.picturedRocks.tent.payUncleDuckysTent import pay_uncleDuckysTent
-from app.payment_helpers.northernMichigan.picturedRocks.tent.payTouristParkTent import pay_touristParkTent
-from app.payment_helpers.northernMichigan.picturedRocks.tent.payFortSuperiorTent import pay_fortSuperiorTent
+from app.caravan_automation.scrapers.scrapeTimberRidgeTent import scrape_timberRidgeTent
+from app.caravan_automation.scrapers.scrapeLeelanauPinesTent import scrape_leelanauPinesTent
+from app.caravan_automation.scrapers.scrapeIndianRiverTent import scrape_indianRiverTent
+from app.caravan_automation.scrapers.scrapeUncleDuckysTent import scrape_uncleDuckysTent
+from app.caravan_automation.scrapers.scrapeTouristParkTent import scrape_touristParkTent
+from app.caravan_automation.scrapers.scrapeFortSuperiorTent import scrape_fortSuperiorTent
 import os, base64
 import jwt as pyjwt
 import logging
 import requests
 import pytz
+import json
 from datetime import datetime, timedelta
 from flask import request, jsonify
 from functools import wraps
@@ -390,33 +383,6 @@ def get_price(place_name, min_travelers, max_travelers, scrape_function):
     except Exception as e:
         logging.error(f"Error in {place_name}: %s", str(e), exc_info=True)
         return {"error": "Internal server error"}, 500
-    
-
-def process_payment(api_function):
-    num_adults = request.args.get('num_adults', default=1, type=int)
-    num_kids = request.args.get('num_kids', default=0, type=int)
-    start_date = request.args.get('start_date', default='', type=str)
-    end_date = request.args.get('end_date', default='', type=str)
-    
-    payment_info = {
-        "first_name": request.args.get('payment_info[first_name]', default='', type=str),
-        "last_name": request.args.get('payment_info[last_name]', default='', type=str),
-        "email": request.args.get('payment_info[email]', default='', type=str),
-        "phone_number": request.args.get('payment_info[phone_number]', default='', type=str),
-        "street_address": request.args.get('payment_info[street_address]', default='', type=str),
-        "city": request.args.get('payment_info[city]', default='', type=str),
-        "state": request.args.get('payment_info[state]', default='', type=str),
-        "zip_code": request.args.get('payment_info[zip_code]', default='', type=str),
-        "country": request.args.get('payment_info[country]', default='', type=str),
-        "cardholder_name": request.args.get('payment_info[cardholder_name]', default='', type=str),
-        "card_number": request.args.get('payment_info[card_number]', default='', type=str),
-        "card_type": request.args.get('payment_info[card_type]', default='', type=str),
-        "expiry_date": request.args.get('payment_info[expiry_date]', default='', type=str),
-        "cvc": request.args.get('payment_info[cvc]', default='', type=str)
-    }
-    
-    result = api_function(start_date, end_date, num_adults, num_kids, payment_info)
-    return jsonify(result)
 
 
 #### SCRAPES - Northern Michigan - Tent ####
@@ -441,7 +407,9 @@ def get_uncleDuckysTent_price():
 def get_touristParkTent_price():
     return get_price('Tourist Park', 1, 6, scrape_touristParkTent)
 
-#### PAYMENTS - Northern Michigan - Tent ####
+@app.route('/api/scrape/fortSuperiorTent')
+def get_fortSuperiorTent_price():
+    return get_price('Fort Superior', 1, 6, scrape_fortSuperiorTent)
 
 #### AWS Lambda SCRAPES - Northern Michigan - Teepee ####
 @app.route('/api/scrape/teePeeCampgroundTent')
@@ -483,14 +451,16 @@ def process_payment_lambda(place_name, lambda_path):
     Generic function to process payments through AWS Lambda
     """
     try:
-        # Extract parameters from request body
         payload = request.json
-        num_adults = payload.get('num_adults', 1)
-        num_kids = payload.get('num_kids', 0)
-        start_date = payload.get('start_date', '')
-        end_date = payload.get('end_date', '')
-        payment_info = payload.get('payment_info', {})
-        execute_payment = payload.get('executePayment', False)  # Default to False for safety
+        logging.info(f"Received payload for {place_name}: {json.dumps(payload, indent=2)}")
+
+        # Use camelCase keys to extract values
+        num_adults = payload.get('numAdults', 1)
+        num_kids = payload.get('numKids', 0)
+        start_date = payload.get('startDate', '')
+        end_date = payload.get('endDate', '')
+        payment_info = payload.get('paymentInfo', {})
+        execute_payment = payload.get('executePayment', False)
 
         # Lambda API endpoint
         lambda_endpoint = f"https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/pay/{lambda_path}"
@@ -504,6 +474,10 @@ def process_payment_lambda(place_name, lambda_path):
             "paymentInfo": payment_info,
             "executePayment": execute_payment
         }
+
+        # Log request details
+        logging.info(f"Making request to endpoint: {lambda_endpoint}")
+        logging.info(f"Request payload: {json.dumps(lambda_payload, indent=2)}")
 
         # Make the request to Lambda
         response = requests.post(lambda_endpoint, json=lambda_payload)
@@ -537,12 +511,16 @@ def pay_fortSuperiorTent():
 def pay_timberRidgeTent():
     return process_payment_lambda("Timber Ridge", "timberRidgeTent")
 
+@app.route('/api/pay/teePeeCampgroundTent', methods=['POST'])
+def pay_teePeeCampgroundTent():
+    return process_payment_lambda("Tee Pee Campground", "teePeeCampgroundTent")
+
 
 @app.route('/api/run-payment-tests', methods=['POST'])
 async def run_payment_tests():
     try:
         # Import the test module
-        test_module = __import__('app.caravan-scrapers-lambda.tests.test_payment_routes', fromlist=['runDailyTests'])
+        test_module = __import__('app.caravan_automation.tests.test_payment_routes', fromlist=['runDailyTests'])
         # Run the tests
         results = await test_module.runDailyTests()
         return jsonify({"message": "Payment tests completed successfully", "results": results}), 200

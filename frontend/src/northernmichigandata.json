@@ -114,7 +114,7 @@
         "available": false,
         "price": 0,
         "name": "",
-        "taxRate": 0,
+        "taxRate": 0.12,
         "fixedFee": 0,
         "message": "Unavailable"
       }

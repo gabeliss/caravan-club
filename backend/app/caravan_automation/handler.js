@@ -1,11 +1,11 @@
 const { scrapeTeePeeCampgroundTent } = require('./scrapers/scrape_teePeeCampgroundTent');
-const { payUncleDuckysTent } = require('./scrapers/pay_uncleDuckysTent');
-const { payLeelanauPinesTent } = require('./scrapers/pay_leelanauPinesTent');
-const { payTeePeeCampgroundTent } = require('./scrapers/pay_teePeeCampgroundTent');
-const { payIndianRiverTent } = require('./scrapers/pay_indianRiverTent');
-const { payTouristParkTent } = require('./scrapers/pay_touristParkTent');
-const { payFortSuperiorTent } = require('./scrapers/pay_fortSuperiorTent');
-const { payTimberRidgeTent } = require('./scrapers/pay_timberRidgeTent');
+const { payUncleDuckysTent } = require('./payers/pay_uncleDuckysTent');
+const { payLeelanauPinesTent } = require('./payers/pay_leelanauPinesTent');
+const { payTeePeeCampgroundTent } = require('./payers/pay_teePeeCampgroundTent');
+const { payIndianRiverTent } = require('./payers/pay_indianRiverTent');
+const { payTouristParkTent } = require('./payers/pay_touristParkTent');
+const { payFortSuperiorTent } = require('./payers/pay_fortSuperiorTent');
+const { payTimberRidgeTent } = require('./payers/pay_timberRidgeTent');
 
 const createPaymentHandler = (operation, operationName) => async (event) => {
   try {

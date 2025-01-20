@@ -21,9 +21,9 @@ frontend/build/
 backend/.env.local
 backend/.env.production
 
-backend/app/caravan-scrapers-lambda/.serverless/
-backend/app/caravan-scrapers-lambda/layer/
-backend/app/caravan-scrapers-lambda/node_modules/
+backend/app/caravan_automation/.serverless/
+backend/app/caravan_automation/layer/
+backend/app/caravan_automation/node_modules/
 
 backend/app/scrapers-local-testing/node_modules/
 backend/app/scrapers-local-testing/chromium-v131.0.1-pack/

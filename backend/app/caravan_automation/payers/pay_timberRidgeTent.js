@@ -47,40 +47,39 @@ async function payTimberRidgeTent(startDate, endDate, numAdults, numKids, paymen
     if (!firstOption) {
         console.log('No booking options found');
         await browser.close();
-        return responseData;
+        throw new Error('No booking options available for the selected dates');
     }
 
     console.log('Found first booking option');
     await page.waitForSelector('.newbook_online_from_price_text', { timeout: 30000 });
-    const priceElement = await firstOption.$('.newbook_online_from_price_text');
-
-    if (!priceElement) {
-        console.log('Price element not found');
-        
-        // Print all price elements found on the page
-        const allPriceElements = await page.$$('.newbook_online_from_price_text');
-        console.log(`Found ${allPriceElements.length} price elements on page`);
-        
-        for (let i = 0; i < allPriceElements.length; i++) {
-            const text = await allPriceElements[i].evaluate(el => el.textContent);
-            console.log(`Price element ${i + 1}: ${text}`);
-        }
-        
+    
+    // Get all price elements
+    const allPriceElements = await page.$$('.newbook_online_from_price_text');
+    console.log(`Found ${allPriceElements.length} price elements on page`);
+    
+    if (allPriceElements.length === 0) {
+        console.log('No price elements found');
         await browser.close();
-        return responseData;
+        throw new Error('No price information available');
     }
 
+    // Use the first price element found
+    const priceElement = allPriceElements[0];
     const price = await priceElement.evaluate(el => el.innerText);
     console.log(`Initial price found: ${price}`);
-    const bookButton = await firstOption.$('button.button.newbook_responsive_button.full_width_uppercase');
     
-    if (!bookButton) {
-        console.log('Book button not found');
+    // Find all book buttons and use the first one since it corresponds to the first price
+    const bookButtons = await page.$$('button.button.newbook_responsive_button.full_width_uppercase');
+    console.log(`Found ${bookButtons.length} book buttons`);
+    
+    if (bookButtons.length === 0) {
+        console.log('No book buttons found');
         await browser.close();
-        return responseData;
+        throw new Error('No booking buttons available');
     }
 
-    console.log('Clicking book button...');
+    const bookButton = bookButtons[0];
+    console.log('Clicking first book button...');
     await bookButton.click();
     await new Promise(resolve => setTimeout(resolve, 2000));
 

@@ -1,5 +1,5 @@
 {
-  "name": "caravan-scrapers-lambda",
+  "name": "caravan_automation",
   "version": "1.0.0",
   "main": "handler.js",
   "dependencies": {

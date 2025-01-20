@@ -84,6 +84,7 @@ package:
     - "node_modules/**"
     - "handler.js"
     - "scrapers/**"
+    - "payers/**"
 
 resources:
   Resources:

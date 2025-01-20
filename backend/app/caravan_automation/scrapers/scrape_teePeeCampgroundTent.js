@@ -1,6 +1,5 @@
-import os
-from datetime import datetime
-from playwright.sync_api import sync_playwright
+const chromium = require('@sparticuz/chromium');
+const puppeteer = require('puppeteer-core');
 
 date_to_pk_dict = {
     "05/01/25": "1565247905",
@@ -163,51 +162,67 @@ date_to_pk_dict = {
     "10/05/25": "1565248146"
 }
 
-def scrape_teePeeCampgroundTent(start_date, end_date, num_adults, num_kids):
-    # Check if start date is before May 1, 2025
-    start_date_obj = datetime.strptime(start_date, "%m/%d/%y")
-    end_date_obj = datetime.strptime(end_date, "%m/%d/%y")
-    num_nights = (end_date_obj - start_date_obj).days
-    if start_date_obj < datetime(2025, 5, 1):
-        return {"available": False, "price": None, "message": "Not available before May 1, 2025"}
+async function scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids) {
+  const startDateObj = new Date(startDate);
+  const endDateObj = new Date(endDate);
+  const numNights = (endDateObj - startDateObj) / (1000 * 60 * 60 * 24); // Calculate nights
 
-    # Retrieve the pk value for the start_date
-    pk = date_to_pk_dict.get(start_date)
-    if not pk:
-        return {"available": False, "price": None, "message": "Date not found in mapping"}
+  if (startDateObj < new Date("2025-05-01")) {
+    return { available: false, price: null, message: "Not available before May 1, 2025" };
+  }
 
-    # Construct the URL
-    url = f"https://fareharbor.com/embeds/book/teepeecampground/items/74239/availability/{pk}/book/?full-items=yes&flow=35388"
+  const pk = date_to_pk_dict[startDate];
+  if (!pk) {
+    return { available: false, price: null, message: "Date not found in mapping" };
+  }
 
-    try:
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+  const url = `https://fareharbor.com/embeds/book/teepeecampground/items/74239/availability/${pk}/book/?full-items=yes&flow=35388`;
+  console.log(url);
 
-            page = browser.new_page()
+  try {
+    const browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),  // Call the function to get the path
+      headless: chromium.headless,
+    });
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'networkidle2' });
+    console.log("Page loaded successfully");
 
-            # Navigate to the URL
-            page.goto(url)
-            page.wait_for_timeout(2000)  # Wait for 2 seconds to ensure the page loads
+    // Wait for price element to be present
+    const priceSelector = `div[data-test-id='${numNights}-night-reservation-customer-type-rate'] span.price-wrap`;
+    await page.waitForSelector(priceSelector, { timeout: 10000 });
+    console.log("Price element found");
 
-            # Find the reservation div for the correct number of nights
-            price_element = page.locator(f"div[data-test-id='{num_nights}-night-reservation-customer-type-rate'] span.price-wrap").first
-            price_text = price_element.inner_text()
-            price = float(price_text.strip().strip('$').strip())
+    const priceElement = await page.$(priceSelector);
+    if (!priceElement) {
+      console.error("Price element not found after waiting");
+      throw new Error("Price element not found after waiting");
+    }
 
-            browser.close()
+    const priceText = await page.evaluate(el => el.textContent, priceElement);
+    const totalPrice = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+    const pricePerNight = totalPrice / numNights;
 
-            return {"available": True, "price": price, "message": f"${price:.2f} per night"}
+    await browser.close();
+    const responseData = {
+      available: true,
+      price: pricePerNight,
+      message: `$${pricePerNight.toFixed(2)} per night`
+    }
+    console.log("Response data: ", responseData);
+    return responseData;
 
-    except Exception as e:
-        print(f"Error: {e}")
-        browser.close()
-        return {"available": False, "price": None, "message": f"Unable to find pricing for {num_nights} night reservation"}
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    const responseData = {
+      available: false,
+      price: null,
+      message: `Error occurred: ${error.message}`
+    }
+    console.log("Response data: ", responseData);
+    return responseData;
+  }
+}
 
-# Example usage
-if __name__ == '__main__':
-    start_date = '06/06/25'  # MM/DD/YY format
-    end_date = '06/08/25'
-    num_adults = 2
-    num_kids = 1
-    result = scrape_teePeeCampgroundTent(start_date, end_date, num_adults, num_kids)
-    print(result)
+module.exports = { scrapeTeePeeCampgroundTent };

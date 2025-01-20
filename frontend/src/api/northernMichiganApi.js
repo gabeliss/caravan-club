@@ -45,7 +45,7 @@ export const initiatePayment = async (selected_accommodation, start_date, end_da
     console.log("initiatePaymentParams:", selected_accommodation, start_date, end_date, num_adults, num_kids, payment_info)
     const url = `${PAYMENT_ENDPOINT}/${apiEndpoint}`;
     try {
-        const response = await axios.get(url, {
+        const response = await axios.post(url, {
             params: { start_date, end_date, num_adults, num_kids, payment_info }
         });
         console.log('initiatePayment response.data', selected_accommodation, response.data)

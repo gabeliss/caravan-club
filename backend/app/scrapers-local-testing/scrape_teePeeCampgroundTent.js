@@ -202,12 +202,13 @@ async function scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids
       }
 
       const priceText = await page.evaluate(el => el.textContent, priceElement);
-      const price = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+      const totalPrice = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+      const pricePerNight = totalPrice / numNights;
   
       await browser.close();
       console.log("Browser closed");
   
-      return { available: true, price: price, message: `$${price.toFixed(2)} per night` };
+      return { available: true, price: pricePerNight, message: `$${pricePerNight.toFixed(2)} per night` };
   
     } catch (error) {
       console.error(`Error occurred: ${error.message}`);

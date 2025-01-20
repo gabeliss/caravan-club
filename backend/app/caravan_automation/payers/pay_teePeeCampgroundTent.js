@@ -170,6 +170,7 @@ async function payTeePeeCampgroundTent(startDate, endDate, numAdults, numKids, p
         payment_successful: false,
     };
 
+    console.log(`Start Date: ${startDate}, End Date: ${endDate}, Num Adults: ${numAdults}, Num Kids: ${numKids}`);
     const startDateObj = new Date(startDate);
     const endDateObj = new Date(endDate);
     const numNights = (endDateObj - startDateObj) / (1000 * 60 * 60 * 24); // Calculate nights

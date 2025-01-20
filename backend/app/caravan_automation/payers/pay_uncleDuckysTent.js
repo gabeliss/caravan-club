@@ -52,6 +52,7 @@ async function payUncleDuckysTent(startDate, endDate, numAdults, numKids, paymen
         return responseData;
     }
     }
+    console.log("Availability found for the selected dates.");
 
     const firstOption = await page.$('.cf-item-data');
     if (!firstOption) {
@@ -60,6 +61,7 @@ async function payUncleDuckysTent(startDate, endDate, numAdults, numKids, paymen
       console.log("Response data: ", responseData);
       return responseData;
     }
+    console.log("Available tent option found.");
 
     const priceElement = await firstOption.$(".cf-price strong");
     if (!priceElement) {
@@ -68,7 +70,7 @@ async function payUncleDuckysTent(startDate, endDate, numAdults, numKids, paymen
       console.log("Response data: ", responseData);
       return responseData;
     }
-
+    console.log("Price element found.");
     const bookButton = await firstOption.$('.cf-btn-book');  // Get the book button element
     if (!bookButton) {
       console.log("Book button not found");
@@ -76,14 +78,28 @@ async function payUncleDuckysTent(startDate, endDate, numAdults, numKids, paymen
       console.log("Response data: ", responseData);
       return responseData;
     }
-
+    console.log("Book button found.");
     await bookButton.click();  // Click the button if it exists
 
     await page.waitForSelector('.modal-content', { timeout: 10000 });
     await page.waitForSelector('#sub_btn', { visible: true });
     await page.click('#sub_btn');
-
-    await page.waitForSelector('#cf-form', { timeout: 10000 });
+    console.log("Sub button clicked.");
+    
+    try {
+      await page.waitForSelector('#cf-form', { timeout: 10000 });
+    } catch (error) {
+      console.log('Could not find form, printing all buttons:');
+      const buttons = await page.$$eval('button', buttons => buttons.map(btn => ({
+        text: btn.textContent,
+        id: btn.id,
+        class: btn.className
+      })));
+      console.log(buttons);
+      await browser.close();
+      console.log("Response data: ", responseData); 
+      return responseData;
+    }
     await page.type('#customer_name', `${paymentInfo.first_name} ${paymentInfo.last_name}`);
     await page.type('#customer_email', paymentInfo.email);
 
