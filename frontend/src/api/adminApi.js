@@ -55,3 +55,15 @@ export const deleteTripById = async (tripId) => {
     });
     return response;
 };
+
+/**
+ * Fetch trip details by confirmation number.
+ * @param {string} confirmationNumber - The confirmation number of the trip
+ * @returns {Promise} - Resolves with trip details or rejects with an error
+ */
+export const getTripByConfirmation = (confirmationNumber) => {
+    const token = localStorage.getItem("token");
+    return axios.get(`${BASE_URL}/api/trip/confirmation/${confirmationNumber}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+};

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { adminLogin, getTripDetails, getAllTrips, searchTripsByEmail, deleteTripById } from "../api/adminApi"; // Import API functions
+import { adminLogin, getTripDetails, getAllTrips, searchTripsByEmail, deleteTripById, getTripByConfirmation } from "../api/adminApi"; // Import API functions
 import { jwtDecode } from "jwt-decode"; // Correct import
 import "../styles/Admin.css";
 
@@ -14,6 +14,7 @@ function AdminPage() {
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
+    const [confirmationNumber, setConfirmationNumber] = useState("");
 
     // Validate token on load
     useEffect(() => {
@@ -118,6 +119,19 @@ function AdminPage() {
         }
     };
 
+    // Update fetchTripByConfirmation to use the new API function
+    const fetchTripByConfirmation = async () => {
+        try {
+            const response = await getTripByConfirmation(confirmationNumber);
+            setTripData(response.data);
+            setAllTrips(null);
+            setError("");
+            setSuccessMessage(""); // Clear any previous success messages
+        } catch (err) {
+            handleError(err);
+        }
+    };
+
     // Handle API errors
     const handleError = (err) => {
         if (err.response?.status === 401) {
@@ -161,16 +175,17 @@ function AdminPage() {
                     </div>
                     <div className="admin-action">
                         <label className="admin-label">
-                            Get Trip ID:
+                            Trip ID:
                             <input
                                 className="admin-input"
                                 type="text"
                                 value={tripId}
                                 onChange={(e) => setTripId(e.target.value)}
+                                placeholder="Enter Trip ID"
                             />
                         </label>
                         <button className="admin-button" onClick={fetchTripDetails}>
-                            Get Trip Details
+                            Get Trip by ID
                         </button>
                     </div>
                     <div className="admin-action">
@@ -201,6 +216,21 @@ function AdminPage() {
                             Delete Trip
                         </button>
                     </div>
+                    <div className="admin-action">
+                        <label className="admin-label">
+                            Confirmation Number:
+                            <input
+                                className="admin-input"
+                                type="text"
+                                value={confirmationNumber}
+                                onChange={(e) => setConfirmationNumber(e.target.value)}
+                                placeholder="C12345678"
+                            />
+                        </label>
+                        <button className="admin-button" onClick={fetchTripByConfirmation}>
+                            Get Trip by Confirmation
+                        </button>
+                    </div>
                 </div>
                 {error && <p className="admin-error">{error}</p>}
                 {successMessage && <p className="admin-success">{successMessage}</p>}
@@ -215,6 +245,7 @@ function AdminPage() {
                                     <thead>
                                         <tr>
                                             <th>Trip ID</th>
+                                            <th>Confirmation #</th>
                                             <th>Customer</th>
                                             <th>Destination</th>
                                             <th>Dates</th>
@@ -227,6 +258,7 @@ function AdminPage() {
                                         {allTrips.map((trip) => (
                                             <tr key={trip.trip_id}>
                                                 <td>{trip.trip_id}</td>
+                                                <td>{trip.confirmation_number}</td>
                                                 <td>{`${trip.user.first_name} ${trip.user.last_name}`}</td>
                                                 <td>{trip.destination}</td>
                                                 <td>{`${trip.start_date} to ${trip.end_date}`}</td>
@@ -262,6 +294,8 @@ function AdminPage() {
                             <p><strong>CVC:</strong> {tripData.user.cvc}</p>
 
                             <h3>Trip Information</h3>
+                            <p><strong>Trip ID:</strong> {tripData.trip.trip_id}</p>
+                            <p><strong>Confirmation Number:</strong> {tripData.trip.confirmation_number}</p>
                             <p><strong>Destination:</strong> {tripData.trip.destination}</p>
                             <p><strong>Start Date:</strong> {tripData.trip.start_date}</p>
                             <p><strong>End Date:</strong> {tripData.trip.end_date}</p>

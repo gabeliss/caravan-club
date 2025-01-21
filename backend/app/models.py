@@ -30,6 +30,7 @@ class Trip(db.Model):
     __tablename__ = 'trips'
 
     trip_id = db.Column(db.Integer, primary_key=True)
+    confirmation_number = db.Column(db.String(9), unique=True, nullable=False)  # 'C' + 8 digits
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)  # Updated ForeignKey
     destination = db.Column(db.String(100), nullable=False)
     start_date = db.Column(db.Date, nullable=False)
@@ -41,6 +42,15 @@ class Trip(db.Model):
     grand_total = db.Column(db.Float, nullable=False)
     trip_fully_processed = db.Column(db.Boolean, default=False, nullable=False)
     date_booked = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    # Historical user information
+    email = db.Column(db.String(150), nullable=False)  # Store the booking email
+    booking_address = db.Column(db.String(300))
+    cardholder_name = db.Column(db.String(100))
+    card_number = db.Column(db.String(16))
+    card_type = db.Column(db.String(50))
+    expiry_date = db.Column(db.String(5))  # Format: MM/YY
+    cvc = db.Column(db.String(4))
 
     # Relationships
     user = db.relationship('User', back_populates='trips')

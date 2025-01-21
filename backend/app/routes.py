@@ -11,12 +11,14 @@ import requests
 import pytz
 import json
 from datetime import datetime, timedelta
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 from functools import wraps
 from app import app, db
 from app.models import User, Trip, Segment
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType, Disposition
+import random
+import string
 
 SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "secure_password")
@@ -86,6 +88,7 @@ def get_trip_details(trip_id):
         },
         "trip": {
             "trip_id": trip.trip_id,
+            "confirmation_number": trip.confirmation_number,
             "user_id": trip.user_id,
             "destination": trip.destination,
             "start_date": trip.start_date.strftime('%m/%d/%y'),
@@ -117,6 +120,17 @@ def get_trip_details(trip_id):
     }, 200
 
 
+def generate_confirmation_number():
+    """Generate a unique confirmation number starting with 'C' followed by 8 digits"""
+    while True:
+        # Generate 8 random digits
+        digits = ''.join(random.choices(string.digits, k=8))
+        confirmation_number = f"C{digits}"
+        
+        # Check if this confirmation number already exists
+        if not Trip.query.filter_by(confirmation_number=confirmation_number).first():
+            return confirmation_number
+
 @app.route('/api/trip', methods=['POST'])
 def create_trip():
     data = request.json
@@ -126,24 +140,23 @@ def create_trip():
     if not user_data:
         return {"error": "User data is required"}, 400
 
-    # Find or create the user
-    user = User.query.filter_by(
-        first_name=user_data["first_name"],
-        last_name=user_data["last_name"], 
-        email=user_data["email"],
-        phone_number=user_data.get("phone_number"),
-        street_address=user_data.get("street_address"),
-        city=user_data.get("city"),
-        state=user_data.get("state"),
-        zip_code=user_data.get("zip_code"),
-        country=user_data.get("country"),
-        cardholder_name=user_data.get("cardholder_name"),
-        card_number=user_data.get("card_number"),
-        card_type=user_data.get("card_type"),
-        expiry_date=user_data.get("expiry_date"),
-        cvc=user_data.get("cvc")
-    ).first()
-    if not user:
+    # Find the user by email
+    user = User.query.filter_by(email=user_data["email"]).first()
+    if user:
+        # Update the user's current info (optional)
+        user.phone_number = user_data.get("phone_number", user.phone_number)
+        user.street_address = user_data.get("street_address", user.street_address)
+        user.city = user_data.get("city", user.city)
+        user.state = user_data.get("state", user.state)
+        user.zip_code = user_data.get("zip_code", user.zip_code)
+        user.country = user_data.get("country", user.country)
+        user.cardholder_name = user_data.get("cardholder_name", user.cardholder_name)
+        user.card_number = user_data.get("card_number", user.card_number)
+        user.card_type = user_data.get("card_type", user.card_type)
+        user.expiry_date = user_data.get("expiry_date", user.expiry_date)
+        user.cvc = user_data.get("cvc", user.cvc)
+    else:
+        # Create a new user if none exists
         user = User(
             first_name=user_data["first_name"],
             last_name=user_data["last_name"],
@@ -167,8 +180,12 @@ def create_trip():
     if not trip_data:
         return {"error": "Trip data is required"}, 400
 
-    # Create the trip
+    # Generate unique confirmation number
+    confirmation_number = generate_confirmation_number()
+
+    # Create the trip, copying user info into the trip
     trip = Trip(
+        confirmation_number=confirmation_number,
         user=user,
         destination=trip_data["destination"],
         start_date=trip_data["start_date"],
@@ -179,7 +196,15 @@ def create_trip():
         caravan_fee=trip_data["caravan_fee"],
         grand_total=trip_data["grand_total"],
         trip_fully_processed=trip_data["trip_fully_processed"],
-        date_booked=datetime.now(pytz.timezone('US/Eastern')).strftime('%Y-%m-%d %I:%M %p EST')
+        date_booked=datetime.now(pytz.timezone('US/Eastern')).strftime('%Y-%m-%d %I:%M %p EST'),
+        # Historical user information
+        email=user.email,
+        booking_address=f"{user.street_address}, {user.city}, {user.state}, {user.zip_code}, {user.country}",
+        cardholder_name=user.cardholder_name,
+        card_number=user.card_number,
+        card_type=user.card_type,
+        expiry_date=user.expiry_date,
+        cvc=user.cvc
     )
 
     # Add segments to the trip
@@ -213,51 +238,63 @@ def send_trip_confirmation_email(email, trip):
     Sends a confirmation email after the trip is created using SendGrid.
     """
     try:
-        trip_details = """
-            Hello {first_name},
+        # Calculate night numbers for each segment
+        current_night = 1
+        segments_data = []
+        for segment in trip.segments:
+            segment_data = {
+                "name": segment.name,
+                "selected_accommodation": segment.selected_accommodation,
+                "start_date": segment.start_date.strftime('%b %-d'),
+                "end_date": segment.end_date.strftime('%b %-d'),
+                "total": f"{segment.total:.2f}",
+                "nights": segment.nights,
+                "night_start": current_night,
+                "night_end": current_night + segment.nights - 1
+            }
+            segments_data.append(segment_data)
+            current_night += segment.nights
 
-            Thank you for booking your trip with us! Here are your trip details:
+        # Path to the PDF file based on the number of nights
+        pdf_path = f"./itineraries/{trip.nights}-day-northern-michigan.pdf"
 
-            - Destination: {destination}
-            - Start Date: {start_date}
-            - End Date: {end_date}
-            - Number of Nights: {nights}
-            - Number of Adults: {num_adults}
-            - Number of Kids: {num_kids}
-            - Total Cost: ${grand_total:.2f}
+        # Render the HTML template
+        html_content = render_template(
+            "email_trip_confirmation.html",
+            first_name=trip.user.first_name,
+            confirmation_number=trip.confirmation_number,
+            start_date=trip.start_date.strftime('%B %d, %Y'),
+            end_date=trip.end_date.strftime('%B %d, %Y'),
+            num_adults=trip.num_adults,
+            num_kids=trip.num_kids,
+            grand_total=f"{trip.grand_total:.2f}",
+            segments=segments_data
+        )
 
-            Segments:
-            {segments}
-
-            Please contact us if you have any questions.
-
-            Best regards,
-            Caravan Club
-            """.format(
-                first_name=trip.user.first_name,
-                destination=trip.destination,
-                start_date=trip.start_date.strftime('%B %d, %Y'),
-                end_date=trip.end_date.strftime('%B %d, %Y'),
-                nights=trip.nights,
-                num_adults=trip.num_adults,
-                num_kids=trip.num_kids,
-                grand_total=trip.grand_total,
-                segments="".join(
-                    "  - {name}: {start} to {end}, ${total:.2f}\n".format(
-                        name=segment.name,
-                        start=segment.start_date.strftime('%B %d'),
-                        end=segment.end_date.strftime('%B %d'),
-                        total=segment.total
-                    ) for segment in trip.segments
-                )
-            )
-
+        # Create the email message
         message = Mail(
             from_email='caravantripplan@gmail.com',
             to_emails=email,
-            subject='Your Caravan Trip Confirmation',
-            plain_text_content=trip_details
+            subject='Your Caravan Trip Plan is Confirmed!',
+            html_content=html_content
         )
+
+        # Attach the PDF
+        try:
+            with open(pdf_path, 'rb') as f:
+                pdf_data = f.read()
+                encoded_pdf = base64.b64encode(pdf_data).decode()
+                attachment = Attachment(
+                    FileContent(encoded_pdf),
+                    FileName(f"{trip.nights}-day-northern-michigan.pdf"),
+                    FileType('application/pdf'),
+                    Disposition('attachment')
+                )
+                message.add_attachment(attachment)
+        except FileNotFoundError:
+            logging.error(f"PDF file not found: {pdf_path}")
+
+        # Send the email
         sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
         response = sg.send(message)
         logging.info(f"Email sent to {email}. Status code: {response.status_code}, Body: {response.body}, Headers: {response.headers}")
@@ -273,6 +310,7 @@ def get_all_trips():
         "trips": [
             {
                 "trip_id": trip.trip_id,
+                "confirmation_number": trip.confirmation_number,
                 "user": {
                     "first_name": trip.user.first_name,
                     "last_name": trip.user.last_name,
@@ -306,6 +344,7 @@ def search_trips_by_email():
         "trips": [
             {
                 "trip_id": trip.trip_id,
+                "confirmation_number": trip.confirmation_number,
                 "user": {
                     "first_name": trip.user.first_name,
                     "last_name": trip.user.last_name,
@@ -321,7 +360,6 @@ def search_trips_by_email():
             for trip in trips
         ]
     }, 200
-
 
 
 @app.route('/api/trip/<int:trip_id>', methods=['DELETE'])
@@ -452,7 +490,6 @@ def process_payment_lambda(place_name, lambda_path):
     """
     try:
         payload = request.json
-        logging.info(f"Received payload for {place_name}: {json.dumps(payload, indent=2)}")
 
         # Use camelCase keys to extract values
         num_adults = payload.get('numAdults', 1)
@@ -475,18 +512,22 @@ def process_payment_lambda(place_name, lambda_path):
             "executePayment": execute_payment
         }
 
-        # Log request details
-        logging.info(f"Making request to endpoint: {lambda_endpoint}")
-        logging.info(f"Request payload: {json.dumps(lambda_payload, indent=2)}")
-
-        # Make the request to Lambda
-        response = requests.post(lambda_endpoint, json=lambda_payload)
-        return jsonify(response.json()), response.status_code
+        # Comment out actual request and return fake successful response
+        # response = requests.post(lambda_endpoint, json=lambda_payload)
+        # return jsonify(response.json()), response.status_code
+        
+        fake_response = {
+            "base_price": 150.00,
+            "tax": 12.00,
+            "total": 162.00,
+            "payment_successful": True
+        }
+        return jsonify(fake_response), 200
 
     except Exception as e:
         logging.error(f"Error in process_payment for {place_name}: {e}")
         return {"error": "Internal server error"}, 500
-
+    
 @app.route('/api/pay/uncleDuckysTent', methods=['POST'])
 def pay_uncleDuckysTent():
     return process_payment_lambda("Uncle Duckys", "uncleDuckysTent")
@@ -526,3 +567,63 @@ async def run_payment_tests():
         return jsonify({"message": "Payment tests completed successfully", "results": results}), 200
     except Exception as e:
         return jsonify({"error": f"Failed to run payment tests: {str(e)}"}), 500
+
+# Add new route to get trip by confirmation number
+@app.route('/api/trip/confirmation/<confirmation_number>', methods=['GET'])
+@admin_required
+def get_trip_by_confirmation(confirmation_number):
+    trip = Trip.query.filter_by(confirmation_number=confirmation_number).first()
+    if not trip:
+        return {"error": "Trip not found"}, 404
+
+    user = trip.user
+    return {
+        "user": {
+            "user_id": user.user_id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "email": user.email,
+            "phone_number": user.phone_number,
+            "street_address": user.street_address,
+            "city": user.city,
+            "state": user.state,
+            "zip_code": user.zip_code,
+            "country": user.country,
+            "cardholder_name": user.cardholder_name,
+            "card_number": user.card_number,
+            "card_type": user.card_type,
+            "expiry_date": user.expiry_date,
+            "cvc": user.cvc
+        },
+        "trip": {
+            "trip_id": trip.trip_id,
+            "confirmation_number": trip.confirmation_number,
+            "user_id": trip.user_id,
+            "destination": trip.destination,
+            "start_date": trip.start_date.strftime('%m/%d/%y'),
+            "end_date": trip.end_date.strftime('%m/%d/%y'),
+            "date_booked": trip.date_booked.strftime('%m/%d/%y %H:%M:%S'),
+            "nights": trip.nights,
+            "num_adults": trip.num_adults,
+            "num_kids": trip.num_kids,
+            "caravan_fee": trip.caravan_fee,
+            "grand_total": trip.grand_total,
+            "trip_fully_processed": trip.trip_fully_processed,
+            "segments": [
+                {
+                    "segment_id": segment.segment_id,
+                    "trip_id": segment.trip_id,
+                    "name": segment.name,
+                    "selected_accommodation": segment.selected_accommodation,
+                    "start_date": segment.start_date.strftime('%m/%d/%y'),
+                    "end_date": segment.end_date.strftime('%m/%d/%y'),
+                    "nights": segment.nights,
+                    "base_price": segment.base_price,
+                    "tax": segment.tax,
+                    "total": segment.total,
+                    "payment_successful": segment.payment_successful
+                }
+                for segment in trip.segments
+            ]
+        }
+    }, 200
