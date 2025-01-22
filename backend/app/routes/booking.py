@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, render_template
 from app.models import Trip, User, Segment
-from app.routes.utils import get_accommodation_title, generate_confirmation_number
+from app.routes.utils import get_accommodation_email_data, generate_confirmation_number
 from app import db
 import pytz
 from datetime import datetime, timedelta
@@ -126,7 +126,7 @@ def send_trip_confirmation_email(email, trip):
         current_night = 1
         segments_data = []
         for segment in trip.segments:
-            accommodation_info = get_accommodation_title(segment.selected_accommodation)
+            accommodation_info = get_accommodation_email_data(segment.selected_accommodation)
             segment_data = {
                 "name": segment.name,
                 "selected_accommodation": accommodation_info["title"],

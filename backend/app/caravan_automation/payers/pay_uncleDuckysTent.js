@@ -82,8 +82,8 @@ async function payUncleDuckysTent(startDate, endDate, numAdults, numKids, paymen
     await bookButton.click();  // Click the button if it exists
 
     await page.waitForSelector('.modal-content', { timeout: 10000 });
-    await page.waitForSelector('#sub_btn', { visible: true });
-    await page.click('#sub_btn');
+    const subButton = await page.waitForSelector('#sub_btn', { visible: true });
+    await page.evaluate((button) => button.click(), subButton);
     console.log("Sub button clicked.");
     
     try {

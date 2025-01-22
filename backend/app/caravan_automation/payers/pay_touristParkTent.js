@@ -239,12 +239,36 @@ async function payTouristParkTent(startDate, endDate, numAdults, numKids, paymen
     await continueToPaymentButton.click();
     console.log("Continue to payment button clicked");
     const continueToPaymentMethodButton = await page.waitForSelector("button.checkout-form-submit-button.app-checkout-continue-to-payment-info-button", { visible: true, timeout: 10000 });
-    await continueToPaymentMethodButton.click();
+    // await continueToPaymentMethodButton.click();
+    await page.evaluate((button) => button.click(), continueToPaymentMethodButton);
     console.log("Continue to payment method button clicked");
     // Handle payment information
     // Wait for iframe to be present
-    const ccFrame = await page.waitForSelector("iframe#tokenFrame", { visible: true, timeout: 10000 });
-    console.log("Iframe found");
+    let ccFrame;
+    try {
+        ccFrame = await page.waitForSelector("iframe#tokenFrame", { visible: true, timeout: 10000 });
+        console.log("Iframe found");
+    } catch (error) {
+        console.log("Could not find tokenFrame iframe. Printing all iframes and buttons...");
+        
+        // Get all iframes
+        const iframes = await page.$$eval('iframe', (frames) => frames.map(frame => ({
+            id: frame.id,
+            name: frame.name,
+            src: frame.src
+        })));
+        console.log("Iframes on the page:", iframes);
+        
+        // Get all buttons
+        const buttons = await page.$$eval('button', (btns) => btns.map(btn => ({
+            text: btn.innerText.trim(),
+            id: btn.id,
+            class: btn.className
+        })));
+        console.log("Buttons on the page:", buttons);
+        
+        throw new Error("Could not find tokenFrame iframe");
+    }
 
     // Switch to the iframe content
     const frame = await ccFrame.contentFrame();

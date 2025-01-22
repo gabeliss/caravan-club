@@ -7,10 +7,10 @@ import string
 from app.models import Trip
 
 # Load the JSON data when the module starts
-with open(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'frontend', 'src', 'northernmichigandata.json')) as f:
+with open(os.path.join(os.path.dirname(__file__), '..', 'northernmichigandata.json')) as f:
     northern_michigan_data = json.load(f)
 
-def get_accommodation_title(accommodation_id):
+def get_accommodation_email_data(accommodation_id):
     """Helper function to get accommodation title and address from the JSON data"""
     # Convert "Tee Pee Campground" -> "teePeeCampground"
     key = accommodation_id.replace(' ', '')  # Remove spaces

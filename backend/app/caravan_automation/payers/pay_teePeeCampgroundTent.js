@@ -199,8 +199,26 @@ async function payTeePeeCampgroundTent(startDate, endDate, numAdults, numKids, p
 
         // Wait for and find the select element
         const selectSelector = `select[data-test-id='user-type-${numNights}-night-reservation']`;
-        await page.waitForSelector(selectSelector, { timeout: 10000 });
-        console.log("Select element found");
+        try {
+            await page.waitForSelector(selectSelector, { timeout: 10000 });
+            console.log("Select element found");
+        } catch (error) {
+            console.log('Could not find select element, printing all selects and buttons:');
+            const selects = await page.$$eval('select', selects => selects.map(sel => ({
+                id: sel.id,
+                name: sel.name,
+                'data-test-id': sel.getAttribute('data-test-id'),
+                class: sel.className
+            })));
+            const buttons = await page.$$eval('button', buttons => buttons.map(btn => ({
+                text: btn.textContent,
+                id: btn.id,
+                class: btn.className
+            })));
+            console.log('Selects:', selects);
+            console.log('Buttons:', buttons);
+            throw error;
+        }
 
         // Add a small delay to ensure the element is fully loaded and interactive
         await new Promise(resolve => setTimeout(resolve, 1000));

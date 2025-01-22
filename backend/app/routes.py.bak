@@ -27,7 +27,7 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "secure_password")
 with open(os.path.join(os.path.dirname(__file__), '..', '..', 'frontend', 'src', 'northernmichigandata.json')) as f:
     northern_michigan_data = json.load(f)
 
-def get_accommodation_title(accommodation_id):
+def get_accommodation_email_data(accommodation_id):
     """Helper function to get accommodation title and address from the JSON data"""
     # Convert "Tee Pee Campground" -> "teePeeCampground"
     key = accommodation_id.replace(' ', '')  # Remove spaces
@@ -278,7 +278,7 @@ def send_trip_confirmation_email(email, trip):
         current_night = 1
         segments_data = []
         for segment in trip.segments:
-            accommodation_info = get_accommodation_title(segment.selected_accommodation)
+            accommodation_info = get_accommodation_email_data(segment.selected_accommodation)
             segment_data = {
                 "name": segment.name,
                 "selected_accommodation": accommodation_info["title"],

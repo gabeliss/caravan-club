@@ -41,6 +41,24 @@ async function payFortSuperiorTent(startDate, endDate, numAdults, numKids, payme
     // Find room listings
     const liElements = await frame.$$("li.room");
     console.log(`Found ${liElements.length} room listings`);
+    if (liElements.length === 0) {
+      // Get all li elements
+      const allLis = await frame.$$eval('li', lis => lis.map(li => ({
+        text: li.innerText,
+        class: li.className
+      })));
+      console.log('All li elements:', allLis);
+
+      // Get all buttons
+      const allButtons = await frame.$$eval('button', buttons => buttons.map(btn => ({
+        text: btn.innerText,
+        class: btn.className,
+        id: btn.id
+      })));
+      console.log('All buttons:', allButtons);
+
+      throw new Error('No room listings found on page');
+    }
     
     for (const li of liElements) {
       const siteNameElement = await li.$("h3 a span.strans");
