@@ -10,13 +10,13 @@
             padding: 0; /* Remove default padding */
         }
         .content {
-            padding: 20px; /* Move padding to content container */
+            padding: 50px; /* Move padding to content container */
         }
-        h4, p, ul, li {
+        h4, p, ul, li, strong {
             font-size: 16px; /* Consistent font size for paragraphs and list items */
             line-height: 1.5; /* Add some spacing for better readability */
         }
-        h4 {
+        .green {
             color: #3E624F;
         }
         .trip-details, .important-notes {
@@ -48,39 +48,48 @@
         <div class="confirmation-number">Confirmation Number: {{ confirmation_number }}</div>
         <p>Hi {{ first_name }},</p>
         <p>
-            Congratulations! Your Northern Michigan road trip is officially confirmed.
+            Congratulations! Your <strong class="green">Northern Michigan</strong> road trip is officially confirmed. 
+            We're so excited to help you embark on this unforgettable journey.
             Below are the details of your trip, along with a few notes to help you prepare.
         </p>
         <div class="trip-details">
-            <strong>Trip Overview:</strong>
+            <strong class="green">Trip Overview:</strong>
+            <p><strong>Dates:</strong> {{ start_date }} - {{ end_date }}</p>
+            <p><strong>Number of Adults:</strong> {{ num_adults }}</p>
+            <p><strong>Number of Kids:</strong> {{ num_kids }}</p>
             <ul>
-                <li><strong>Dates:</strong> {{ start_date }} - {{ end_date }}</li>
-                <li><strong>Number of Adults:</strong> {{ num_adults }}</li>
-                <li><strong>Number of Kids:</strong> {{ num_kids }}</li>
-            </ul>
             {% for segment in segments %}
-                <strong>
-                    {% if segment.nights > 1 %}
-                        Night {{ segment.night_start }} & {{ segment.night_end }}
-                    {% else %}
-                        Night {{ segment.night_start }}
-                    {% endif %}
-                    ({{ segment.start_date }} - {{ segment.end_date }}): {{ segment.name }}
-                </strong>
-                <ul>
-                    <li>{{ segment.selected_accommodation }}</li>
-                    <li>[Address]</li>
-                    <li>${{ segment.total }}</li>
-                </ul>
+                <li>
+                    <strong>
+                        {% if segment.nights > 1 %}
+                            Night {{ segment.night_start }} & {{ segment.night_end }}
+                        {% else %}
+                            Night {{ segment.night_start }}
+                        {% endif %}
+                        ({{ segment.start_date }} - {{ segment.end_date }}): {{ segment.name }}
+                    </strong>
+                    <ul>
+                        <li>{{ segment.selected_accommodation }}</li>
+                        <li>{{ segment.address }}</li>
+                        <li>${{ segment.total }}</li>
+                    </ul>
+                </li>
             {% endfor %}
+            </ul>
             <p><strong>Total Road Trip Cost:</strong> ${{ grand_total }}</p>
         </div>
         <div class="important-notes">
             <h4>Important Notes:</h4>
             <ul>
-                <li><strong>Cancellations & Changes:</strong> Any modifications to your reservations should be made directly with the campgrounds listed in your itinerary.</li>
-                <li><strong>Itinerary Included:</strong> Attached to this email is a detailed itinerary with recommendations for restaurants, activities, hikes, and nearby towns to enhance your trip.</li>
+                <li><strong>Cancellations & Changes:</strong> Any modifications to your reservations should be made directly 
+                    with the campgrounds listed in your itinerary You will receive confirmation emails directly from 
+                    each site with confirmation numbers and details. </li>
+                <li><strong>Itinerary Included:</strong> Attached to this email is a detailed itinerary with 
+                    recommendations for restaurants, activities, hikes, and nearby towns to enhance your trip.</li>
             </ul>
+        </div>
+        <div class="support-text">
+            <p>If you have any questions or need additional support, feel free to contact us at <strong class="green">caravantripplan@gmail.com</strong>.</p>
         </div>
         <div class="footer-text">
             <p>Thank you for choosing Caravan Trip Plan! We're honored to be part of your road trip.</p>

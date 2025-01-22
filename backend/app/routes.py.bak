@@ -23,6 +23,39 @@ import string
 SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "secure_password")
 
+# Load the JSON data when the module starts
+with open(os.path.join(os.path.dirname(__file__), '..', '..', 'frontend', 'src', 'northernmichigandata.json')) as f:
+    northern_michigan_data = json.load(f)
+
+def get_accommodation_title(accommodation_id):
+    """Helper function to get accommodation title and address from the JSON data"""
+    # Convert "Tee Pee Campground" -> "teePeeCampground"
+    key = accommodation_id.replace(' ', '')  # Remove spaces
+    key = key[0].lower() + key[1:]  # Make first letter lowercase
+    
+    # Map accommodation IDs to their locations in the JSON
+    accommodation_map = {
+        "timberRidge": ("traverseCity", "timberRidge"),
+        "leelanauPines": ("traverseCity", "leelanauPines"),
+        "indianRiver": ("mackinacCity", "indianRiver"),
+        "teePeeCampground": ("mackinacCity", "teePeeCampground"),
+        "uncleDucky": ("picturedRocks", "uncleDucky"),
+        "touristPark": ("picturedRocks", "touristPark"),
+        "fortSuperior": ("picturedRocks", "fortSuperior")
+    }
+    
+    try:
+        if key in accommodation_map:
+            region, site = accommodation_map[key]
+            return {
+                "title": northern_michigan_data[region]["tent"][site]["title"],
+                "address": northern_michigan_data[region]["tent"][site]["address"]
+            }
+    except KeyError:
+        pass
+    
+    return {"title": accommodation_id, "address": ""}  # Return original ID if not found
+
 @app.route('/api/hello')
 def index():
     return 'Hello, World - modified! Psyche, modified again!'
@@ -238,13 +271,18 @@ def send_trip_confirmation_email(email, trip):
     Sends a confirmation email after the trip is created using SendGrid.
     """
     try:
+        # Add this at the start of the function to suppress SendGrid debug logs
+        logging.getLogger("python_http_client").setLevel(logging.WARNING)
+        
         # Calculate night numbers for each segment
         current_night = 1
         segments_data = []
         for segment in trip.segments:
+            accommodation_info = get_accommodation_title(segment.selected_accommodation)
             segment_data = {
                 "name": segment.name,
-                "selected_accommodation": segment.selected_accommodation,
+                "selected_accommodation": accommodation_info["title"],
+                "address": accommodation_info["address"],
                 "start_date": segment.start_date.strftime('%b %-d'),
                 "end_date": segment.end_date.strftime('%b %-d'),
                 "total": f"{segment.total:.2f}",
@@ -254,9 +292,6 @@ def send_trip_confirmation_email(email, trip):
             }
             segments_data.append(segment_data)
             current_night += segment.nights
-
-        # Path to the PDF file based on the number of nights
-        pdf_path = f"./itineraries/{trip.nights}-day-northern-michigan.pdf"
 
         # Render the HTML template
         html_content = render_template(
@@ -268,7 +303,8 @@ def send_trip_confirmation_email(email, trip):
             num_adults=trip.num_adults,
             num_kids=trip.num_kids,
             grand_total=f"{trip.grand_total:.2f}",
-            segments=segments_data
+            segments=segments_data,
+            trip=trip  # Add trip to the template context
         )
 
         # Create the email message
@@ -278,6 +314,9 @@ def send_trip_confirmation_email(email, trip):
             subject='Your Caravan Trip Plan is Confirmed!',
             html_content=html_content
         )
+
+        # Path to the PDF file based on the number of nights
+        pdf_path = f"./itineraries/{trip.nights}-day-northern-michigan.pdf"
 
         # Attach the PDF
         try:
@@ -627,3 +666,57 @@ def get_trip_by_confirmation(confirmation_number):
             ]
         }
     }, 200
+
+
+@app.route("/api/preview-email-confirmation")
+def preview_email_confirmation():
+    # Create sample data that matches the structure expected by the template
+    preview_date = datetime.now()
+    data = {
+        "first_name": "John",
+        "confirmation_number": "C12345678",
+        "start_date": (preview_date).strftime('%B %d, %Y'),
+        "end_date": (preview_date + timedelta(days=5)).strftime('%B %d, %Y'),
+        "num_adults": 2,
+        "num_kids": 1,
+        "trip": {
+            "nights": 5  # Added this for the attachment info
+        },
+        "segments": [
+            {
+                "name": "Timber Ridge",
+                "selected_accommodation": "Timber Ridge Recreation",
+                "address": "4050 E Hammond Rd, Traverse City, MI 49686",
+                "start_date": "Jun 15",
+                "end_date": "Jun 17",
+                "total": "199.99",
+                "nights": 2,
+                "night_start": 1,
+                "night_end": 2
+            },
+            {
+                "name": "Leelanau Pines",
+                "selected_accommodation": "Leelanau Pines Campground",
+                "address": "6500 E. Leelanau Pines Drive, Cedar, MI 49621",
+                "start_date": "Jun 17",
+                "end_date": "Jun 19",
+                "total": "249.99",
+                "nights": 2,
+                "night_start": 3,
+                "night_end": 4
+            },
+            {
+                "name": "Fort Superior",
+                "selected_accommodation": "Fort Superior Campground",
+                "address": "N7685 Old Golf Course Rd. Munising, MI 49862",
+                "start_date": "Jun 19",
+                "end_date": "Jun 20",
+                "total": "179.99",
+                "nights": 1,
+                "night_start": 5,
+                "night_end": 5
+            }
+        ],
+        "grand_total": "629.97"
+    }
+    return render_template("email_trip_confirmation.html", **data)

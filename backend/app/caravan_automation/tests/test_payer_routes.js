@@ -4,18 +4,21 @@ const routesConfig = require('./routes');
 const testPayerRoute = async (routeName, baseUrl, testParams) => {
   const startTime = new Date();
   const { dates, guests, paymentInfo } = testParams;
+  
   const payload = {
-    startDate: dates.startDate,
-    endDate: dates.endDate,
-    numAdults: guests.numAdults,
-    numKids: guests.numKids,
-    executePayment: false,
-    paymentInfo
+    params: {
+      start_date: dates.startDate,
+      end_date: dates.endDate,
+      num_adults: guests.numAdults,
+      num_kids: guests.numKids,
+      execute_payment: false,
+      payment_info: paymentInfo
+    }
   };
   
   try {
     const response = await axios.post(`${baseUrl}/api/pay/${routeName}`, payload, {
-      headers: { 'Content-Type': 'application/json' } // Ensures Flask recognizes JSON payload
+      headers: { 'Content-Type': 'application/json' }
     });
     const duration = new Date() - startTime;
 

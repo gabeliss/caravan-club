@@ -13,18 +13,31 @@ load_dotenv(env_path)
 # Logging configuration
 logging.basicConfig(level=logging.DEBUG)
 
-# Flask app initialization
-app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY', 'your_secret_key')
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://caravan-club.onrender.com"]}})
+# Database setup
+db = SQLAlchemy()
+migrate = Migrate()
 
-# Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+def create_app():
+    app = Flask(__name__)
+    app.secret_key = os.getenv('SECRET_KEY', 'your_secret_key')
+    CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://caravan-club.onrender.com"]}})
 
-# Database and migration setup
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+    # Database configuration
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Import models and routes
-from app import models, routes
+    # Initialize database and migrations with app
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    # Import and register blueprints
+    from app.routes import init_app
+    init_app(app)
+
+    return app
+
+# Create the app instance
+app = create_app()
+
+# Import models only (removed routes import)
+from app import models
