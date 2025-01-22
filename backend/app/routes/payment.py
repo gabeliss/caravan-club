@@ -10,9 +10,7 @@ def process_payment_lambda(place_name, lambda_path):
     Generic function to process payments through AWS Lambda
     """
     try:
-        print("request json", request.json)
         payload = request.json.get('params', {})  # Get the params object from request.json
-        print("payload", payload)
 
         # Use camelCase keys to extract values
         num_adults = payload.get('num_adults', 1)
@@ -34,8 +32,6 @@ def process_payment_lambda(place_name, lambda_path):
             "paymentInfo": payment_info,
             "executePayment": execute_payment
         }
-
-        print("lambda_payload", lambda_payload)
 
         response = requests.post(lambda_endpoint, json=lambda_payload)
         return jsonify(response.json()), response.status_code

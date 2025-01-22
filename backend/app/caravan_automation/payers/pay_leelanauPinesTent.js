@@ -15,6 +15,7 @@ const stateMapping = {
 };
 
 async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paymentInfo, executePayment = false) {
+  console.log("Params:", startDate, endDate, numAdults, numKids, executePayment);
   const responseData = {
     base_price: 0,
     tax: 0,
@@ -291,7 +292,9 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         }
 
         // Find and click "Go To Shopping Cart" button
-        const cartButtons = await page.$$('button.mantine-Button-root');
+        await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 });
+        
+        const cartButtons = await page.$$('.mantine-Modal-body button');
         let cartButton = null;
         for (const button of cartButtons) {
             const buttonText = await page.evaluate(el => {

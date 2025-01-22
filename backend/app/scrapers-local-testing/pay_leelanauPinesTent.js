@@ -14,6 +14,7 @@ const stateMapping = {
 };
 
 async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paymentInfo, executePayment = false) {
+  console.log("Params:", startDate, endDate, numAdults, numKids, executePayment);
   const responseData = {
     base_price: 0,
     tax: 0,
@@ -29,7 +30,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
   try {
     console.log("Launching browser...");
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         args: ["--no-sandbox", "--disable-setuid-sandbox"]
     });
     const page = await browser.newPage();
@@ -288,7 +289,9 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         }
 
         // Find and click "Go To Shopping Cart" button
-        const cartButtons = await page.$$('button.mantine-Button-root');
+        await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 });
+
+        const cartButtons = await page.$$('.mantine-Modal-body button');
         let cartButton = null;
         for (const button of cartButtons) {
             const buttonText = await page.evaluate(el => {
@@ -572,7 +575,7 @@ if (require.main === module) {
             expiry_date: "01/30",
             cvc: "1234"
         }
-        const result = await payLeelanauPinesTent("06/04/25", "06/06/25", 2, 1, paymentInfo);
+        const result = await payLeelanauPinesTent("06/24/25", "06/26/25", 5, 0, paymentInfo);
         console.log("Pay result:", result);
     })();
 }

@@ -192,17 +192,65 @@ async function scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids
     // Wait for price element to be present
     const priceSelector = `div[data-test-id='${numNights}-night-reservation-customer-type-rate'] span.price-wrap`;
     await page.waitForSelector(priceSelector, { timeout: 10000 });
-    console.log("Price element found");
+    console.log("Page loaded successfully");
 
-    const priceElement = await page.$(priceSelector);
-    if (!priceElement) {
-      console.error("Price element not found after waiting");
-      throw new Error("Price element not found after waiting");
+    // Wait for and find the select element
+    const selectSelector = `select[data-test-id='user-type-${numNights}-night-reservation']`;
+    try {
+        await page.waitForSelector(selectSelector, { timeout: 10000 });
+        console.log("Select element found");
+    } catch (error) {
+        console.log('Could not find select element, printing all selects and buttons:');
+        const selects = await page.$$eval('select', selects => selects.map(sel => ({
+            id: sel.id,
+            name: sel.name,
+            'data-test-id': sel.getAttribute('data-test-id'),
+            class: sel.className
+        })));
+        const buttons = await page.$$eval('button', buttons => buttons.map(btn => ({
+            text: btn.textContent,
+            id: btn.id,
+            class: btn.className
+        })));
+        console.log('Selects:', selects);
+        console.log('Buttons:', buttons);
+        throw error;
     }
 
-    const priceText = await page.evaluate(el => el.textContent, priceElement);
-    const totalPrice = parseFloat(priceText.replace(/[^0-9.]/g, ''));
-    const pricePerNight = totalPrice / numNights;
+        // Add a small delay to ensure the element is fully loaded and interactive
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Select the value "1" from the dropdown
+    // await page.select(selectSelector, '1');
+    await page.evaluate((selector) => {
+        const select = document.querySelector(selector);
+        select.value = '1';
+        select.dispatchEvent(new Event('change'));
+    }, selectSelector);
+    console.log("Selected 1 reservation");
+
+    // Select number of people staying
+    const totalPeople = numAdults + numKids;
+    const peopleSelector = 'select[data-test-id="extended-options-select-action-How many people will be staying at this spot?"]';
+    await page.waitForSelector(peopleSelector);
+    
+    // Map total people to the corresponding option value (as strings)
+    let optionValue;
+    switch(totalPeople) {
+        case 1: optionValue = 'number:3144134'; break;
+        case 2: optionValue = 'number:3144135'; break;
+        case 3: optionValue = 'number:3144136'; break;
+        case 4: optionValue = 'number:3144137'; break;
+        case 5: optionValue = 'number:3144138'; break;
+        case 6: optionValue = 'number:3144139'; break;
+        default: throw new Error('Invalid number of people: must be between 1-6');
+    }
+    await page.select(peopleSelector, optionValue);
+
+    const subtotalSelector = '[data-test-id="subtotal-indicator"]';
+    await page.waitForSelector(subtotalSelector);
+    const basePrice = await page.$eval(subtotalSelector, el => parseFloat(el.textContent.replace(/[^0-9.]/g, '')));
+    const pricePerNight = basePrice / numNights;
+    console.log("Price per night: ", pricePerNight);
 
     await browser.close();
     const responseData = {

@@ -5,13 +5,13 @@ const routesConfig = require('./routes');
 const generateRandomDates = () => {
   const startMin = new Date('2025-05-25');
   const startMax = new Date('2025-08-28');
-  // const randomStart = new Date(startMin.getTime() + Math.random() * (startMax.getTime() - startMin.getTime()));
-  const randomStart = new Date('2025-06-08T00:00:00'); // Add time to avoid timezone issues
+  const randomStart = new Date(startMin.getTime() + Math.random() * (startMax.getTime() - startMin.getTime()));
+  // const randomStart = new Date('2025-06-08T00:00:00'); // Add time to avoid timezone issues
   
   // const stayDuration = Math.random() < 0.5 ? 1 : 2; // Randomly choose 1 or 2 days
   const stayDuration = 2;
   const randomEnd = new Date(randomStart);
-  randomEnd.setDate(randomStart.getDate() + stayDuration); // Subtract 1 since end date should be inclusive
+  randomEnd.setDate(randomStart.getDate() + stayDuration);
 
   return {
     startDate: randomStart.toLocaleDateString('en-US', {
@@ -28,12 +28,12 @@ const generateRandomDates = () => {
 };
 
 const generateRandomGuests = () => {
-  // const maxTotal = 6;
-  // const numAdults = Math.floor(Math.random() * 6) + 1; // 1-6 adults
-  // const maxKids = Math.min(5, maxTotal - numAdults); // Ensure total doesn't exceed 6
-  // const numKids = maxKids > 0 ? Math.floor(Math.random() * (maxKids + 1)) : 0; // 0-5 kids, or 0 if no room
-  // return { numAdults, numKids };
-  return { numAdults: 2, numKids: 1 };
+  const maxTotal = 5;
+  const numAdults = Math.floor(Math.random() * 5) + 1; // 1-5 adults
+  const maxKids = Math.min(4, maxTotal - numAdults); // Ensure total doesn't exceed 6
+  const numKids = maxKids > 0 ? Math.floor(Math.random() * (maxKids + 1)) : 0; // 0-5 kids, or 0 if no room
+  return { numAdults, numKids };
+  // return { numAdults: 2, numKids: 1 };
 };
 
 const siteConfig = {
@@ -148,7 +148,7 @@ const formatTestResults = (results, type, numNights) => {
           <td>N/A</td>
           <td>N/A</td>
           <td>N/A</td>
-          <td style="color: gray">Skipped due to failed scraper test</td>
+          <td style="color: gray">Skipped due to unavailable from scraper</td>
         </tr>
       `;
     });
