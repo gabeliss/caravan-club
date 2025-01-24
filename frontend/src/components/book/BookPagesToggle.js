@@ -13,18 +13,37 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
         if (contentRef.current) {
             setContentHeight(contentRef.current.scrollHeight);
         }
-    }, [isActive]); // Recalculate height when active state changes
+    }, [isActive]);
 
     const currentHeight = isActive ? `${contentHeight + 5000}px` : '0px';
 
     return (
         <div className={`toggle-item ${isActive ? 'expanded' : ''}`}>
-            <div className="toggle-container">
-                <div className="toggle-header" onClick={setActive} style={{ width: '100%' }}>
-                    {title}
-                    <span className={`toggle-icon ${isActive ? 'active' : ''}`}>
-                        <KeyboardArrowDownIcon />
-                    </span>
+            <div className={`toggle-container ${isActive ? 'hidden' : ''}`}>
+                <div className="toggle-images">
+                    {details.imageUrls?.length > 0 && (
+                        <Slider
+                            className="image-carousel"
+                            dots={true}
+                            infinite={false}
+                            speed={500}
+                            slidesToShow={1}
+                            slidesToScroll={1}
+                            adaptiveHeight={false}
+                        >
+                            {details.imageUrls.map((url, index) => (
+                                <div key={index} className="carousel-slide">
+                                    <img src={url} alt={`Image ${index + 1}`} className="toggle-img" />
+                                </div>
+                            ))}
+                        </Slider>
+                    )}
+                </div>
+                <div className="toggle-header">
+                    <h1>{title}</h1>
+                    <p><i>{details.cityAndState}</i></p>
+                    <p>{details.offerings}</p>
+                    <p><strong>Distance to town:</strong> {details.distanceToTown}</p>
                 </div>
                 <div
                     className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'selected' : ''}`} 
@@ -35,32 +54,13 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
             </div>
             <div
                 ref={contentRef}
-                className="toggle-content"
-                style={{ maxHeight: currentHeight, transition: 'max-height 0.3s ease-in-out' }}
+                className={`toggle-content ${isActive ? 'active' : ''}`}
             >
+                <h2>{title}</h2>
                 <p>{content}</p>
     
-                {/* Display images if they exist */}
-                {details.imageUrls?.length > 0 && (
-                    <Slider
-                        className="image-carousel"
-                        dots={true}
-                        infinite={false}
-                        speed={500}
-                        slidesToShow={1}
-                        slidesToScroll={1}
-                    >
-                        {details.imageUrls.map((url, index) => (
-                            <div key={index} className="carousel-slide">
-                                <img src={url} alt={`Image ${index + 1}`} className="toggle-img" />
-                            </div>
-                        ))}
-                    </Slider>
-                )}
-    
-                {/* Display additional details if they exist */}
+                {/* Display only specific details when expanded */}
                 <div className="additional-details">
-                    {details.distanceToTown && <p><strong>Distance to town:</strong> {details.distanceToTown}</p>}
                     {details.amenities?.length > 0 && (
                         <>
                             <p><strong>Amenities:</strong></p>
@@ -77,9 +77,11 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
                     {details.cancellationPolicy && <p><strong>Cancellation Policy:</strong> {details.cancellationPolicy}</p>}
                 </div>
             </div>
+            <span className={`toggle-icon ${isActive ? 'active' : ''}`} onClick={setActive}>
+                <KeyboardArrowDownIcon />
+            </span>
         </div>
     );
-    
 };
 
 const ToggleList = ({ data, onSelectionChange }) => {
@@ -97,8 +99,7 @@ const ToggleList = ({ data, onSelectionChange }) => {
 
     return (
         <>  <div className='toggle-labels'>
-                <div className='campground-label'>Campground:</div>
-                <div className='select-stay-label'>Select One Option</div>
+                <div className='select-stay-label'>Select One Campground:</div>
             </div>
             <div className="toggle-list">
                 {Object.entries(data).map(([key, details], index) => (

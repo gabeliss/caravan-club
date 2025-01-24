@@ -123,18 +123,20 @@
 .info-header {
     background-color: var(--secondary-color);
     padding: 1% 3%;
+    border-radius: 10px;
 }
 
 .info h2 {
-    font-size: 2.75rem;
+    font-size: 2.55rem;
     text-align: left;
-    color: var(--charcoal-gray)
+    color: var(--charcoal-gray);
+    font-weight: bolder;
 }
 
 .info p {
     color: var(--primary-color);
     padding-bottom: 10px;
-    font-size: 1.25rem;
+    font-size: 1.5rem;
 }
 
 
@@ -142,10 +144,10 @@
     display: flex;
     justify-content: space-between;
     padding-top: 3%;
-    padding-bottom: 1%;
-    font-size: 1.25rem;
-    font-weight: bold;
+    padding-bottom: 2%;
+    font-size: 1.5rem;
     color: gray;
+    font-style: italic;
 }
 
 .submit-button {
@@ -165,63 +167,101 @@
 
 /* toggle css */
 .toggle-list {
-    border-top: 1px solid #ccc;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .toggle-item {
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 20px;
+    border: 1px solid var(--charcoal-gray);
+    border-radius: 10px;
+    margin-right: 30px;
+    width: 400px;
+    position: relative;
+    margin-bottom: 40px;
 }
 
 .toggle-container {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
 }
 
-.availability-status {
-    width: 20%;
-    max-width: 150px;
-    margin-top: 20px;
-    padding: 10px 0;
-    text-align: center;
-    border: 1px solid black;
-    border-radius: 5%;
-    color: grey;
-    cursor: pointer;
+.toggle-container.hidden {
+    display: none;
 }
 
-.availability-status.available {
-    background-color: var(--primary-color-light);
-    color: white;
+.toggle-images {
+    width: 100%;
+    height: 100%;
 }
 
-.availability-status.not-available {
-    background-color: white;
+.image-carousel {
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative; /* This is important for absolute positioning of dots */
 }
 
-.availability-status.available:hover, .availability-status.available.selected {
-    background-color: var(--primary-color);
-    color: white;
-    border: 2px solid black;
-    transform: scale(1.2);
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+.toggle-img {
+    width: 100%;
+    height: 300px; /* Set a fixed height */
+    object-fit: cover; /* This ensures images fill the space without distortion */
+    border-radius: 5px;
+}
+
+.slick-dots {
+    position: absolute;
+    bottom: 15px !important; /* Override Slick's default -25px */
+    z-index: 1; /* Ensures dots appear above the images */
+}
+
+.slick-dots li button:before {
+    color: white !important;
+    font-size: 8px !important; /* Make dots bigger, default is 6px */
+    opacity: 0.8 !important; /* Make inactive dots more visible */
+}
+
+.slick-dots li.slick-active button:before {
+    color: white !important;
+    opacity: 1 !important; /* Full opacity for active dot */
+    font-size: 12px !important; /* Make active dot slightly larger */
 }
 
 .toggle-header {
-    cursor: pointer;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    margin-left: 10px;
+    color: black;
+}
+
+.toggle-header h1 {
     font-size: 1.5rem;
-    padding-top: 20px;
+    padding: 0;
+    color: black;
+    font-weight: bolder;
+    margin: 3px;
+    margin-bottom: 15px;
+
+}
+
+.toggle-header p {
+    font-size: 1.1rem;
+    margin: 3px;
+    color: black;
+    line-height: 1.5;
 }
 
 .toggle-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
     transition: transform 0.3s ease;
     display: inline-block;
     color: grey;
-    margin-right: 20px;
+    z-index: 2;
+    cursor: pointer;
 }
 
 .toggle-icon.active {
@@ -231,8 +271,22 @@
 .toggle-content {
     overflow: hidden;
     max-height: 0;
-    transition: max-height 0.3s ease-in-out;
+    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
     width: 70%;
+    padding: 0 20px;
+}
+
+.toggle-content.active {
+    max-height: 2000px;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 20px;
+}
+
+.toggle-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: black;
+    font-weight: bolder;
 }
 
 .toggle-content p {
@@ -241,22 +295,43 @@
 }
 
 .toggle-content.active {
-    max-height: none; /* Set to a value that is greater than what you expect the content height to be */
-    transition: max-height 0.3s ease-in; /* Adjust this value to fit your content */
+    max-height: 2000px;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth opening */
 }
 
-.image-carousel {
-    width: 40%;
-    margin-top: 10px;
-    margin-bottom: 40px; /* Vertical spacing between carousel and content below */
+.availability-status {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 50%;
+    padding: 10px 0;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 5%;
+    color: grey;
+    cursor: pointer;
+    z-index: 2; /* Ensure it appears above the carousel */
+    margin: 0; /* Remove existing margin */
+    font-weight: bolder;
 }
 
-.toggle-img {
-    width: 100%;
-    height: auto;
-    max-height: 300px;
-    object-fit: cover;
-    border-radius: 5px;
+.availability-status.available {
+    background-color: var(--primary-color-light);
+    color: white;
+}
+
+.availability-status.not-available {
+    background-color: rgb(229, 139, 139);
+    cursor: default;
+    color: white;
+}
+
+.availability-status.available:hover, .availability-status.available.selected {
+    background-color: var(--primary-color);
+    color: white;
+    border: 2px solid black;
+    transform: scale(1.2);
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
 }
 
 .toggle-item.expanded .availability-status {
@@ -271,7 +346,7 @@
 }
 
 .toggle-item.expanded .toggle-content {
-    width: 95%;
+    width: 90%;
 }
 
 
@@ -291,6 +366,10 @@
 
     .info p {
         font-size: 1rem;
+    }
+
+    .toggle-item {
+        width: 40%;
     }
 
     .toggle-labels {
@@ -313,5 +392,11 @@
 
     .toggle-item.expanded .toggle-content {
         width: 90%;
+    }
+}
+
+@media (max-width: 600px) {
+    .toggle-item {
+        width: 100%;
     }
 }
