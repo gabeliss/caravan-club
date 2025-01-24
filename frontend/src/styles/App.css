@@ -329,6 +329,10 @@ footer a {
   cursor: pointer;
 }
 
+.disabled {
+  cursor: default;
+}
+
 .logo-item img {
   width: 250px;
   height: 250px;
@@ -428,4 +432,9 @@ footer a {
   background-color: white;
   color: var(--primary-color);
   border: 1px solid var(--primary-color);
+}
+
+.coming-soon:hover {
+  background-color: white;
+  cursor: default;
 }
