@@ -205,7 +205,13 @@ function BookNorthernMichiganPage() {
                 <p>{locationDescriptions[city]?.description || "No description available for this location."}</p>
               </div>
               <ToggleList
-                data={placeDetails[city].tent}
+                data={{
+                  ...placeDetails[city].tent,
+                  segments: {
+                    ...location.state.segments[city],
+                    range // Pass the already calculated range
+                  }
+                }}
                 onSelectionChange={(index) => handleSelectStatus(city, index)}
               />
             </div>

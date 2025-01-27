@@ -180,6 +180,15 @@
     margin-bottom: 40px;
 }
 
+/* Add style for selected card */
+.toggle-item:has(.availability-status.selected) {
+    border: 3px solid var(--charcoal-gray);
+}
+
+.toggle-item.selected {
+    border: 3px solid var(--charcoal-gray);
+}
+
 .toggle-container {
     display: flex;
     flex-direction: column;
@@ -306,13 +315,12 @@
     width: 50%;
     padding: 10px 0;
     text-align: center;
-    border: 1px solid black;
-    border-radius: 5%;
+    border-radius: 10px;
     color: grey;
-    cursor: pointer;
-    z-index: 2; /* Ensure it appears above the carousel */
-    margin: 0; /* Remove existing margin */
+    z-index: 2;
+    margin: 0;
     font-weight: bolder;
+    font-size: 1.15rem;
 }
 
 .availability-status.available {
@@ -324,14 +332,6 @@
     background-color: rgb(229, 139, 139);
     cursor: default;
     color: white;
-}
-
-.availability-status.available:hover, .availability-status.available.selected {
-    background-color: var(--primary-color);
-    color: white;
-    border: 2px solid black;
-    transform: scale(1.2);
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
 }
 
 .toggle-item.expanded .availability-status {
@@ -349,7 +349,29 @@
     width: 90%;
 }
 
+.toggle-item .availability-status.selected ~ .toggle-container {
+    border: 5px solid var(--charcoal-gray);
+    border-radius: 10px;
+}
 
+/* Move only the selected price flag down */
+.availability-status.selected {
+    top: 55px; /* Move down when selected */
+}
+
+.availability-status.selected::before {
+    content: attr(data-night-range);
+    position: absolute;
+    top: -45px; /* Position above the price flag */
+    left: 0;
+    width: 100%;
+    padding: 10px 0;
+    background-color: gray;
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+    font-weight: bolder;
+}
 
 @media (max-width: 768px) {
     .info {

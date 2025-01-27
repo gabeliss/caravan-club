@@ -5,7 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import './../../styles/bookpages.css';
 
-const ToggleItem = ({ title, content, isActive, setActive, availability, price, message, isSelected, onSelect, details }) => {
+const ToggleItem = ({ title, content, isActive, setActive, availability, price, message, isSelected, onSelect, details, nightRange }) => {
     const contentRef = useRef(null);
     const [contentHeight, setContentHeight] = useState(0);
 
@@ -17,8 +17,24 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
 
     const currentHeight = isActive ? `${contentHeight + 5000}px` : '0px';
 
+    const handleCardClick = (e) => {
+        // Don't trigger selection if clicking the expand arrow, carousel dots, or if not available
+        if (
+            e.target.closest('.toggle-icon') || 
+            e.target.closest('.slick-dots') || 
+            !availability
+        ) {
+            return;
+        }
+        onSelect();
+    };
+
     return (
-        <div className={`toggle-item ${isActive ? 'expanded' : ''}`}>
+        <div 
+            className={`toggle-item ${isActive ? 'expanded' : ''}`}
+            onClick={handleCardClick}
+            style={{ cursor: availability ? 'pointer' : 'default' }}
+        >
             <div className={`toggle-container ${isActive ? 'hidden' : ''}`}>
                 <div className="toggle-images">
                     {details.imageUrls?.length > 0 && (
@@ -46,8 +62,8 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
                     <p><strong>Distance to town:</strong> {details.distanceToTown}</p>
                 </div>
                 <div
-                    className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'selected' : ''}`} 
-                    onClick={() => availability && onSelect()}
+                    className={`availability-status ${availability ? 'available' : 'not-available'} ${isSelected ? 'selected' : ''}`}
+                    data-night-range={isSelected ? nightRange : ''}
                 >
                     {message}
                 </div>
@@ -77,7 +93,13 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
                     {details.cancellationPolicy && <p><strong>Cancellation Policy:</strong> {details.cancellationPolicy}</p>}
                 </div>
             </div>
-            <span className={`toggle-icon ${isActive ? 'active' : ''}`} onClick={setActive}>
+            <span 
+                className={`toggle-icon ${isActive ? 'active' : ''}`} 
+                onClick={(e) => {
+                    e.stopPropagation(); // Prevent card selection when clicking expand
+                    setActive();
+                }}
+            >
                 <KeyboardArrowDownIcon />
             </span>
         </div>
@@ -87,6 +109,12 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
 const ToggleList = ({ data, onSelectionChange }) => {
     const [activeIndex, setActiveIndex] = useState(null);
     const [selectedStatusKey, setSelectedStatusKey] = useState(null);
+    console.log("Data:", data);  // For debugging
+
+    const calculateNightRange = (city) => {
+        const range = data.segments?.range;
+        return range ? `${range} Selected` : '';
+    };
 
     const handleSetActive = index => {
         setActiveIndex(prevIndex => prevIndex === index ? null : index);
@@ -97,12 +125,16 @@ const ToggleList = ({ data, onSelectionChange }) => {
         onSelectionChange(key);
     };
 
+    // Filter out the segments key and only map over accommodation entries
+    const accommodations = Object.entries(data).filter(([key]) => key !== 'segments');
+
     return (
-        <>  <div className='toggle-labels'>
+        <>  
+            <div className='toggle-labels'>
                 <div className='select-stay-label'>Select One Campground:</div>
             </div>
             <div className="toggle-list">
-                {Object.entries(data).map(([key, details], index) => (
+                {accommodations.map(([key, details], index) => (
                 <ToggleItem 
                     key={key}
                     title={details.title}
@@ -115,6 +147,7 @@ const ToggleList = ({ data, onSelectionChange }) => {
                     isSelected={key === selectedStatusKey}
                     onSelect={() => handleSelectStatus(key)}
                     details={details}
+                    nightRange={calculateNightRange(key)}
                 />
                 ))}
             </div>

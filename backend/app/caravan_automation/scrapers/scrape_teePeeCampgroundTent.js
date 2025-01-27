@@ -189,18 +189,17 @@ async function scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids
     await page.goto(url, { waitUntil: 'networkidle2' });
     console.log("Page loaded successfully");
 
-    // Wait for price element to be present
+    // Wait for price and select elements to be present
     const priceSelector = `div[data-test-id='${numNights}-night-reservation-customer-type-rate'] span.price-wrap`;
-    await page.waitForSelector(priceSelector, { timeout: 10000 });
-    console.log("Page loaded successfully");
-
-    // Wait for and find the select element
     const selectSelector = `select[data-test-id='user-type-${numNights}-night-reservation']`;
+    
     try {
+        await page.waitForSelector(priceSelector, { timeout: 10000 });
+        console.log("Price element found");
         await page.waitForSelector(selectSelector, { timeout: 10000 });
         console.log("Select element found");
     } catch (error) {
-        console.log('Could not find select element, printing all selects and buttons:');
+        console.log('Could not find required elements, printing all selects and buttons:');
         const selects = await page.$$eval('select', selects => selects.map(sel => ({
             id: sel.id,
             name: sel.name,
