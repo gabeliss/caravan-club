@@ -137,17 +137,24 @@
 
   .best-stuff {
     display: flex;
-    justify-content: space-evenly;
-    align-items: center;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 100%;
+    gap: 20px;
+    padding: 20px;
   }
 
   .best-object {
+    flex: 1;
+    max-width: calc(30% - 14px);
+    margin: 0;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 2%;
-  }  
+  }
 
   .best-title, .best-answer {
     color: var(--secondary-color);
@@ -159,14 +166,59 @@
   }
 
   .best-images {
+    position: relative;
     width: 100%;
-    height: 100%;
-    margin: 20px 0;
+    height: 450px;
+    background-color: #f5f5f5;
+    margin-bottom: 40px;
   }
 
-  .best-images img {
-    width: 100%;
+  .best-images .slick-slider,
+  .best-images .slick-list,
+  .best-images .slick-track,
+  .best-images .slick-slide,
+  .best-images .slick-slide > div {
     height: 100%;
+  }
+
+  .best-image {
+    width: 100%;
+    height: 450px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  /* Slider dots styling */
+  .best-images .slick-dots {
+    bottom: -30px !important;
+    z-index: 1;
+  }
+
+  .best-images .slick-dots button {
+    color: var(--primary-color);
+  }
+
+  .best-images .slick-dots li button:before {
+    color: var(--primary-color) !important;
+    font-size: 8px !important;
+    opacity: 0.8 !important;
+  }
+
+  .best-images .slick-dots li.slick-active button:before {
+    color: var(--primary-color) !important;
+    opacity: 1 !important;
+    font-size: 10px !important;
+  }
+
+  .best-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .best-answer {
+    font-size: 1.2rem;
+    margin-top: 10px;
   }
 
   .outro-text {
@@ -189,6 +241,25 @@
 
   .book-now-button:hover {
     background-color: #4f4d4d;
+  }
+
+  @media (max-width: 1024px) {
+    .best-title, .best-answer {
+      font-size: 1rem;
+    }
+
+    .best-images {
+      height: 350px;
+    }
+
+    .best-image {
+      height: 350px;
+    }
+
+    .best-images .slick-dots {
+      bottom: 25px;
+      z-index: 1;
+    }
   }
 
   @media (max-width: 768px) {
@@ -243,6 +314,16 @@
 
     .info-label {
       margin-right: 50px;
+    }
+
+    .best-stuff {
+      flex-direction: column;
+      padding: 10px;
+    }
+
+    .best-object {
+      max-width: 100%;
+      margin-bottom: 20px;
     }
 
     .best-title, .best-answer {

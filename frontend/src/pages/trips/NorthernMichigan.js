@@ -1,8 +1,20 @@
 import React from 'react';
 import './../../styles/itineraries.css';
 import { Link } from 'react-router-dom';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function NorthernMichigan() {
+  const sliderSettings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    adaptiveHeight: false,
+    arrows: false  // This removes the arrows
+  };
 
   return (
     <div className='page'>
@@ -60,33 +72,51 @@ function NorthernMichigan() {
         <div className="best-object">
           <div className="best-title">Favorite Restaurant</div>
           <div className="best-images">
-            <img 
-              src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/kayaking.png" 
-              alt="Northern Michigan Landscape"
-              className="main-image"
-            />
+            <Slider {...sliderSettings}>
+              {[1, 2, 3, 4, 5, 6].map((num) => (
+                <div key={`restaurant${num}`}>
+                  <img 
+                    src={`https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/restaurant/restaurant${num}.jpg`}
+                    alt={`Restaurant ${num}`}
+                    className="best-image"
+                  />
+                </div>
+              ))}
+            </Slider>
           </div>
           <div className="best-answer">Farm Club</div>
         </div>
         <div className="best-object">
           <div className="best-title">Best Hike</div>
           <div className="best-images">
-            <img 
-              src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/kayaking.png" 
-              alt="Northern Michigan Landscape"
-              className="main-image"
-            />
+            <Slider {...sliderSettings}>
+              {[1, 2, 3, 4].map((num) => (
+                <div key={`hike${num}`}>
+                  <img 
+                    src={`https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/hike/hike${num}.jpg`}
+                    alt={`Hike ${num}`}
+                    className="best-image"
+                  />
+                </div>
+              ))}
+            </Slider>
           </div>
           <div className="best-answer">Empire Bluff Trail</div>
         </div>
         <div className="best-object">
           <div className="best-title">Best Activity</div>
           <div className="best-images">
-            <img 
-              src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/kayaking.png" 
-              alt="Northern Michigan Landscape"
-              className="main-image"
-            />
+            <Slider {...sliderSettings}>
+              {[1, 2, 3].map((num) => (
+                <div key={`activity${num}`}>
+                  <img 
+                    src={`https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/activity/activity${num}.jpg`}
+                    alt={`Activity ${num}`}
+                    className="best-image"
+                  />
+                </div>
+              ))}
+            </Slider>
           </div>
           <div className="best-answer">Sailing on Traverse Bay</div>
         </div>
