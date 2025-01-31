@@ -1,51 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import tripMapping from '../tripmapping.json';
+import React from 'react';
 import TripPlanner from '../components/general/TripPlanner';
 import HowItWorks from '../components/home/HowItWorks';
 import MakesDifferent from '../components/home/MakesDifferent';
 import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
-  const [destination, setDestination] = useState('');
-  const [nights, setNights] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [maxNights, setMaxNights] = useState(0);
-  const [showCalendar, setShowCalendar] = useState(false);
-  const calendarRef = useRef(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (destination && tripMapping[destination]) {
-      setMaxNights(tripMapping[destination].maxNights || 0);
-      setNights('');
-      setStartDate('');
-      setEndDate('');
-    } else {
-      setMaxNights(0);
-      setNights('');
-      setStartDate('');
-      setEndDate('');
-    }
-  }, [destination]);
-
-  useEffect(() => {
-    setStartDate('');
-    setEndDate('');
-  }, [nights]);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
-        setShowCalendar(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [calendarRef]);
 
   const handleLogoClick = (tripPath) => {
     navigate(`/trips/${tripPath}`);

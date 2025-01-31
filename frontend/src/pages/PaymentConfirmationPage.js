@@ -1,55 +1,60 @@
 import React, { useEffect } from 'react';
-import { useNavigate,useLocation, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import './../styles/payment-confirmation.css';
 
 function PaymentConfirmationPage() {
-  const { state } = useLocation();
-  const navigate = useNavigate();
-  const { paymentStatus } = state || {};
+    const { state } = useLocation();
+    const navigate = useNavigate();
 
-  const formatCamelCase = (text) => {
-    return text
-      .replace(/([A-Z])/g, ' $1')
-      .replace(/^./, str => str.toUpperCase());
-  };
+    useEffect(() => {
+        if (!state) {
+            navigate('/');
+            return;
+        }
+    }, [state, navigate]);
 
-  const renderPaymentStatus = (segmentName, details) => {
-    const readableSegment = formatCamelCase(segmentName);
-    const readableAccommodation = formatCamelCase(details.selected_accommodation);
-    
-    if (details.status === 'success') {
-      return <div className="banner green">Payment for {readableSegment} - {readableAccommodation} succeeded!</div>;
-    } else if (details.status === 'error') {
-      return <div className="banner red">Payment for {readableSegment} - {readableAccommodation} failed!</div>;
-    } else {
-      return null;
-    }
-  };
+    if (!state) return null;
 
-  useEffect(() => {
-    if (!state) {
-      console.log('No location state found. Navigating to home.');
-    navigate('/');
-      return;
-    }
-  }, [state, navigate]);
+    const { orderNumber, allPaymentsSuccessful, confirmedSites, pendingSites } = state;
 
-  return (
-    <div className='payment-confirmation-page center'>
-      <h1 className='center'>Payment Confirmation</h1>
-      {paymentStatus && Object.entries(paymentStatus).map(([segmentName, details]) => 
-        renderPaymentStatus(segmentName, details)
-      )}
-      <h4 className='final-message'>
-        Please check your email for payment confirmations. If any payments failed, please reach out to Caravan Club at
-        caravanclub@gmail.com and we will do our best to accomodate you. We hope you have an amazing trip. Thank you for 
-        booking through Caravan Club!
-      </h4>
-      <Link to="/">
-        <button className='home-button'>Back to Home</button>
-      </Link>
-    </div>
-  );
+    return (
+        <div className='payment-confirmation-page'>
+            <div className='order-number'>Order Number: {orderNumber}</div>
+            
+            {allPaymentsSuccessful ? (
+                <>
+                    <h1>Success! All of your selected camp sites have been booked. We can't wait for you to start your Caravan!</h1>
+                    <p className='confirmation-message'>
+                        You will receive a confirmation email including the details of your trip. 
+                        If you have any questions or need additional support, feel free to contact us at caravantripplan@gmail.com.
+                    </p>
+                </>
+            ) : (
+                <>
+                    <h1>We're working to finalize your reservations. A few details are still being confirmed to ensure everything is perfect. We'll send you an update as soon as possible.</h1>
+                    
+                    {confirmedSites.length > 0 && (
+                        <div className='sites-section'>
+                            <h3>Confirmed Sites:</h3>
+                            <p>{confirmedSites.join(', ')}</p>
+                        </div>
+                    )}
+                    
+                    {pendingSites.length > 0 && (
+                        <div className='sites-section'>
+                            <h3>Pending Confirmation:</h3>
+                            <p>{pendingSites.join(', ')}</p>
+                        </div>
+                    )}
+                    
+                    <p className='confirmation-message'>
+                        No additional action is needed on your end. If you have any questions or need additional support, 
+                        feel free to contact us at caravantripplan@gmail.com.
+                    </p>
+                </>
+            )}
+        </div>
+    );
 }
 
 export default PaymentConfirmationPage;

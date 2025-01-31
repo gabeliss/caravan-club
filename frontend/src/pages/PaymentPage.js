@@ -6,12 +6,14 @@ import { initiatePayment, createTrip } from '../api/northernMichiganApi.js';
 import PaymentForm from './../components/pay/PaymentForm.js';
 import PaymentTripDetails from './../components/pay/PaymentTripDetails.js';
 import CustomLoader from '../components/general/CustomLoader';
+import { generateOrderNumber } from './../utils/helpers.js';
 
 function PaymentPage() {
     const navigate = useNavigate();
     const location = useLocation();
 
     const [isLoading, setIsLoading] = useState(false);
+    const [orderNumber, setOrderNumber] = useState(null);
     const [paymentInfo, setPaymentInfo] = useState({
         first_name: '',
         last_name: '',
@@ -28,6 +30,15 @@ function PaymentPage() {
         expiry_date: '',
         cvc: ''
     });
+
+    // Generate order number on component mount
+    useEffect(() => {
+        const generateNumber = async () => {
+            const number = await generateOrderNumber();
+            setOrderNumber(number);
+        };
+        generateNumber();
+    }, []);
 
     // Redirect to home page if location.state is null or undefined
     useEffect(() => {
@@ -57,7 +68,7 @@ function PaymentPage() {
 
     const handleBack = (e) => {
         e.preventDefault();
-        navigate(-1); // Go back to the previous page
+        navigate(-1);
     };
 
     const handleSubmit = async (e) => {
@@ -128,6 +139,7 @@ function PaymentPage() {
             const tripPayload = {
                 user: paymentInfo,
                 trip: {
+                    confirmation_number: orderNumber,
                     destination: tripTitle.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()),
                     start_date,
                     end_date,
@@ -146,7 +158,18 @@ function PaymentPage() {
             const createTripResponse = await createTrip(tripPayload);
             console.log('Trip created successfully:', createTripResponse);
     
-            navigate('/payments-confirmation', { state: { tripId: createTripResponse.trip_id } });
+            navigate('/payments-confirmation', { 
+                state: { 
+                    orderNumber,
+                    allPaymentsSuccessful: processedSegments.every((seg) => seg.payment_successful),
+                    confirmedSites: processedSegments
+                        .filter(seg => seg.payment_successful)
+                        .map(seg => seg.selected_accommodation),
+                    pendingSites: processedSegments
+                        .filter(seg => !seg.payment_successful)
+                        .map(seg => seg.selected_accommodation)
+                } 
+            });
     
         } catch (error) {
             console.error('Error in payment or trip creation:', error);
@@ -156,9 +179,9 @@ function PaymentPage() {
     };
     
 
-    // Render logic
-    if (!location.state) {
-        return null; // Only conditionally return after hooks are defined
+    // Only render the page once we have an order number
+    if (!location.state || !orderNumber) {
+        return <CustomLoader />;
     }
 
     return (

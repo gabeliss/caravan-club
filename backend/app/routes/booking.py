@@ -61,8 +61,10 @@ def create_trip():
     if not trip_data:
         return {"error": "Trip data is required"}, 400
 
-    # Generate unique confirmation number
-    confirmation_number = generate_confirmation_number()
+    # Use provided confirmation number instead of generating one
+    confirmation_number = trip_data.get("confirmation_number")
+    if not confirmation_number:
+        return {"error": "Confirmation number is required"}, 400
 
     # Create the trip, copying user info into the trip
     trip = Trip(
@@ -108,11 +110,13 @@ def create_trip():
     # Commit the transaction
     db.session.commit()
 
-    # Send confirmation email
+    # Send confirmation email to customer
     send_trip_confirmation_email(user_data["email"], trip)
+    
+    # Send notification email to admin
+    send_admin_notification_email(trip)
 
     return {"message": "Trip created successfully", "trip_id": trip.trip_id}, 201
-
 
 def send_trip_confirmation_email(email, trip):
     """
@@ -188,6 +192,69 @@ def send_trip_confirmation_email(email, trip):
     except Exception as e:
         logging.error(f"Failed to send email to {email}: {str(e)}")
 
+def send_admin_notification_email(trip):
+    """
+    Sends a notification email to admin when a new trip is booked.
+    """
+    try:
+        # Suppress SendGrid debug logs
+        logging.getLogger("python_http_client").setLevel(logging.WARNING)
+        
+        # Create segments summary
+        segments_summary = []
+        for segment in trip.segments:
+            segment_info = (
+                f"{segment.name}: {segment.selected_accommodation}\n"
+                f"Dates: {segment.start_date.strftime('%b %-d')} - {segment.end_date.strftime('%b %-d')}\n"
+                f"Total: ${segment.total:.2f}\n"
+                f"Payment Status: {'Success' if segment.payment_successful else 'Failed'}\n"
+            )
+            segments_summary.append(segment_info)
+
+        # Create email content
+        html_content = f"""
+        <h2>New Trip Booked</h2>
+        <p><strong>Confirmation Number:</strong> {trip.confirmation_number}</p>
+        <p><strong>Date Booked:</strong> {trip.date_booked}</p>
+        
+        <h3>Customer Details:</h3>
+        <p>
+        Name: {trip.user.first_name} {trip.user.last_name}<br>
+        Email: {trip.user.email}<br>
+        Phone: {trip.user.phone_number}<br>
+        Address: {trip.booking_address}
+        </p>
+
+        <h3>Trip Details:</h3>
+        <p>
+        Destination: {trip.destination}<br>
+        Dates: {trip.start_date.strftime('%B %d, %Y')} - {trip.end_date.strftime('%B %d, %Y')}<br>
+        Duration: {trip.nights} nights<br>
+        Guests: {trip.num_adults} adults, {trip.num_kids} children<br>
+        Grand Total: ${trip.grand_total:.2f}<br>
+        Fully Processed: {'Yes' if trip.trip_fully_processed else 'No'}
+        </p>
+
+        <h3>Segments:</h3>
+        <pre>
+        {''.join(segments_summary)}
+        </pre>
+        """
+
+        # Create the email message
+        message = Mail(
+            from_email='caravantripplan@gmail.com',
+            to_emails='caravantripplan@gmail.com',
+            subject=f'New Booking: {trip.confirmation_number} - {trip.user.first_name} {trip.user.last_name}',
+            html_content=html_content
+        )
+
+        # Send the email
+        sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
+        response = sg.send(message)
+        logging.info(f"Admin notification email sent. Status code: {response.status_code}")
+    except Exception as e:
+        logging.error(f"Failed to send admin notification email: {str(e)}")
 
 @booking_bp.route("/api/preview-email-confirmation")
 def preview_email_confirmation():

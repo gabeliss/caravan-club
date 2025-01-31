@@ -10,7 +10,7 @@ function ReviewTripPage() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [placeDetails, setPlaceDetails] = useState(accommodationsData);
+    const placeDetails = accommodationsData;
     const [totals, setTotals] = useState({});
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 914);

@@ -6,6 +6,7 @@ import PopupModal from './PopupModal';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import '../../styles/tripplanner.css';
 import RouteCustomizationModal from '../book/RouteCustomizationModal';
+import CustomDropdown from './CustomDropdown';
 
 function TripPlanner() {
   const navigate = useNavigate();
@@ -193,20 +194,30 @@ function TripPlanner() {
     });
   };
 
+  const destinationOptions = [
+    { value: 'northernMichigan', label: 'Northern Michigan' }
+  ];
+
+  const adultOptions = [1, 2, 3, 4, 5, 6].map(num => ({
+    value: num,
+    label: `${num} Adult${num > 1 ? 's' : ''}`
+  }));
+
+  const kidOptions = [0, 1, 2, 3, 4, 5, 6].map(num => ({
+    value: num,
+    label: `${num} Kid${num !== 1 ? 's' : ''}`
+  }));
+
   return (
     <div className="trip-planner">
       <div className="trip-planner-row">
         <div className="trip-planner-column destination-column">
-          <label>I want to go:</label>
-          <select
-            className="destination-select"
+          <CustomDropdown
+            options={destinationOptions}
             value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-          >
-            <option value="northernMichigan">
-              Northern Michigan
-            </option>
-          </select>
+            onChange={setDestination}
+            label="I want to go:"
+          />
         </div>
 
         <div className="trip-planner-column date-column">
@@ -252,17 +263,18 @@ function TripPlanner() {
         </div>
 
         <div className="trip-planner-column adults-column">
-          <label className="trip-planner-column-with">With:</label>
-          <select value={adults} onChange={(e) => setAdults(parseInt(e.target.value))} className="adults-select">
-            {[1, 2, 3, 4, 5, 6].map(num => (
-              <option key={num} value={num}>{num} Adult{num > 1 ? 's' : ''}</option>
-            ))}
-          </select>
-          <select value={kids} onChange={(e) => setKids(parseInt(e.target.value))} className="adults-select">
-            {[0, 1, 2, 3, 4, 5, 6].map(num => (
-              <option key={num} value={num}>{num} Kid{num !== 1 ? 's' : ''}</option>
-            ))}
-          </select>
+          <CustomDropdown
+            options={adultOptions}
+            value={adults}
+            onChange={(value) => setAdults(parseInt(value))}
+            label="With:"
+          />
+          <CustomDropdown
+            options={kidOptions}
+            value={kids}
+            onChange={(value) => setKids(parseInt(value))}
+            label=""
+          />
         </div>
 
         <div className="trip-planner-column button-column">

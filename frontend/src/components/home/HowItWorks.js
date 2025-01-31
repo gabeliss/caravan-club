@@ -127,7 +127,7 @@ function HowItWorks() {
         </button>
       </div>
       <div className="slide-content-image-small-screen">
-        <img src={slides[0].image} alt="Image 0" />
+        <img src={slides[0].image} alt="0" />
       </div>
     </div>
   );

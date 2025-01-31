@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import React from 'react';
 import './../../styles/components/home/makesDifferent.css';
 
 function MakesDifferent() {

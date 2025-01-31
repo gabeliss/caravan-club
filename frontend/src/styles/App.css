@@ -223,7 +223,7 @@ footer a {
   min-height: 65vh;
   display: flex;
   justify-content: center;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .landing-welcome-content {
@@ -452,6 +452,9 @@ footer a {
   border: none;
   cursor: pointer;
   border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: inherit;
 }
 
 .learn-more-btn:hover {

@@ -41,7 +41,6 @@ const PaymentTripDetails = ({ startDate, endDate, numAdults, numKids, totalPrice
       })
     : [];
       
-  const totalTravelers = numAdults + numKids;
   const travelerText = `${numAdults} ${numAdults === 1 ? 'Adult' : 'Adults'}${numKids > 0 ? `, ${numKids} ${numKids === 1 ? 'Kid' : 'Kids'}` : ''}`;
 
   const totalTax = segmentDetails.reduce((sum, segment) => sum + segment.tax, 0);

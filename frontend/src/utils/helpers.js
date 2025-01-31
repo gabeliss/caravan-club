@@ -1,3 +1,5 @@
+import { getAllTrips } from '../api/adminApi';
+
 export function adjustDate(startDate, offset) {
     // Convert startDate to a Date object
     const date = new Date(startDate);
@@ -70,3 +72,25 @@ export function formatDates(startDate, endDate) {
 
     return `${formattedStart} - ${formattedEnd}`;
 }
+
+export const generateOrderNumber = async () => {
+    try {
+        // Get all trips to check existing confirmation numbers
+        const response = await getAllTrips();
+        const existingNumbers = new Set(response.data.trips.map(trip => trip.confirmation_number));
+        
+        // Keep generating until we find a unique number
+        while (true) {
+            const digits = Math.floor(1000000 + Math.random() * 9000000).toString();
+            const candidateNumber = `C${digits}`;
+            if (!existingNumbers.has(candidateNumber)) {
+                return candidateNumber;
+            }
+        }
+    } catch (error) {
+        // If we can't fetch existing numbers, generate one and hope for the best
+        console.error('Failed to fetch existing order numbers:', error);
+        const digits = Math.floor(1000000 + Math.random() * 9000000).toString();
+        return `C${digits}`;
+    }
+};

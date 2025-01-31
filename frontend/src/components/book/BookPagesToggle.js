@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -7,15 +7,6 @@ import './../../styles/bookpages.css';
 
 const ToggleItem = ({ title, content, isActive, setActive, availability, price, message, isSelected, onSelect, details, nightRange }) => {
     const contentRef = useRef(null);
-    const [contentHeight, setContentHeight] = useState(0);
-
-    useEffect(() => {
-        if (contentRef.current) {
-            setContentHeight(contentRef.current.scrollHeight);
-        }
-    }, [isActive]);
-
-    const currentHeight = isActive ? `${contentHeight + 5000}px` : '0px';
 
     const handleCardClick = (e) => {
         // Don't trigger selection if clicking the expand arrow, carousel dots, or if not available
@@ -49,7 +40,7 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
                         >
                             {details.imageUrls.map((url, index) => (
                                 <div key={index} className="carousel-slide">
-                                    <img src={url} alt={`Image ${index + 1}`} className="toggle-img" />
+                                    <img src={url} alt={`${index + 1}`} className="toggle-img" />
                                 </div>
                             ))}
                         </Slider>
