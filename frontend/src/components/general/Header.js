@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 function Header({ isMenuOpen, setIsMenuOpen }) {
+  const [showTripsDropdown, setShowTripsDropdown] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+    document.body.classList.toggle('body-no-scroll');
   };
 
   return (
@@ -13,9 +15,22 @@ function Header({ isMenuOpen, setIsMenuOpen }) {
         <Link to="/">
           <button>Home</button>
         </Link>
-        <Link to="/trips">
+        <div className="trips-dropdown-container"
+             onMouseEnter={() => setShowTripsDropdown(true)}
+             onMouseLeave={() => setShowTripsDropdown(false)}>
           <button>Trips</button>
-        </Link>
+          {showTripsDropdown && (
+            <div className="trips-dropdown">
+              <Link to="/trips/northernmichigan">
+                <button>Northern Michigan</button>
+              </Link>
+              <button className="dropdown-coming-soon" disabled>Arizona (Coming Soon)</button>
+              <button className="dropdown-coming-soon" disabled>Smoky Mountains (Coming Soon)</button>
+              <button className="dropdown-coming-soon" disabled>Southern California (Coming Soon)</button>
+              <button className="dropdown-coming-soon" disabled>Washington (Coming Soon)</button>
+            </div>
+          )}
+        </div>
         <Link to="/faq">
           <button>FAQ</button>
         </Link>
@@ -42,7 +57,20 @@ function Header({ isMenuOpen, setIsMenuOpen }) {
         <button className="menu-button" onClick={toggleMenu}>{isMenuOpen ? '✕' : '☰'}</button>
         <div className={`dropdown-menu ${isMenuOpen ? 'open' : ''}`}>
           <Link to="/" onClick={toggleMenu}><button>Home</button></Link>
-          <Link to="/trips" onClick={toggleMenu}><button>Trips</button></Link>
+          <div className="mobile-trips-dropdown">
+            <button onClick={() => setShowTripsDropdown(!showTripsDropdown)}>Trips</button>
+            {showTripsDropdown && (
+              <>
+                <Link to="/trips/northernmichigan" onClick={toggleMenu}>
+                  <button className="available-trip">Northern Michigan</button>
+                </Link>
+                <button className="dropdown-coming-soon" disabled>Arizona (Coming Soon)</button>
+                <button className="dropdown-coming-soon" disabled>Smoky Mountain (Coming Soon)</button>
+                <button className="dropdown-coming-soon" disabled>Southern California (Coming Soon)</button>
+                <button className="dropdown-coming-soon" disabled>Washington (Coming Soon)</button>
+              </>
+            )}
+          </div>
           <Link to="/faq" onClick={toggleMenu}><button>FAQ</button></Link>
           <Link to="/media" onClick={toggleMenu}><button>Media</button></Link>
           <a href="http://instagram.com/squarespace" target="_blank" rel="noopener noreferrer" className="icon-container flex-center" onClick={toggleMenu}>

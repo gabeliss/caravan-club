@@ -5,6 +5,7 @@ import CustomCalendar from './CustomCalendar';
 import PopupModal from './PopupModal';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import '../../styles/tripplanner.css';
+import RouteCustomizationModal from '../book/RouteCustomizationModal';
 
 function TripPlanner() {
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ function TripPlanner() {
   const [showMaxNightsModal, setShowMaxNightsModal] = useState(false);
   const [showDateLimitModal, setShowDateLimitModal] = useState(false);
   const [showInvalidEndDateModal, setShowInvalidEndDateModal] = useState(false);
+  const [showRouteModal, setShowRouteModal] = useState(false);
+  const [currentTripDetails, setCurrentTripDetails] = useState(null);
 
   useEffect(() => {
     const today = new Date();
@@ -41,16 +44,6 @@ function TripPlanner() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [calendarRef]);
-
-  // Capitalize the first letter of destination names
-  const capitalizeFirstLetter = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
-  // Format destination name for display
-  const formatDestinationName = (key) => {
-    return key.replace(/([A-Z])/g, ' $1').split(' ').map(capitalizeFirstLetter).join(' ');
-  };
 
   // Start date change handler
   const handleStartDateChange = (newStartDate) => {
@@ -169,9 +162,14 @@ function TripPlanner() {
       segments: tripSegments,
     };
 
-    console.log('Trip details:', tripDetails);
+    setCurrentTripDetails(tripDetails);
 
-    navigate(`/book/${destination.toLowerCase()}`, { state: tripDetails });
+    // If there's only one segment, go directly to booking page
+    if (Object.keys(tripSegments).length === 1) {
+      navigate(`/book/${destination.toLowerCase()}`, { state: tripDetails });
+    } else {
+      setShowRouteModal(true);
+    }
   };
 
   // Add this new function to format dates for display
@@ -181,6 +179,17 @@ function TripPlanner() {
       month: 'short', 
       day: 'numeric', 
       year: 'numeric' 
+    });
+  };
+
+  // Add new handler for route confirmation
+  const handleRouteConfirm = (reorderedSegments) => {
+    setShowRouteModal(false);
+    navigate(`/book/${destination.toLowerCase()}`, {
+      state: {
+        ...currentTripDetails,
+        segments: reorderedSegments
+      }
     });
   };
 
@@ -277,6 +286,12 @@ function TripPlanner() {
         show={showInvalidEndDateModal}
         message="End date cannot be before start date"
         onClose={() => setShowInvalidEndDateModal(false)}
+      />
+      <RouteCustomizationModal
+        show={showRouteModal}
+        onClose={() => setShowRouteModal(false)}
+        onConfirm={handleRouteConfirm}
+        initialSegments={currentTripDetails?.segments || {}}
       />
     </div>
   );

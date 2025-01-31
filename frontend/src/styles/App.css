@@ -107,28 +107,59 @@ button, .header-right img {
     position: absolute;
     top: 100%;
     left: 0;
+    right: 0;
     background-color: var(--secondary-color);
     width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 100;
+    padding: 0;
   }
 
   .dropdown-menu.open {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+    width: 100vw;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 18vh;
+    margin: 0;
+    padding: 0;
   }
 
-  .dropdown-menu.open button {
-    color: var(--primary-color);
-  }
-
+  .dropdown-menu.open button,
+  .dropdown-menu.open a,
+  .dropdown-menu.open .mobile-trips-dropdown button,
   .icon-container {
+    width: 100%;
+    color: var(--primary-color);
+    text-align: center;
+    white-space: normal;
+    word-wrap: break-word;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
+    margin: 0;
+  }
+
+  .mobile-trips-dropdown {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    margin: 0;
   }
 
   .dropdown-menu a:hover, .dropdown-menu button:hover {
     background-color: rgb(212, 199, 161);
+  }
+
+  .dropdown-menu a.coming-soon:hover, .dropdown-menu button.coming-soon:hover {
+    background-color: white;
   }
 }
 
@@ -410,9 +441,8 @@ footer a {
   }
 }
 
-/* Blur Effect */
 .blur-effect {
-  filter: blur(5px); /* Adjust the blur value as needed */
+  filter: blur(5px);
 }
 
 .learn-more-btn {
@@ -428,13 +458,77 @@ footer a {
   background-color: var(--primary-color-dark);
 }
 
-.coming-soon {
+/* Header specific coming soon buttons */
+.dropdown-menu button.dropdown-coming-soon,
+.trips-dropdown button.dropdown-coming-soon {
   background-color: white;
   color: var(--primary-color);
   border: 1px solid var(--primary-color);
+  opacity: 0.7;
 }
 
-.coming-soon:hover {
+.dropdown-coming-soon:hover {
   background-color: white;
   cursor: default;
+}
+
+/* Homepage specific coming soon buttons */
+.trip-logos .coming-soon {
+  background-color: white;
+  color: var(--primary-color);
+  opacity: 0.6;
+  border: 1px solid var(--primary-color);
+  opacity: 1;
+}
+
+.trip-logos .coming-soon:hover {
+  cursor: default;
+}
+
+/* Trips Dropdown Styles */
+.trips-dropdown-container {
+  position: relative;
+}
+
+.trips-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--secondary-color);
+  min-width: 200px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.trips-dropdown button {
+  width: 100%;
+  text-align: left;
+  padding: 10px 15px;
+}
+
+.trips-dropdown button:hover {
+  background-color: rgb(212, 199, 161);
+}
+
+/* Mobile Trips Dropdown */
+.mobile-trips-dropdown {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mobile-trips-dropdown button {
+  width: 100%;
+  color: var(--primary-color);
+}
+
+/* Add this new class for body when dropdown is open */
+.body-no-scroll {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
 }
