@@ -46,7 +46,7 @@ function NorthernMichigan() {
           <div className="info-item">
             <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/icons/cabin.png" alt="Cabin" />
             <span className="info-label">Typical Accommodations</span>
-            <span className="info-value">Tent , Glamping, Boutique Lodging</span>
+            <span className="info-value">Tent</span>
           </div>
         </div>
         <div className="trip-info-image">
@@ -123,9 +123,8 @@ function NorthernMichigan() {
       </div>
 
       <div className="outro-text">
-        Looking for more recommendations? <strong>Book your trip through Caravan Trip Plan to receive 
-        personalized suggestions</strong> for restaurants, activities, hikes with detailed trail information,
-        nearby towns, and more--complete with links to book activites and experiences!
+        Want more recommendations? Book your trip with Caravan Trip Plan to receive a personalized 
+        itinerary packed with restaurants, activities, hikes, and more!
       </div>
       <Link to="/">
         <button className='book-now-button'>Book Now</button>

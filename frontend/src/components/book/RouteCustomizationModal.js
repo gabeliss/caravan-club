@@ -108,6 +108,7 @@ function RouteCustomizationModal({ show, onClose, onConfirm, initialSegments }) 
       <div className="route-modal">
         <button className="close-button" onClick={onClose}>X</button>
         <h2>Caravan Trip Plan Suggested Route:</h2>
+        <p className="route-note">Want to choose a different starting location? Drag and drop the options to customize your trip.</p>
         
         <div className="route-content">
           <div className="map-container">
@@ -157,8 +158,6 @@ function RouteCustomizationModal({ show, onClose, onConfirm, initialSegments }) 
             </DragDropContext>
           </div>
         </div>
-
-        <p className="route-note">If preferred, feel free to reorganize the suggestion to best suit your needs</p>
         
         <button 
           className="check-availability-button" 

@@ -11,6 +11,7 @@
   color: var(--secondary-color);
 }
 
+/* Base styles for dropdown selected */
 .dropdown-selected {
   width: 100%;
   border: none;
@@ -26,20 +27,35 @@
   padding: 8px;
 }
 
+/* Single option styles */
+.custom-dropdown.single-option .dropdown-selected {
+  background-color: var(--secondary-color);
+  color: var(--primary-color-dark);
+  cursor: default;
+}
+
 .dropdown-options {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
   color: var(--primary-color-dark);
-  background-color: rgb(238, 235, 235);
-  border: 2px solid var(--primary-color-dark);
+  background-color: var(--secondary-color);
   border-top: none;
   max-height: 200px;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   z-index: 1000;
+  border-radius: 12px;
 }
 
+/* WebKit browsers (Chrome, Safari) */
+.dropdown-options::-webkit-scrollbar {
+  display: none;
+}
+
+/* Base option styles */
 .dropdown-option {
   padding: 8px;
   cursor: pointer;
@@ -49,9 +65,18 @@
 }
 
 .dropdown-option:hover {
-  background-color: var(--secondary-color);
+  background-color: var(--primary-color);
+  color: var(--secondary-color)
 }
 
+/* Multi-option selected state */
 .dropdown-option.selected {
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+}
+
+/* Single option selected state */
+.dropdown-option.single-option {
   background-color: var(--secondary-color);
+  color: var(--primary-color-dark);
 }

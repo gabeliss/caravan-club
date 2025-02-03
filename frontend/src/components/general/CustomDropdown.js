@@ -22,11 +22,15 @@ const CustomDropdown = ({ options, value, onChange, label }) => {
   };
 
   const selectedOption = options.find(opt => opt.value === value);
+  const isSingleOption = options.length === 1;
 
   return (
     <div className="custom-dropdown" ref={dropdownRef}>
       <label>{label}</label>
-      <div className="dropdown-selected" onClick={() => setIsOpen(!isOpen)}>
+      <div 
+        className="dropdown-selected"
+        onClick={() => setIsOpen(!isOpen)}
+      >
         {selectedOption?.label || 'Select...'}
       </div>
       {isOpen && (
@@ -34,7 +38,7 @@ const CustomDropdown = ({ options, value, onChange, label }) => {
           {options.map((option) => (
             <div
               key={option.value}
-              className={`dropdown-option ${value === option.value ? 'selected' : ''}`}
+              className={`dropdown-option ${value === option.value ? 'selected' : ''} ${isSingleOption ? 'single-option' : ''}`}
               onClick={() => handleSelect(option)}
             >
               {option.label}

@@ -5,8 +5,8 @@ function Footer() {
   return (
     <footer>
       <div className="footer-left">
-        <a href="mailto:email@example.com">email@example.com</a>
-        <a href="tel:+15555555555">(555) 555-5555</a>
+        <a href="mailto:caravantripplan@gmail.com">caravantripplan@gmail.com</a>
+        <a href="tel:+12489047411">(248) 904-7411</a>
       </div>
       <div className="footer-center">
         <Link to="/">
@@ -14,8 +14,8 @@ function Footer() {
         </Link>
       </div>
       <div className="footer-right">
-        <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a>
-        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.instagram.com/caravantripplan" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer">Tiktok</a>
       </div>
     </footer>
   );
