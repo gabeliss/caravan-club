@@ -1,4 +1,5 @@
 const { scrapeTeePeeCampgroundTent } = require('./scrapers/scrape_teePeeCampgroundTent');
+const { scrapeWhiteWaterParkTent } = require('./scrapers/scrape_whiteWaterParkTent');
 const { payUncleDuckysTent } = require('./payers/pay_uncleDuckysTent');
 const { payLeelanauPinesTent } = require('./payers/pay_leelanauPinesTent');
 const { payTeePeeCampgroundTent } = require('./payers/pay_teePeeCampgroundTent');
@@ -6,6 +7,7 @@ const { payIndianRiverTent } = require('./payers/pay_indianRiverTent');
 const { payTouristParkTent } = require('./payers/pay_touristParkTent');
 const { payFortSuperiorTent } = require('./payers/pay_fortSuperiorTent');
 const { payTimberRidgeTent } = require('./payers/pay_timberRidgeTent');
+const { payWhiteWaterParkTent } = require('./payers/pay_whiteWaterParkTent');
 
 const createPaymentHandler = (operation, operationName) => async (event) => {
   try {
@@ -65,6 +67,11 @@ exports.scrapeTeePeeCampgroundTent = createScrapeHandler(
   'scrapeTeePee'
 );
 
+exports.scrapeWhiteWaterParkTent = createScrapeHandler(
+  scrapeWhiteWaterParkTent,
+  'scrapeWhiteWaterPark'
+);
+
 // Export payment handlers
 exports.payUncleDuckysTent = createPaymentHandler(
   payUncleDuckysTent,
@@ -99,4 +106,9 @@ exports.payFortSuperiorTent = createPaymentHandler(
 exports.payTimberRidgeTent = createPaymentHandler(
   payTimberRidgeTent,
   'payTimberRidge'
+);
+
+exports.payWhiteWaterParkTent = createPaymentHandler(
+  payWhiteWaterParkTent,
+  'payWhiteWaterPark'
 );

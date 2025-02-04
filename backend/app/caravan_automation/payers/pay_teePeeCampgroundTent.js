@@ -197,6 +197,15 @@ async function payTeePeeCampgroundTent(startDate, endDate, numAdults, numKids, p
         await page.goto(url, { waitUntil: 'networkidle2' });
         console.log("Page loaded successfully");
 
+        // First wait for the ng-book-counts div to be present
+        try {
+            await page.waitForSelector('div.book-anon-columns-section.with-bottom-border.book-anon', { timeout: 15000 });
+            console.log("book-anon-columns-section div found");
+        } catch (error) {
+            console.log('Could not find book-anon-columns-section div');
+            throw new Error('Required book-anon-columns-section div not found');
+        }
+
         // Wait for and find the select element
         const selectSelector = `select[data-test-id='user-type-${numNights}-night-reservation']`;
         try {
@@ -280,7 +289,8 @@ async function payTeePeeCampgroundTent(startDate, endDate, numAdults, numKids, p
 
         if (executePayment) {
             console.log('Executing payment...');
-            await page.click('button[data-test-id="complete-and-pay"]');
+            const completeButton = await page.$('button[data-test-id="complete-and-pay"]');
+            await completeButton.evaluate(b => b.click());
             await page.waitForNavigation({ waitUntil: 'networkidle0' });
             console.log('Payment submitted successfully');
         } else {

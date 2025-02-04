@@ -256,7 +256,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         }
 
         console.log('"Add To Cart" button found, clicking...');
-        await addToCartButton.click();
+        await addToCartButton.evaluate(b => b.click());
         console.log('Clicked "Add To Cart" button.');
 
         await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 });
@@ -537,7 +537,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
     if (placeOrderButton) {
         if (executePayment) {
             console.log('Executing payment...');
-            await placeOrderButton.click();
+            await page.evaluate(button => button.click(), placeOrderButton);
             await page.waitForNavigation({ waitUntil: 'networkidle0' });
             console.log('Payment submitted successfully');
         } else {

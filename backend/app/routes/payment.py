@@ -68,3 +68,8 @@ def pay_timberRidgeTent():
 @payment_bp.route('/api/pay/teePeeCampgroundTent', methods=['POST'])
 def pay_teePeeCampgroundTent():
     return process_payment_lambda("Tee Pee Campground", "teePeeCampgroundTent")
+
+@payment_bp.route('/api/pay/whiteWaterParkTent', methods=['POST'])
+def pay_whiteWaterParkTent():
+    return process_payment_lambda("White Water Park", "whiteWaterParkTent")
+

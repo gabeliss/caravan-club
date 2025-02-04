@@ -112,7 +112,7 @@ async function payFortSuperiorTent(startDate, endDate, numAdults, numKids, payme
 
         // Continue to payment
         const continueButton = await detailsForm.$("button.pay-now");
-        await continueButton.click();
+        await continueButton.evaluate(b => b.click());
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Handle credit card iframe
@@ -142,7 +142,7 @@ async function payFortSuperiorTent(startDate, endDate, numAdults, numKids, payme
         
         if (executePayment) {
           console.log('Executing payment...');
-          await checkoutButton.click();
+          await checkoutButton.evaluate(b => b.click());
           // Wait for navigation to complete after payment
           await page.waitForNavigation({ waitUntil: 'networkidle0' });
           console.log('Payment submitted successfully');

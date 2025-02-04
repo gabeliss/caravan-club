@@ -8,7 +8,8 @@ module.exports = {
       'teePeeCampgroundTent',
       'uncleDuckysTent',
       'fortSuperiorTent',
-      'touristParkTent'
+      'touristParkTent',
+      'whiteWaterParkTent'
     ],
     payers: [
       'timberRidgeTent',
@@ -17,7 +18,8 @@ module.exports = {
       'teePeeCampgroundTent', 
       'uncleDuckysTent',
       'fortSuperiorTent',
-      'touristParkTent'
+      'touristParkTent',
+      'whiteWaterParkTent'
     ],
     baseUrl: `${process.env.REACT_APP_API_BASE_URL}`
   };

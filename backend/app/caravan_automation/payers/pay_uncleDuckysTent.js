@@ -71,7 +71,7 @@ async function payUncleDuckysTent(startDate, endDate, numAdults, numKids, paymen
       return responseData;
     }
     console.log("Price element found.");
-    const bookButton = await firstOption.$('.cf-btn-book');  // Get the book button element
+    const bookButton = await firstOption.$('.cf-btn-book');
     if (!bookButton) {
       console.log("Book button not found");
       await browser.close();
@@ -79,11 +79,11 @@ async function payUncleDuckysTent(startDate, endDate, numAdults, numKids, paymen
       return responseData;
     }
     console.log("Book button found.");
-    await bookButton.click();  // Click the button if it exists
+    await bookButton.evaluate(b => b.click());
 
     await page.waitForSelector('.modal-content', { timeout: 10000 });
     const subButton = await page.waitForSelector('#sub_btn', { visible: true });
-    await page.evaluate((button) => button.click(), subButton);
+    await subButton.evaluate(b => b.click());
     console.log("Sub button clicked.");
     
     try {

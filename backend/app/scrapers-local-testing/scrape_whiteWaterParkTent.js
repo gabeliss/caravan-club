@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 
-async function scrape_whiteWaterParkTent(startDate, endDate, numAdults, numKids) {
+async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) {
     try {
         // Format the dates for the URL (YYYY-MM-DD)
         const startDateObj = new Date(startDate);
@@ -94,4 +94,4 @@ if (require.main === module) {
     })();
 }
 
-module.exports = { scrape_whiteWaterParkTent };
+module.exports = { scrapeWhiteWaterParkTent };

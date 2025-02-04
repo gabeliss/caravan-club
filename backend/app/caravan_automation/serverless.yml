@@ -23,6 +23,14 @@ functions:
           path: scrape/teePeeCampgroundTent
           method: post
 
+  scrapeWhiteWaterParkTent:
+    name: scrapeWhiteWaterParkTent
+    handler: handler.scrapeWhiteWaterParkTent
+    events:
+      - http:
+          path: scrape/whiteWaterParkTent
+          method: post
+
   payUncleDuckysTent:
     name: payUncleDuckysTent
     handler: handler.payUncleDuckysTent
@@ -79,6 +87,14 @@ functions:
           path: pay/timberRidgeTent
           method: post
 
+  payWhiteWaterParkTent:
+    name: payWhiteWaterParkTent
+    handler: handler.payWhiteWaterParkTent
+    events:
+      - http:
+          path: pay/whiteWaterParkTent
+          method: post
+
 package:
   patterns:
     - "node_modules/**"
@@ -106,6 +122,13 @@ resources:
       Type: AWS::Logs::LogGroup
       Properties:
         LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-scrapeTeePeeCampgroundTent
+        RetentionInDays: 14
+      DeletionPolicy: Retain
+
+    ScrapeWhiteWaterParkTentLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-scrapeWhiteWaterParkTent
         RetentionInDays: 14
       DeletionPolicy: Retain
 
@@ -141,5 +164,12 @@ resources:
       Type: AWS::Logs::LogGroup
       Properties:
         LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-payTimberRidgeTent
+        RetentionInDays: 14
+      DeletionPolicy: Retain
+
+    PayWhiteWaterParkTentLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/${self:service}-${opt:stage, 'dev'}-payWhiteWaterParkTent
         RetentionInDays: 14
       DeletionPolicy: Retain

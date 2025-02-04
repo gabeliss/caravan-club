@@ -189,7 +189,16 @@ async function scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids
     await page.goto(url, { waitUntil: 'networkidle2' });
     console.log("Page loaded successfully");
 
-    // Wait for price and select elements to be present
+    // First wait for the ng-book-counts div to be present
+    try {
+      await page.waitForSelector('div.book-anon-columns-section.with-bottom-border.book-anon', { timeout: 15000 });
+      console.log("book-anon-columns-section div found");
+    } catch (error) {
+        console.log('Could not find book-anon-columns-section div');
+        throw new Error('Required book-anon-columns-section div not found');
+    }
+
+    // Then wait for price and select elements
     const priceSelector = `div[data-test-id='${numNights}-night-reservation-customer-type-rate'] span.price-wrap`;
     const selectSelector = `select[data-test-id='user-type-${numNights}-night-reservation']`;
     

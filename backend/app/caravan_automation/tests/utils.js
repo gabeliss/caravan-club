@@ -38,12 +38,13 @@ const generateRandomGuests = () => {
 
 const siteConfig = {
   timberRidgeTent: { taxRate: 0, fixedFee: 3 },
-  leelanauPinesTent: { taxRate: 0, fixedFee: 0 },
+  leelanauPinesTent: { taxRate: 0, fixedFee: -0.01 },
   indianRiverTent: { taxRate: 0, fixedFee: 0 },
   teePeeCampgroundTent: { taxRate: 0.12, fixedFee: 0 },
   uncleDuckysTent: { taxRate: 0.07, fixedFee: 0 },
   touristParkTent: { taxRate: 0, fixedFee: 0 },
-  fortSuperiorTent: { taxRate: 0.05, fixedFee: 0 }
+  fortSuperiorTent: { taxRate: 0.05, fixedFee: 0 },
+  whiteWaterParkTent: { taxRate: 0, fixedFee: 8 }
 };
 
 const formatTestResults = (results, type, numNights) => {

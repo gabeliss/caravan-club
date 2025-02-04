@@ -107,3 +107,37 @@ def get_teePeeCampgroundTent_price():
     except Exception as e:
         logging.error(f"Error in get_teePeeCampgroundTent_price: {e}")
         return {"error": "Internal server error"}, 500
+    
+
+@scraping_bp.route('/api/scrape/whiteWaterParkTent')
+def get_whiteWaterParkTent_price():
+    try:
+        # Extract parameters from request
+        num_adults = request.args.get('num_adults', default=1, type=int)
+        num_kids = request.args.get('num_kids', default=0, type=int)
+        start_date = request.args.get('start_date', default='', type=str)
+        end_date = request.args.get('end_date', default='', type=str)
+
+        # Lambda API endpoint for scraping
+        lambda_endpoint = "https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/scrape/whiteWaterParkTent"
+
+        # Payload for Lambda function
+        payload = {
+            "startDate": start_date,
+            "endDate": end_date,
+            "numAdults": num_adults,
+            "numKids": num_kids
+        }
+
+        # Call the Lambda function
+        response = requests.post(lambda_endpoint, json=payload)
+
+        # Return the Lambda response directly
+        if response.status_code == 200:
+            return jsonify(response.json()), 200
+        else:
+            return jsonify({"error": "Failed to get price from White Water Park"}), response.status_code
+
+    except Exception as e:
+        logging.error(f"Error in get_whiteWaterParkTent_price: {e}")
+        return {"error": "Internal server error"}, 500

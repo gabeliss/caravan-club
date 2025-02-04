@@ -1,4 +1,5 @@
-const puppeteer = require('puppeteer');
+const chromium = require('@sparticuz/chromium');
+const puppeteer = require('puppeteer-core');
 
 async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, paymentInfo, executePayment = false) {
     // Initialize response data object
@@ -28,8 +29,10 @@ async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, pay
         console.log(`Navigating to URL: ${url}`);
 
         const browser = await puppeteer.launch({
-            headless: true,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"]
+            args: [...chromium.args, '--disable-web-security', '--disable-features=IsolateOrigins,site-per-process'],
+            executablePath: await chromium.executablePath(),
+            headless: chromium.headless,
+            defaultViewport: chromium.defaultViewport,
         });
         console.log("Browser launched");
 
@@ -235,30 +238,6 @@ async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, pay
         console.error(`Error occurred: ${error.message}`);
         return responseData;
     }
-}
-
-// Add test execution when run directly
-if (require.main === module) {
-    (async () => {
-        const paymentInfo = {
-            first_name: "Lebron",
-            last_name: "James",
-            email: "lebronjames@gmail.com",
-            phone_number: "3134321234",
-            street_address: "1234 Rocky Rd",
-            city: "San Francisco",
-            state: "CA",
-            zip_code: "45445",
-            country: "USA",
-            cardholder_name: "Lebron James",
-            card_number: "2342943844322224",
-            card_type: "Visa",
-            expiry_date: "01/30",
-            cvc: "1234"
-        }
-        const result = await pay_whiteWaterParkTent("04/08/25", "04/10/25", 3, 1, paymentInfo, false);
-        console.log("Scrape result:", result);
-    })();
 }
 
 module.exports = { payWhiteWaterParkTent };

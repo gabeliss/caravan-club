@@ -1,6 +1,7 @@
-const puppeteer = require('puppeteer');
+const chromium = require('@sparticuz/chromium');
+const puppeteer = require('puppeteer-core');
 
-async function scrape_whiteWaterParkTent(startDate, endDate, numAdults, numKids) {
+async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) {
     try {
         // Format the dates for the URL (YYYY-MM-DD)
         const startDateObj = new Date(startDate);
@@ -21,8 +22,10 @@ async function scrape_whiteWaterParkTent(startDate, endDate, numAdults, numKids)
         console.log(`Navigating to URL: ${url}`);
 
         const browser = await puppeteer.launch({
-            headless: false,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"]
+            args: [...chromium.args, '--disable-web-security', '--disable-features=IsolateOrigins,site-per-process'],
+            executablePath: await chromium.executablePath(),
+            headless: chromium.headless,
+            defaultViewport: chromium.defaultViewport,
         });
 
         console.log("Browser launched");
@@ -86,4 +89,4 @@ async function scrape_whiteWaterParkTent(startDate, endDate, numAdults, numKids)
     }
 }
 
-module.exports = { scrape_whiteWaterParkTent };
+module.exports = { scrapeWhiteWaterParkTent };

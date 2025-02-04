@@ -162,118 +162,128 @@ date_to_pk_dict = {
 }
 
 async function scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids) {
-    const startDateObj = new Date(startDate);
-    const endDateObj = new Date(endDate);
-    const numNights = (endDateObj - startDateObj) / (1000 * 60 * 60 * 24); // Calculate nights
-  
-    if (startDateObj < new Date("2025-05-01")) {
-      return { available: false, price: null, message: "Not available before May 1, 2025" };
-    }
-  
-    const pk = date_to_pk_dict[startDate];
-    if (!pk) {
-      return { available: false, price: null, message: "Date not found in mapping" };
-    }
-  
-    const url = `https://fareharbor.com/embeds/book/teepeecampground/items/74239/availability/${pk}/book/?full-items=yes&flow=35388`;
-    console.log(`Navigating to URL: ${url}`);
-  
-    try {
-        const browser = await puppeteer.launch({
-            headless: false,
-            args: ["--no-sandbox", "--disable-setuid-sandbox"]
-          });
-  
-      console.log("Browser launched");
-  
-      const page = await browser.newPage();
-      await page.goto(url, { waitUntil: 'networkidle2' });
-      console.log("Page loaded successfully");
+  const startDateObj = new Date(startDate);
+  const endDateObj = new Date(endDate);
+  const numNights = (endDateObj - startDateObj) / (1000 * 60 * 60 * 24); // Calculate nights
 
-      // Wait for and find the select element
-      const selectSelector = `select[data-test-id='user-type-${numNights}-night-reservation']`;
-      try {
-          await page.waitForSelector(selectSelector, { timeout: 10000 });
-          console.log("Select element found");
-      } catch (error) {
-          console.log('Could not find select element, printing all selects and buttons:');
-          const selects = await page.$$eval('select', selects => selects.map(sel => ({
-              id: sel.id,
-              name: sel.name,
-              'data-test-id': sel.getAttribute('data-test-id'),
-              class: sel.className
-          })));
-          const buttons = await page.$$eval('button', buttons => buttons.map(btn => ({
-              text: btn.textContent,
-              id: btn.id,
-              class: btn.className
-          })));
-          console.log('Selects:', selects);
-          console.log('Buttons:', buttons);
-          throw error;
-      }
-  
-          // Add a small delay to ensure the element is fully loaded and interactive
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      // Select the value "1" from the dropdown
-      // await page.select(selectSelector, '1');
-      await page.evaluate((selector) => {
-          const select = document.querySelector(selector);
-          select.value = '1';
-          select.dispatchEvent(new Event('change'));
-      }, selectSelector);
-      console.log("Selected 1 reservation");
-  
-      // Select number of people staying
-      const totalPeople = numAdults + numKids;
-      const peopleSelector = 'select[data-test-id="extended-options-select-action-How many people will be staying at this spot?"]';
-      await page.waitForSelector(peopleSelector);
-      
-      // Map total people to the corresponding option value (as strings)
-      let optionValue;
-      switch(totalPeople) {
-          case 1: optionValue = 'number:3144134'; break;
-          case 2: optionValue = 'number:3144135'; break;
-          case 3: optionValue = 'number:3144136'; break;
-          case 4: optionValue = 'number:3144137'; break;
-          case 5: optionValue = 'number:3144138'; break;
-          case 6: optionValue = 'number:3144139'; break;
-          default: throw new Error('Invalid number of people: must be between 1-6');
-      }
-      await page.select(peopleSelector, optionValue);
-  
-      const subtotalSelector = '[data-test-id="subtotal-indicator"]';
-      await page.waitForSelector(subtotalSelector);
-      const basePrice = await page.$eval(subtotalSelector, el => parseFloat(el.textContent.replace(/[^0-9.]/g, '')));
-      const pricePerNight = basePrice / numNights;
-      console.log("Price per night: ", pricePerNight);
-      
-      await browser.close();
-      const responseData = {
-        available: true,
-        price: pricePerNight,
-        message: `$${pricePerNight.toFixed(2)} per night`
-      }
-      console.log("Response data: ", responseData);
-      return responseData;
-  
+  if (startDateObj < new Date("2025-05-01")) {
+    return { available: false, price: null, message: "Not available before May 1, 2025" };
+  }
+
+  const pk = date_to_pk_dict[startDate];
+  if (!pk) {
+    return { available: false, price: null, message: "Date not found in mapping" };
+  }
+
+  const url = `https://fareharbor.com/embeds/book/teepeecampground/items/74239/availability/${pk}/book/?full-items=yes&flow=35388`;
+  console.log(url);
+
+  try {
+    const browser = await puppeteer.launch({
+      headless: false,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    });
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: 'networkidle2' });
+    console.log("Page loaded successfully");
+
+    // First wait for the ng-book-counts div to be present
+    try {
+        await page.waitForSelector('div.book-anon-columns-section.with-bottom-border.book-anon', { timeout: 15000 });
+        console.log("book-anon-columns-section div found");
     } catch (error) {
-      console.error(`Error: ${error.message}`);
-      const responseData = {
-        available: false,
-        price: null,
-        message: `Error occurred: ${error.message}`
-      }
-      console.log("Response data: ", responseData);
-      return responseData;
+        console.log('Could not find book-anon-columns-section div');
+        throw new Error('Required book-anon-columns-section div not found');
     }
+
+    // Then wait for price and select elements
+    const priceSelector = `div[data-test-id='${numNights}-night-reservation-customer-type-rate'] span.price-wrap`;
+    const selectSelector = `select[data-test-id='user-type-${numNights}-night-reservation']`;
+    
+    try {
+        await page.waitForSelector(priceSelector, { timeout: 10000 });
+        console.log("Price element found");
+        await page.waitForSelector(selectSelector, { timeout: 10000 });
+        console.log("Select element found");
+    } catch (error) {
+        console.log('Could not find required elements, printing all selects and buttons:');
+        const selects = await page.$$eval('select', selects => selects.map(sel => ({
+            id: sel.id,
+            name: sel.name,
+            'data-test-id': sel.getAttribute('data-test-id'),
+            class: sel.className
+        })));
+        const buttons = await page.$$eval('button', buttons => buttons.map(btn => ({
+            text: btn.textContent,
+            id: btn.id,
+            class: btn.className
+        })));
+        console.log('Selects:', selects);
+        console.log('Buttons:', buttons);
+        throw error;
+    }
+
+        // Add a small delay to ensure the element is fully loaded and interactive
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Select the value "1" from the dropdown
+    // await page.select(selectSelector, '1');
+    await page.evaluate((selector) => {
+        const select = document.querySelector(selector);
+        select.value = '1';
+        select.dispatchEvent(new Event('change'));
+    }, selectSelector);
+    console.log("Selected 1 reservation");
+
+    // Select number of people staying
+    const totalPeople = numAdults + numKids;
+    const peopleSelector = 'select[data-test-id="extended-options-select-action-How many people will be staying at this spot?"]';
+    await page.waitForSelector(peopleSelector);
+    
+    // Map total people to the corresponding option value (as strings)
+    let optionValue;
+    switch(totalPeople) {
+        case 1: optionValue = 'number:3144134'; break;
+        case 2: optionValue = 'number:3144135'; break;
+        case 3: optionValue = 'number:3144136'; break;
+        case 4: optionValue = 'number:3144137'; break;
+        case 5: optionValue = 'number:3144138'; break;
+        case 6: optionValue = 'number:3144139'; break;
+        default: throw new Error('Invalid number of people: must be between 1-6');
+    }
+    await page.select(peopleSelector, optionValue);
+
+    const subtotalSelector = '[data-test-id="subtotal-indicator"]';
+    await page.waitForSelector(subtotalSelector);
+    const basePrice = await page.$eval(subtotalSelector, el => parseFloat(el.textContent.replace(/[^0-9.]/g, '')));
+    const pricePerNight = basePrice / numNights;
+    console.log("Price per night: ", pricePerNight);
+
+    await browser.close();
+    const responseData = {
+      available: true,
+      price: pricePerNight,
+      message: `$${pricePerNight.toFixed(2)} per night`
+    }
+    console.log("Response data: ", responseData);
+    return responseData;
+
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    const responseData = {
+      available: false,
+      price: null,
+      message: `Error occurred: ${error.message}`
+    }
+    console.log("Response data: ", responseData);
+    return responseData;
   }
-  
-  if (require.main === module) {
-    (async () => {
-      const result = await scrapeTeePeeCampgroundTent("06/28/25", "06/30/25", 5, 0);
-      console.log("Scrape result:", result);
-    })();
-  }
-  
-  module.exports = { scrapeTeePeeCampgroundTent };
+}
+
+if (require.main === module) {
+  (async () => {
+    const result = await scrapeTeePeeCampgroundTent("06/28/25", "06/30/25", 5, 0);
+    console.log("Scrape result:", result);
+  })();
+}
+
+module.exports = { scrapeTeePeeCampgroundTent };
