@@ -47,6 +47,10 @@
     font-size: 1.5rem;
 }
 
+.intro-text .instructions-list {
+    font-size: 1.25rem;
+}
+
 @media (max-width: 1024px) {
     .intro-text  {
         flex: 1;
@@ -65,7 +69,7 @@
 
     .intro-image img {
         width: 100%; /* Ensure the image spans the full width */
-        max-height: 30vh; /* Reduce the height further */
+        max-height: 40vh; /* Reduce the height further */
         object-fit: cover; /* Show the entire image without cropping */
         object-position: center; /* Center the image within its container */
     }
@@ -92,12 +96,17 @@
     .intro-text h3 {
         font-size: 1rem;
         padding: 0 5%;
-        padding-bottom: 20px;
-        text-align: center;
+        text-align: left;
     }
 
     .intro-text h1 .dash {
         display: none;
+    }
+
+    .intro-text .instructions-list {
+        font-size: 1rem;
+        text-align: left;
+        padding-bottom: 20px;
     }
 }
 
@@ -243,6 +252,7 @@
     align-items: flex-start;
     margin-left: 10px;
     color: black;
+    width: 100%;
 }
 
 .toggle-header h1 {

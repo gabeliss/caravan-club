@@ -42,7 +42,7 @@
         "title": "Leelanau Pines Campground",
         "address": "6500 E. Leelanau Pines Drive, Cedar, MI 49621",
         "cityAndState": "Leelanau, MI",
-        "content": "Located on the picturesque shores of Lake Leelanau, Leelanau Pines Campground is a prime spot for waterfront camping. Tent sites offer stunning lake views and direct access to the water, making it a haven for boating, fishing, and water sports enthusiasts. Campers rave about the peaceful sunrise views over the lake, and the campground’s proximity to the wineries of Leelanau Peninsula adds a perfect touch for those looking to indulge in local culture.",
+        "content": "Located on the picturesque shores of Lake Leelanau, Leelanau Pines Campground is a prime spot for waterfront camping. Tent sites offer stunning lake views and direct access to the water, making it a haven for boating, fishing, and water sports enthusiasts. Campers rave about the peaceful sunrise views over the lake, and the campground's proximity to the wineries of Leelanau Peninsula adds a perfect touch for those looking to indulge in local culture.",
         "available": false,
         "price": 0,
         "name": "",
@@ -75,6 +75,24 @@
         "checkOutTime": "1:00 PM",
         "guidelines": "1 Tent, 8 Guests Maximum Per Site",
         "cancellationPolicy": "If you cancel your reservation more than 2 weeks in advance, you will receive a refund minus a $25 cancellation fee per campsite, or full refund issued as camp credit. For cancellations made at least 1 week in advance, you will receive 50% of the reservation as camp credit, with the other 50% forfeited. If you cancel less than 1 week before your arrival, the full reservation amount will be forfeited. For changes to your reservation, if you make adjustments to your arrival or departure dates more than 2 weeks in advance, you are allowed one courtesy change. However, any subsequent changes will incur a $15 service fee."
+      },
+      "whiteWaterPark": {
+        "title": "White Water Park Campground",
+        "address": "10000 E. Leelanau Pines Drive, Cedar, MI 49621",
+        "cityAndState": "Leelanau, MI",
+        "content": "White Water Park Campground is a family-friendly campground located on the shores of Lake Leelanau, offering a range of amenities and activities for campers of all ages. The campground features a sandy beach, a playground, and a pool, making it an ideal spot for families looking to enjoy the lake and its surrounding natural beauty.",
+        "available": false,
+        "price": 0,
+        "name": "",
+        "taxRate": 0,
+        "fixedFee": 0,
+        "message": "Unavailable",
+        "imageUrls": [
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/teePee1.jpg",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/teePee2.jpg",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/teePee3.jpg"
+        ],
+        "distanceToTown": "15 minutes from Suttons Bay, 20 minutes from downtown Leland, and 25 minutes from Traverse City"
       }
     },
     "lodging": {}
@@ -121,14 +139,43 @@
         "title": "TeePee Campground",
         "address": "11262 US-23, Mackinaw City, MI 49701",
         "cityAndState": "Mackinac City, MI",
-        "content": "Tee Pee Camground description",
+        "content": "Tee Pee Campground is a charming, family-owned private campground overlooking the Straits of Mackinac with spectacular views of the Mackinac Bridge, Mackinac Island, and Great Lakes Freighter traffic. With easy access to Mackinac Island ferries, historic sites, and outdoor adventures, it's an ideal base for exploring Mackinac Island.",
         "available": false,
         "price": 0,
         "name": "",
         "taxRate": 0.12,
         "fixedFee": 0,
-        "offerings": "Tent, x Sites",
-        "message": "Unavailable"
+        "offerings": "Tent, 100 Sites",
+        "message": "Unavailable",
+        "imageUrls": [
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/teePee1.jpg",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/teePee2.jpg",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/teePee3.jpg",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/teePee4.jpg"
+        ],
+        "amenities": [
+          "Water & electric on all sites",
+          "Fire pit",
+          "Picnic table",
+          "BBQ",
+          "Sandy Beach",
+          "Pet-friendly",
+          "Bathrooms",
+          "Showers",
+          "Camp Store",
+          "Basketball court",
+          "Volleyball court",
+          "Wi-Fi",
+          "Shuttle to Mackinac Island ferries",
+          "Stunning views of Mackinac Bridge",
+          "Discounted Ferry Tickets",
+          "Free shuttle to Mackinac Island ferries"
+        ],
+        "checkInTime": "12:00 PM",
+        "checkOutTime": "11:00-12:00 PM",
+        "guidelines": "6 people maximum per site. One car maximum per site. Rates are per site for 4 people. Additional people can be added for $5 a person.",
+        "cancellationPolicy": "Cancellations made at least one week prior to arrival (7 days by 12:00 PM): A $10 service fee will be deducted from your deposit, and the remaining balance will be refunded. If you do not show up on the scheduled arrival date and fail to contact the campground, the reservation will be marked as a \"no show.\" No refund will be issued, and the site will be made available for rent after 12 p.m. the following day. Cancellations must be made via phone call, not email. If you're unable to reach Tee Pee Campground, please leave a message, and they will return your call. Date changes are allowed without penalty.",
+        "distanceToTown": "10 minutes from downtown Mackinac City, 20 minutes from Indian River, 25 minutes from Cheboygan, 30 minutes from Mackinac Island"
       }
     },
     "lodging": {}
@@ -139,7 +186,7 @@
       "title": "Uncle Ducky's - Paddlers Village",
       "address": "E4947 M-28, Au Train, MI 49806",
       "cityAndState": "Au Train, MI",
-      "content": "Uncle Ducky's in Munising is your gateway to the breathtaking beauty of Michigan's Upper Peninsula, located on the shores of Lake Superior. This campground is famous for its Pictured Rocks kayaking tours, offering campers a unique chance to explore one of Michigan’s most iconic natural wonders. Tent sites are located just steps from the lake, and the stunning views of Superior, combined with easy access to outdoor adventures, make this a favorite for nature lovers.",
+      "content": "Uncle Ducky's in Munising is your gateway to the breathtaking beauty of Michigan's Upper Peninsula, located on the shores of Lake Superior. This campground is famous for its Pictured Rocks kayaking tours, offering campers a unique chance to explore one of Michigan's most iconic natural wonders. Tent sites are located just steps from the lake, and the stunning views of Superior, combined with easy access to outdoor adventures, make this a favorite for nature lovers.",
       "available": false,
       "price": 0,
       "name": "",
@@ -166,7 +213,7 @@
       "checkInTime": "3:00 PM",
       "checkOutTime": "11:00 AM",
       "guidelines": "2 Tents, 8 Guests Maximum Per Site",
-      "cancellationPolicy": "A standard $25 cancellation fee applies to all reservations. You may cancel without additional penalties up to 14 days before your arrival date. Cancellations made within 14 days will incur the cancellation fee plus the cost of one full night’s stay. Unfortunately, reservations canceled within 72 hours of check-in will not receive a refund."
+      "cancellationPolicy": "A standard $25 cancellation fee applies to all reservations. You may cancel without additional penalties up to 14 days before your arrival date. Cancellations made within 14 days will incur the cancellation fee plus the cost of one full night's stay. Unfortunately, reservations canceled within 72 hours of check-in will not receive a refund."
     },
     "touristPark": {
       "title": "Tourist Park Campground",
@@ -232,7 +279,7 @@
       "checkInTime": "2:00 PM",
       "checkOutTime": "11:00 AM",
       "guidelines": "6 Guests Maximum Per Site, 2 vehicles per site",
-      "cancellationPolicy": "Full payment is required at the time of reservation, and all cancellations or changes must be submitted via email to fortsuperiorcampground@gmail.com. A $25 cancellation fee applies for cancellations made up to two weeks prior to check-in; within two weeks, the fee is $25 plus one full night’s stay. No refunds will be issued for cancellations within three days of check-in or for early check-outs, and credit card processing fees are non-refundable."
+      "cancellationPolicy": "Full payment is required at the time of reservation, and all cancellations or changes must be submitted via email to fortsuperiorcampground@gmail.com. A $25 cancellation fee applies for cancellations made up to two weeks prior to check-in; within two weeks, the fee is $25 plus one full night's stay. No refunds will be issued for cancellations within three days of check-in or for early check-outs, and credit card processing fees are non-refundable."
     }
   },
     "lodging": {}

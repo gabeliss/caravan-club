@@ -193,7 +193,15 @@ function BookNorthernMichiganPage() {
             {location.state.tripTitle.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
             <span><span className="dash"> - </span>{location.state.nights} Night Road Trip</span>
           </h1>
-          <h3>We've simplified road trip planning, letting you focus on the fun instead of the details. Each accommodation is handpicked and vetted by the CaraVan Trip Plan team, saving you hours of searching for availability and the perfect place to stay. </h3>
+          <h3><strong>Instructions:</strong><br/><br/>
+          <span className="instructions-list">
+            1. Review the nights and dates selected for your trip<br/><br/>
+            2. Browse the campground drop downs under each location<br/><br/>
+            3. Select 1 campground per location based on your preferences<br/><br/>
+            4. Once all your options have been selected, click "Review Trip" to see your trip summary<br/><br/>
+            *If there is no availability, consider changing the dates selected or wait until more sites have been released
+          </span>
+          </h3>
         </div>
       </div>
       <div className='nights'>

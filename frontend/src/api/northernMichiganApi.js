@@ -13,6 +13,7 @@ const apiRouteMappingScrape = {
     'uncleDucky': 'uncleDuckysTent',
     'touristPark': 'touristParkTent',
     'fortSuperior': 'fortSuperiorTent',
+    'whiteWaterPark': 'whiteWaterParkTent',
 };
 
 export const fetchAccommodationDetails = async (selected_accommodation, start_date, end_date, num_adults, num_kids) => {

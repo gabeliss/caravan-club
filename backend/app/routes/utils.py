@@ -20,6 +20,7 @@ def get_accommodation_email_data(accommodation_id):
     accommodation_map = {
         "timberRidge": ("traverseCity", "timberRidge"),
         "leelanauPines": ("traverseCity", "leelanauPines"),
+        "whiteWaterPark": ("traverseCity", "whiteWaterPark"),
         "indianRiver": ("mackinacCity", "indianRiver"),
         "teePeeCampground": ("mackinacCity", "teePeeCampground"),
         "uncleDucky": ("picturedRocks", "uncleDucky"),
