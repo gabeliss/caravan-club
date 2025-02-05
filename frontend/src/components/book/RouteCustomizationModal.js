@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import InteractiveMap from './InteractiveMap';
 import '../../styles/routecustomization.css';
 
 function RouteCustomizationModal({ show, onClose, onConfirm, initialSegments }) {
@@ -23,6 +24,7 @@ function RouteCustomizationModal({ show, onClose, onConfirm, initialSegments }) 
         name: city,
         dates: dates
       }));
+      console.log("formattedSegments", formattedSegments);
       setSegments(formattedSegments);
     }
   }, [initialSegments]);
@@ -112,11 +114,7 @@ function RouteCustomizationModal({ show, onClose, onConfirm, initialSegments }) 
         
         <div className="route-content">
           <div className="map-container">
-            <img 
-              src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/michigan-map.png" 
-              alt="Michigan route map" 
-              className="route-map"
-            />
+            <InteractiveMap segments={segments} />
           </div>
 
           <div className="route-details">

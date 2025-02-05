@@ -111,3 +111,24 @@
   border-bottom: 1px solid #e0e0e0;
   margin-bottom: 1rem;
 }
+
+.location-label {
+  background: white !important;
+  border: none !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2) !important;
+  padding: 2px 6px !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+}
+
+.leaflet-tooltip-top.location-label:before {
+  display: none;
+}
+
+.location-pin {
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+}
+
+.vintage-map {
+  filter: sepia(100%) saturate(70%);
+}
