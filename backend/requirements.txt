@@ -29,3 +29,5 @@ sendgrid==6.11.0
 python-http-client==3.3.7
 starkbank-ecdsa==2.2.0
 pytz==2024.1
+boto3==1.34.69
+botocore==1.34.69

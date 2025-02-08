@@ -144,8 +144,8 @@ async function payTimberRidgeTent(startDate, endDate, numAdults, numKids, paymen
     console.log(`Total price found: $${totalPrice}`);
 
     responseData.total = totalPrice;
-    responseData.base_price = totalPrice - 3;
-    responseData.tax = 3;
+    responseData.base_price = totalPrice;
+    responseData.tax = 0;
     
     if (executePayment) {
         console.log('Executing payment...');

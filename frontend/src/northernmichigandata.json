@@ -10,7 +10,7 @@
         "price": 0,
         "name": "",
         "taxRate": 0,
-        "fixedFee": 3,
+        "fixedFee": 0,
         "message": "Unavailable",
         "imageUrls": [
           "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/timberRidge1.png",
@@ -85,7 +85,7 @@
         "price": 0,
         "name": "",
         "taxRate": 0,
-        "fixedFee": 0,
+        "fixedFee": 8,
         "message": "Unavailable",
         "imageUrls": [
           "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/teePee1.jpg",

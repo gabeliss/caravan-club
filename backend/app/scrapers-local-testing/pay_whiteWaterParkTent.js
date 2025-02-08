@@ -53,7 +53,7 @@ async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, pay
                     return rateName && rateName !== 'Loading...';
                 });
             },
-            { timeout: 3000 }
+            { timeout: 30000 }
         );
         console.log("Rates finished loading");
 
@@ -177,9 +177,66 @@ async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, pay
                         await continueButton.evaluate(el => el.click());
                         console.log("Clicked continue to payment");
                         
-                        // Wait for payment form to load
-                        await page.waitForSelector('#payment-form');
-                        console.log("Payment form loaded");
+                        // Wait for payment form to load with multiple possible selectors
+                        console.log("Waiting for payment form...");
+                        try {
+                            await Promise.race([
+                                page.waitForSelector('#payment-form', { timeout: 30000 }),
+                                page.waitForSelector('form[data-testid="payment-form"]', { timeout: 30000 }),
+                                page.waitForSelector('form.payment-form', { timeout: 30000 }),
+                                page.waitForSelector('input[name="firstName"]', { timeout: 30000 })
+                            ]);
+                            console.log("Payment form detected");
+                        } catch (error) {
+                            console.log("Initial payment form detection failed. Logging page state...");
+                            
+                            // Log all buttons and forms on the page
+                            const pageState = await page.evaluate(() => {
+                                const buttons = Array.from(document.querySelectorAll('button')).map(button => ({
+                                    text: button.textContent.trim(),
+                                    id: button.id,
+                                    classes: button.className,
+                                    isVisible: button.offsetParent !== null
+                                }));
+                                
+                                const forms = Array.from(document.querySelectorAll('form')).map(form => ({
+                                    id: form.id,
+                                    classes: form.className,
+                                    action: form.action
+                                }));
+                                
+                                const inputs = Array.from(document.querySelectorAll('input')).map(input => ({
+                                    name: input.name,
+                                    type: input.type,
+                                    id: input.id,
+                                    isVisible: input.offsetParent !== null
+                                }));
+
+                                return { buttons, forms, inputs };
+                            });
+                            
+                            console.log("Current page buttons:", JSON.stringify(pageState.buttons, null, 2));
+                            console.log("Current page forms:", JSON.stringify(pageState.forms, null, 2));
+                            console.log("Current page inputs:", JSON.stringify(pageState.inputs, null, 2));
+                            
+                            // Add an additional delay and retry
+                            console.log("Waiting additional time...");
+                            await new Promise(resolve => setTimeout(resolve, 5000));
+                            
+                            // Force a refresh if needed
+                            await page.reload({ waitUntil: 'networkidle0' });
+                            console.log("Page reloaded, waiting for payment form again...");
+                            
+                            // Try one more time
+                            await Promise.race([
+                                page.waitForSelector('#payment-form', { timeout: 30000 }),
+                                page.waitForSelector('input[name="firstName"]', { timeout: 30000 })
+                            ]);
+                        }
+                        console.log("Payment form loaded successfully");
+
+                        // Add a small delay before filling out the form
+                        await new Promise(resolve => setTimeout(resolve, 2000));
 
                         // Fill out contact information
                         console.log("Filling out contact information");
@@ -256,7 +313,7 @@ if (require.main === module) {
             expiry_date: "01/30",
             cvc: "1234"
         }
-        const result = await pay_whiteWaterParkTent("04/08/25", "04/10/25", 3, 1, paymentInfo, false);
+        const result = await payWhiteWaterParkTent("04/16/25", "04/17/25", 1, 0, paymentInfo, false);
         console.log("Scrape result:", result);
     })();
 }

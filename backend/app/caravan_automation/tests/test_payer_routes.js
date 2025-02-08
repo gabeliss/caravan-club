@@ -42,13 +42,8 @@ const testPayerRoute = async (routeName, baseUrl, testParams) => {
   }
 };
 
-const runPayerTests = async (testParams, allowedRoutes) => {
-  const results = await Promise.all(
-    routesConfig.payers
-      .filter(route => allowedRoutes.includes(route))
-      .map(route => testPayerRoute(route, routesConfig.baseUrl, testParams))
-  );
-  return results;
+const runPayerTests = async (testParams, routeName) => {
+  return testPayerRoute(routeName, routesConfig.baseUrl, testParams);
 };
 
 module.exports = { runPayerTests };

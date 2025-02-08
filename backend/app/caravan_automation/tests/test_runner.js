@@ -1,16 +1,23 @@
 const { runScraperTests } = require('./test_scraper_routes');
 const { runPayerTests } = require('./test_payer_routes');
 const { formatTestResults, sendEmailReport, generateRandomDates, generateRandomGuests } = require('./utils');
+const routesConfig = require('./routes');
 
 (async () => {
   try {
     // Generate test parameters once
-    const dates = generateRandomDates();
-    const numNights = Math.ceil((new Date(dates.endDate) - new Date(dates.startDate)) / (1000 * 60 * 60 * 24));
+    const whiteWaterDates = generateRandomDates('whiteWaterParkTent_scraper');
+    const standardDates = generateRandomDates(); // This will use May-August dates
     const guests = generateRandomGuests();
-    const testParams = {
-      dates,
-      guests,
+    
+    // Calculate number of nights (using standardDates, since both date ranges use same duration)
+    const startDate = new Date(standardDates.startDate);
+    const endDate = new Date(standardDates.endDate);
+    const numNights = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+    
+    const testParams = (routeName) => ({
+      dates: routeName.startsWith('whiteWaterParkTent') ? whiteWaterDates : standardDates,
+      guests: guests,
       paymentInfo: {
         first_name: "Test",
         last_name: "User",
@@ -27,10 +34,15 @@ const { formatTestResults, sendEmailReport, generateRandomDates, generateRandomG
         expiry_date: "01/30",
         cvc: "123"
       }
-    };
+    });
 
     console.log('Running scraper tests...');
-    const scraperResults = await runScraperTests(testParams);
+    const scraperResults = await Promise.all(
+      routesConfig.scrapers.map(route => {
+        const params = testParams(route);
+        return runScraperTests(params, route);
+      })
+    );
 
     // Only run payer tests for successful scraper tests
     const successfulScrapers = scraperResults
@@ -38,21 +50,41 @@ const { formatTestResults, sendEmailReport, generateRandomDates, generateRandomG
       .map(result => result.routeName.replace('_scraper', '_payer'));
 
     console.log('Running payer tests for successful scraper routes...');
-    const payerResults = await runPayerTests(testParams, successfulScrapers);
+    const payerResults = await Promise.all(
+      successfulScrapers.map(route => {
+        const params = testParams(route);
+        return runPayerTests(params, route);
+      })
+    );
 
     // Combine and format results
     const htmlReport = `
       <h1>Automation Test Report</h1>
       <h2>Test Parameters</h2>
+      <h3>Standard Dates (May-August)</h3>
       <table border="1" style="border-collapse: collapse; width: 100%;">
         <tr>
           <th>Start Date</th>
-          <td>${dates.startDate}</td>
+          <td>${standardDates.startDate}</td>
         </tr>
         <tr>
           <th>End Date</th>
-          <td>${dates.endDate}</td>
+          <td>${standardDates.endDate}</td>
         </tr>
+      </table>
+      <h3>WhiteWater Dates (April)</h3>
+      <table border="1" style="border-collapse: collapse; width: 100%;">
+        <tr>
+          <th>Start Date</th>
+          <td>${whiteWaterDates.startDate}</td>
+        </tr>
+        <tr>
+          <th>End Date</th>
+          <td>${whiteWaterDates.endDate}</td>
+        </tr>
+      </table>
+      <h3>Guest Information</h3>
+      <table border="1" style="border-collapse: collapse; width: 100%;">
         <tr>
           <th>Adults</th>
           <td>${guests.numAdults}</td>

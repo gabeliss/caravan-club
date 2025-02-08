@@ -39,23 +39,37 @@ async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) 
             page.waitForSelector('.rate', { timeout: 10000 }),
             page.waitForSelector('.alert-danger', { timeout: 10000 })
         ]);
+        console.log("Found rate or alert elements");
+
+        // Add a wait for the loading state to complete
+        await page.waitForFunction(
+            () => {
+                const rates = document.querySelectorAll('.rate');
+                return Array.from(rates).some(rate => {
+                    const rateName = rate.querySelector('.rate-name')?.textContent;
+                    return rateName && rateName !== 'Loading...';
+                });
+            },
+            { timeout: 30000 }
+        );
+        console.log("Rates finished loading");
 
         // Check for no availability alerts
         const alertElements = await page.$$('.alert-danger');
         for (const alert of alertElements) {
             const alertText = await alert.evaluate(el => el.textContent);
             if (alertText.toLowerCase().includes('no availability')) {
+                console.log("No availability found");
                 await browser.close();
-                return {
-                    available: false,
-                    price: null,
-                    message: "No availability for selected dates"
-                };
+                return responseData;
             }
         }
 
         // Look for tent site rates
-        const rateElements = await page.$$('.rate');
+        console.log("Searching for tent sites");
+        const rateElements = await page.$$('.rate', { timeout: 10000 });
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        console.log("Found rate elements:", rateElements.length);
         for (const rate of rateElements) {
             const rateName = await rate.$eval('.rate-name', el => el.textContent);
             if (rateName.includes('Tent Sites -  Electric Only')) {

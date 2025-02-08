@@ -21,7 +21,7 @@ async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) 
         console.log(`Navigating to URL: ${url}`);
 
         const browser = await puppeteer.launch({
-            headless: true,
+            headless: false,
             args: ["--no-sandbox", "--disable-setuid-sandbox"]
         });
 
@@ -36,30 +36,47 @@ async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) 
             page.waitForSelector('.rate', { timeout: 10000 }),
             page.waitForSelector('.alert-danger', { timeout: 10000 })
         ]);
+        console.log("Found rate or alert elements");
+
+        // Add a wait for the loading state to complete
+        await page.waitForFunction(
+            () => {
+                const rates = document.querySelectorAll('.rate');
+                return Array.from(rates).some(rate => {
+                    const rateName = rate.querySelector('.rate-name')?.textContent;
+                    return rateName && rateName !== 'Loading...';
+                });
+            },
+            { timeout: 30000 }
+        );
+        console.log("Rates finished loading");
 
         // Check for no availability alerts
         const alertElements = await page.$$('.alert-danger');
         for (const alert of alertElements) {
             const alertText = await alert.evaluate(el => el.textContent);
             if (alertText.toLowerCase().includes('no availability')) {
+                console.log("No availability found");
                 await browser.close();
-                return {
-                    available: false,
-                    price: null,
-                    message: "No availability for selected dates"
-                };
+                return responseData;
             }
         }
 
         // Look for tent site rates
-        const rateElements = await page.$$('.rate');
+        console.log("Searching for tent sites");
+        const rateElements = await page.$$('.rate', { timeout: 10000 });
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        console.log("Found rate elements:", rateElements.length);
         for (const rate of rateElements) {
             const rateName = await rate.$eval('.rate-name', el => el.textContent);
+            console.log("Checking rate:", rateName);
             if (rateName.includes('Tent Sites -  Electric Only')) {
+                console.log("Found tent site rate");
                 const priceText = await rate.$eval('strong', el => 
                     el.textContent.trim().replace('$', '').replace(' USD', '')
                 );
                 const price = parseFloat(priceText);
+                console.log(`Found price: $${price}`);
                 await browser.close();
                 return {
                     available: true,
@@ -69,6 +86,7 @@ async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) 
             }
         }
 
+        console.log("No tent sites found");
         await browser.close();
         return {
             available: false,
@@ -89,7 +107,7 @@ async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) 
 // Add test execution when run directly
 if (require.main === module) {
     (async () => {
-        const result = await scrape_whiteWaterParkTent("04/08/25", "04/10/25", 3, 1);
+        const result = await scrapeWhiteWaterParkTent("04/08/25", "04/10/25", 3, 1);
         console.log("Scrape result:", result);
     })();
 }

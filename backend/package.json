@@ -9,5 +9,8 @@
   },
   "devDependencies": {
     "serverless-python-requirements": "^6.1.1"
+  },
+  "scripts": {
+    "test:automation": "node app/caravan_automation/tests/test_runner.js"
   }
 }

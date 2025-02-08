@@ -1,4 +1,5 @@
 import { getAllTrips } from '../api/adminApi';
+import { generateConfirmationNumber } from '../api/northernMichiganApi';
 
 export function adjustDate(startDate, offset) {
     // Convert startDate to a Date object
@@ -29,16 +30,17 @@ export function calculateTotalForStay(cityKey, selected_accommodation, accommoda
     const taxRate = accommodation.taxRate || 0;
     const totalForStay = priceForStay + (priceForStay * taxRate);
 
+    console.log('accommodation', accommodation);
     const fixedFee = accommodation.fixedFee || 0;
     const totalForStayWithFee = totalForStay + fixedFee;
-
+    console.log('totalForStayWithFee', totalForStayWithFee);
     let paymentAmount = totalForStayWithFee;
     if (accommodation.partialPayment) {
         paymentAmount = totalForStayWithFee / 2;
     }
 
     return {
-        total: totalForStay,
+        total: totalForStayWithFee,
         payment: paymentAmount,
         disclaimer: accommodation.disclaimer || ''
     };
@@ -75,21 +77,11 @@ export function formatDates(startDate, endDate) {
 
 export const generateOrderNumber = async () => {
     try {
-        // Get all trips to check existing confirmation numbers
-        const response = await getAllTrips();
-        const existingNumbers = new Set(response.data.trips.map(trip => trip.confirmation_number));
-        
-        // Keep generating until we find a unique number
-        while (true) {
-            const digits = Math.floor(1000000 + Math.random() * 9000000).toString();
-            const candidateNumber = `C${digits}`;
-            if (!existingNumbers.has(candidateNumber)) {
-                return candidateNumber;
-            }
-        }
+        const response = await generateConfirmationNumber();
+        return response.data.confirmation_number;
     } catch (error) {
-        // If we can't fetch existing numbers, generate one and hope for the best
-        console.error('Failed to fetch existing order numbers:', error);
+        console.error('Failed to generate confirmation number:', error);
+        // Fallback to generate a number locally if the API fails
         const digits = Math.floor(1000000 + Math.random() * 9000000).toString();
         return `C${digits}`;
     }

@@ -84,8 +84,8 @@
                 <li><strong>Cancellations & Changes:</strong> Any modifications to your reservations should be made directly 
                     with the campgrounds listed in your itinerary You will receive confirmation emails directly from 
                     each site with confirmation numbers and details. </li>
-                <li><strong>Itinerary Included:</strong> Attached to this email is a detailed itinerary with 
-                    recommendations for restaurants, activities, hikes, and nearby towns to enhance your trip.</li>
+                <li><strong>Itinerary:</strong> Click <a href="{{ url_for('booking.get_itinerary', confirmation_number=confirmation_number, _external=True) }}" style="color: #3E624F; font-weight: bold;">here</a> 
+                    to download your detailed itinerary with recommendations for restaurants, activities, hikes, and nearby towns to enhance your trip.</li>
             </ul>
         </div>
         <div class="support-text">

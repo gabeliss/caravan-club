@@ -143,6 +143,8 @@ button, .header-right img {
     justify-content: center;
     text-decoration: none;
     margin: 0;
+    font-family: inherit;
+    font-weight: bolder;
   }
 
   .mobile-trips-dropdown {
@@ -498,6 +500,11 @@ footer a {
 /* Trips Dropdown Styles */
 .trips-dropdown-container {
   position: relative;
+}
+
+.header-left button {
+  font-family: inherit;
+  font-weight: bolder;
 }
 
 .trips-dropdown {

@@ -36,13 +36,8 @@ const testScraperRoute = async (routeName, baseUrl, testParams) => {
   }
 };
 
-const runScraperTests = async (testParams) => {
-  const results = await Promise.all(
-    routesConfig.scrapers.map(route =>
-      testScraperRoute(route, routesConfig.baseUrl, testParams)
-    )
-  );
-  return results;
+const runScraperTests = async (testParams, routeName) => {
+  return testScraperRoute(routeName, routesConfig.baseUrl, testParams);
 };
 
 module.exports = { runScraperTests };

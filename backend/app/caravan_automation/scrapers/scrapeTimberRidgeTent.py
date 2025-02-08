@@ -73,7 +73,7 @@ def scrape_timberRidgeTent(start_date, end_date, num_adults, num_kids):
 
 
 def main():
-    timberRidgeData = scrape_timberRidgeTent('06/04/25', '06/06/25', 3, 1)
+    timberRidgeData = scrape_timberRidgeTent('06/21/25', '06/23/25', 4, 1)
     print(timberRidgeData)
 
 if __name__ == '__main__':

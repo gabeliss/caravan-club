@@ -2,9 +2,17 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const routesConfig = require('./routes');
 
-const generateRandomDates = () => {
-  const startMin = new Date('2025-05-25');
-  const startMax = new Date('2025-08-28');
+const generateRandomDates = (routeName) => {
+  let startMin, startMax;
+  
+  if (routeName === 'whiteWaterParkTent_scraper' || routeName === 'whiteWaterParkTent_payer') {
+    startMin = new Date('2025-04-01');
+    startMax = new Date('2025-04-30');
+  } else {
+    startMin = new Date('2025-05-25');
+    startMax = new Date('2025-08-28');
+  }
+  
   const randomStart = new Date(startMin.getTime() + Math.random() * (startMax.getTime() - startMin.getTime()));
   // const randomStart = new Date('2025-06-08T00:00:00'); // Add time to avoid timezone issues
   
@@ -37,7 +45,7 @@ const generateRandomGuests = () => {
 };
 
 const siteConfig = {
-  timberRidgeTent: { taxRate: 0, fixedFee: 3 },
+  timberRidgeTent: { taxRate: 0, fixedFee: 0 },
   leelanauPinesTent: { taxRate: 0, fixedFee: -0.01 },
   indianRiverTent: { taxRate: 0, fixedFee: 0 },
   teePeeCampgroundTent: { taxRate: 0.12, fixedFee: 0 },

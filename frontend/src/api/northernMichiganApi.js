@@ -69,3 +69,7 @@ export const createTrip = async (tripPayload) => {
     }
 };
 
+export const generateConfirmationNumber = () => {
+    return axios.get(`${BASE_URL}/api/generate-confirmation`);
+};
+
