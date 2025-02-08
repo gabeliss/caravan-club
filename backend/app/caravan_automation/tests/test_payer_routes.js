@@ -17,10 +17,18 @@ const testPayerRoute = async (routeName, baseUrl, testParams) => {
   };
   
   try {
-    const response = await axios.post(`${baseUrl}/api/pay/${routeName}`, payload, {
+    // Log the full request details
+    const requestUrl = `${baseUrl}/api/pay/${routeName}`;
+    console.log(`Making request to: ${requestUrl}`);
+    console.log('With payload:', JSON.stringify(payload, null, 2));
+    console.log('Base URL from config:', baseUrl);
+
+    const response = await axios.post(requestUrl, payload, {
       headers: { 'Content-Type': 'application/json' }
     });
     const duration = new Date() - startTime;
+
+    console.log(`Response for ${routeName}:`, response.data);
 
     return {
       routeName,
@@ -31,6 +39,14 @@ const testPayerRoute = async (routeName, baseUrl, testParams) => {
     };
   } catch (error) {
     const duration = new Date() - startTime;
+
+    // Enhanced error logging
+    console.error(`Error details for ${routeName}:`, {
+      message: error.message,
+      response: error.response?.data,
+      baseUrl: baseUrl,
+      stack: error.stack
+    });
 
     return {
       routeName,
@@ -43,6 +59,7 @@ const testPayerRoute = async (routeName, baseUrl, testParams) => {
 };
 
 const runPayerTests = async (testParams, routeName) => {
+  console.log(`Starting payer test for ${routeName} with base URL: ${routesConfig.baseUrl}`);
   return testPayerRoute(routeName, routesConfig.baseUrl, testParams);
 };
 
