@@ -4,17 +4,25 @@ const routesConfig = require('./routes');
 const testScraperRoute = async (routeName, baseUrl, testParams) => {
   const startTime = new Date();
   const { dates, guests } = testParams;
+  
   try {
-    console.log(`Testing scraper: ${routeName}...`);
-    const response = await axios.get(`${baseUrl}/api/scrape/${routeName}`, {
-      params: { 
-        num_adults: guests.numAdults, 
-        num_kids: guests.numKids, 
-        start_date: dates.startDate, 
-        end_date: dates.endDate 
-      }
-    });
+    // Log the full request details
+    const requestUrl = `${baseUrl}/api/scrape/${routeName}`;
+    const requestParams = { 
+      num_adults: guests.numAdults, 
+      num_kids: guests.numKids, 
+      start_date: dates.startDate, 
+      end_date: dates.endDate 
+    };
+    
+    console.log(`Making request to: ${requestUrl}`);
+    console.log('With parameters:', requestParams);
+    console.log('Base URL from config:', baseUrl);
+
+    const response = await axios.get(requestUrl, { params: requestParams });
     const duration = new Date() - startTime;
+
+    console.log(`Response for ${routeName}:`, response.data);
 
     return {
       routeName,
@@ -25,6 +33,14 @@ const testScraperRoute = async (routeName, baseUrl, testParams) => {
     };
   } catch (error) {
     const duration = new Date() - startTime;
+    
+    // Enhanced error logging
+    console.error(`Error details for ${routeName}:`, {
+      message: error.message,
+      response: error.response?.data,
+      baseUrl: baseUrl,
+      stack: error.stack
+    });
 
     return {
       routeName,
@@ -37,6 +53,7 @@ const testScraperRoute = async (routeName, baseUrl, testParams) => {
 };
 
 const runScraperTests = async (testParams, routeName) => {
+  console.log(`Starting scraper test for ${routeName} with base URL: ${routesConfig.baseUrl}`);
   return testScraperRoute(routeName, routesConfig.baseUrl, testParams);
 };
 

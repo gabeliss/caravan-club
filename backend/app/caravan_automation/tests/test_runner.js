@@ -38,11 +38,28 @@ const routesConfig = require('./routes');
 
     console.log('Running scraper tests...');
     const scraperResults = await Promise.all(
-      routesConfig.scrapers.map(route => {
+      routesConfig.scrapers.map(async route => {
         const params = testParams(route);
-        return runScraperTests(params, route);
+        console.log(`Testing ${route} with params:`, {
+          dates: params.dates,
+          guests: params.guests,
+          // Don't log payment info for security
+        });
+        try {
+          return await runScraperTests(params, route);
+        } catch (error) {
+          console.error(`Error in scraper test for ${route}:`, error);
+          return {
+            routeName: route,
+            status: 'FAILED',
+            error: error.message,
+            data: null
+          };
+        }
       })
     );
+
+    console.log('Scraper results:', scraperResults);
 
     // Only run payer tests for successful scraper tests
     const successfulScrapers = scraperResults
