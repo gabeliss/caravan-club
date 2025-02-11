@@ -334,11 +334,15 @@ async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, pay
                 responseData.payment_successful = true;
             }
 
+            console.log("Response data:", responseData);
+            await browser.close();
+            console.log("Browser closed");
             return responseData;
         }
 
         console.log("No tent sites found");
         await browser.close();
+        console.log("Browser closed");
         return responseData;
 
     } catch (error) {

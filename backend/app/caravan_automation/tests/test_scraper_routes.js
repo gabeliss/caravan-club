@@ -49,7 +49,6 @@ const testScraperRoute = async (routeName, baseUrl, testParams) => {
 };
 
 const runScraperTests = async (testParams, routeName) => {
-  console.log(`Starting scraper test for ${routeName} with base URL: ${routesConfig.baseUrl}`);
   return testScraperRoute(routeName, routesConfig.baseUrl, testParams);
 };
 
