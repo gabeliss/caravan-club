@@ -78,7 +78,10 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         break;
       }
     }
-    if (!clickedPriceLowHigh) throw new Error('"Price (Low - High)" option not found.');
+    if (!clickedPriceLowHigh) {
+      console.log('Available sort options:', sortText);
+      throw new Error('"Price (Low - High)" option not found.');
+    }
 
     let clickedTentSites = false;
     for (const option of sortOptions) {
@@ -555,32 +558,10 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
 
   } catch (error) {
     console.error(`Error during payment: ${error.message}`);
+    responseData.error = error.message;
     console.log("Response data:", responseData);
     return responseData;
   }
-}
-
-if (require.main === module) {
-    (async () => {
-        const paymentInfo = {
-            first_name: "Lebron",
-            last_name: "James",
-            email: "lebronjames@gmail.com",
-            phone_number: "3134321234",
-            street_address: "1234 Rocky Rd",
-            city: "San Francisco",
-            state: "CA",
-            zip_code: "45445",
-            country: "USA",
-            cardholder_name: "Lebron James",
-            card_number: "2342943844322224",
-            card_type: "Visa",
-            expiry_date: "01/30",
-            cvc: "1234"
-        }
-        const result = await payLeelanauPinesTent("06/04/25", "06/06/25", 2, 1, paymentInfo);
-        console.log("Pay result:", result);
-    })();
 }
 
 module.exports = { payLeelanauPinesTent };

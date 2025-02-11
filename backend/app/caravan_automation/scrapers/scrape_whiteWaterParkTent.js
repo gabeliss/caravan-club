@@ -42,16 +42,44 @@ async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) 
         console.log("Found rate or alert elements");
 
         // Add a wait for the loading state to complete
-        await page.waitForFunction(
-            () => {
-                const rates = document.querySelectorAll('.rate');
-                return Array.from(rates).some(rate => {
-                    const rateName = rate.querySelector('.rate-name')?.textContent;
-                    return rateName && rateName !== 'Loading...';
-                });
-            },
-            { timeout: 30000 }
-        );
+        try {
+            await page.waitForFunction(
+                () => {
+                    const rates = document.querySelectorAll('.rate');
+                    return Array.from(rates).some(rate => {
+                        const rateName = rate.querySelector('.rate-name')?.textContent;
+                        return rateName && rateName !== 'Loading...';
+                    });
+                },
+                { timeout: 12000 }
+            );
+        } catch (error) {
+            // Print all .rate elements
+            const rates = await page.$$('.rate');
+            console.log("Rate elements found:", rates.length);
+            for (const rate of rates) {
+                const rateContent = await rate.evaluate(el => ({
+                    text: el.textContent,
+                    html: el.innerHTML
+                }));
+                console.log("Rate content:", rateContent);
+            }
+
+            // Print all buttons
+            const buttons = await page.$$('button');
+            console.log("All buttons found:");
+            for (const button of buttons) {
+                const buttonInfo = await button.evaluate(el => ({
+                    text: el.textContent,
+                    class: el.className,
+                    type: el.type || 'none',
+                    isVisible: el.offsetParent !== null
+                }));
+                console.log("Button info:", buttonInfo);
+            }
+
+            throw new Error(`Timeout waiting for rates to load: ${error.message}`);
+        }
         console.log("Rates finished loading");
 
         // Check for no availability alerts
@@ -72,6 +100,7 @@ async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) 
         console.log("Found rate elements:", rateElements.length);
         for (const rate of rateElements) {
             const rateName = await rate.$eval('.rate-name', el => el.textContent);
+            console.log("Rate name:", rateName);
             if (rateName.includes('Tent Sites -  Electric Only')) {
                 const priceText = await rate.$eval('strong', el => 
                     el.textContent.trim().replace('$', '').replace(' USD', '')

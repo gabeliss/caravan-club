@@ -14,10 +14,6 @@ const testScraperRoute = async (routeName, baseUrl, testParams) => {
       start_date: dates.startDate, 
       end_date: dates.endDate 
     };
-    
-    console.log(`Making request to: ${requestUrl}`);
-    console.log('With parameters:', requestParams);
-    console.log('Base URL from config:', baseUrl);
 
     const response = await axios.get(requestUrl, { params: requestParams });
     const duration = new Date() - startTime;

@@ -19,9 +19,6 @@ const testPayerRoute = async (routeName, baseUrl, testParams) => {
   try {
     // Log the full request details
     const requestUrl = `${baseUrl}/api/pay/${routeName}`;
-    console.log(`Making request to: ${requestUrl}`);
-    console.log('With payload:', JSON.stringify(payload, null, 2));
-    console.log('Base URL from config:', baseUrl);
 
     const response = await axios.post(requestUrl, payload, {
       headers: { 'Content-Type': 'application/json' }
@@ -59,7 +56,6 @@ const testPayerRoute = async (routeName, baseUrl, testParams) => {
 };
 
 const runPayerTests = async (testParams, routeName) => {
-  console.log(`Starting payer test for ${routeName} with base URL: ${routesConfig.baseUrl}`);
   return testPayerRoute(routeName, routesConfig.baseUrl, testParams);
 };
 

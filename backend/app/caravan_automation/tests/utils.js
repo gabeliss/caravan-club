@@ -138,7 +138,7 @@ const formatTestResults = (results, type, numNights) => {
           <td>${data.base_price ? `$${data.base_price.toFixed(2)}` : 'N/A'}</td>
           <td>${data.tax ? `$${data.tax.toFixed(2)}` : 'N/A'}</td>
           <td>${data.total ? `$${data.total.toFixed(2)}` : 'N/A'}</td>
-          <td style="color: red">${result.error || ''}</td>
+          <td style="color: red">${data.error || result.error || ''}</td>
         </tr>
       `;
     });

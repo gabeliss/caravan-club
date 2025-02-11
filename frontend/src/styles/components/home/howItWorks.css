@@ -17,7 +17,7 @@
 .title-section-text {
     white-space: nowrap;
     text-transform: uppercase;
-    color: black;
+    color: var(--brown-color);
     font-size: 3em;
     font-weight: 100;
     flex-shrink: 0;
@@ -68,7 +68,7 @@
 .slide-content-text {
     flex: 1;
     background-color: #F5E3C2;
-    color: black;
+    color: var(--brown-color);
     display: flex;
     align-items: flex-start;
     justify-content: center;

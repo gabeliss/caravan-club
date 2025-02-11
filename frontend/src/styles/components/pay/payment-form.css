@@ -44,7 +44,7 @@
 
 .payment-button {
     height: 50px;
-    background-color: var(--midnight-blue);
+    background-color: var(--primary-color-dark);
     color: var(--secondary-color);
     width: 40%;
     display: flex;
@@ -55,10 +55,12 @@
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-family: inherit;
+    font-size: 1.1rem;
 }
 
 .payment-button:hover {
-    background-color: var(--primary-color-dark);
+    background-color: var(--primary-color);
 }
 
 .payment-form-row {
