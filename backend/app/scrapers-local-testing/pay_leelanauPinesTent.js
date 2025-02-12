@@ -62,7 +62,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
     console.log('Modal loaded');
 
     // **Click "Price (Low - High)"**
-    const sortOptions = (await page.$$('div.flex.w-full.cursor-pointer')).slice(12); // Get sorting options
+    const sortOptions = (await page.$$('div.flex.w-full.cursor-pointer'))
     const sortText = await Promise.all(sortOptions.map(async el => await page.evaluate(e => e.innerText, el)));
 
     let clickedPriceLowHigh = false;
@@ -75,13 +75,41 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         break;
       }
     }
-    if (!clickedPriceLowHigh) throw new Error('"Price (Low - High)" option not found.');
+    if (!clickedPriceLowHigh) {
+      console.log('Available sort options:', sortText);
+      console.log('Printing all buttons, links and selects on page:');
+      const elements = await page.evaluate(() => {
+        const buttons = Array.from(document.querySelectorAll('button')).map(btn => ({
+          type: 'button',
+          text: btn.textContent,
+          id: btn.id,
+          class: btn.className
+        }));
+        const links = Array.from(document.querySelectorAll('a')).map(link => ({
+          type: 'link',
+          text: link.textContent,
+          href: link.href,
+          id: link.id,
+          class: link.className
+        }));
+        const selects = Array.from(document.querySelectorAll('select')).map(select => ({
+          type: 'select',
+          id: select.id,
+          class: select.className,
+          options: Array.from(select.options).map(opt => opt.text)
+        }));
+        return [...buttons, ...links, ...selects];
+      });
+      console.log(elements);
+      throw new Error('"Price (Low - High)" option not found.');
+    }
 
     let clickedTentSites = false;
     for (const option of sortOptions) {
       const text = await page.evaluate(el => el.innerText, option);
       if (text.includes('Tent Sites')) {
-        await option.click(); // Click "Tent Sites"
+        console.log('Clicking "Tent Sites" option...');
+        await option.evaluate(el => el.click()); // Click "Tent Sites"
         console.log('Clicked "Tent Sites"');
         clickedTentSites = true;
         break;
@@ -253,10 +281,38 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         }
 
         console.log('"Add To Cart" button found, clicking...');
-        await addToCartButton.click();
+        await addToCartButton.evaluate(b => b.click());
         console.log('Clicked "Add To Cart" button.');
 
-        await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 });
+        try {
+          await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 });
+        } catch (error) {
+          console.log('Printing all buttons, links and selects on page:');
+          const elements = await page.evaluate(() => {
+            const buttons = Array.from(document.querySelectorAll('button')).map(btn => ({
+              type: 'button', 
+              text: btn.textContent,
+              id: btn.id,
+              class: btn.className
+            }));
+            const links = Array.from(document.querySelectorAll('a')).map(link => ({
+              type: 'link',
+              text: link.textContent, 
+              href: link.href,
+              id: link.id,
+              class: link.className
+            }));
+            const selects = Array.from(document.querySelectorAll('select')).map(select => ({
+              type: 'select',
+              id: select.id,
+              class: select.className,
+              options: Array.from(select.options).map(opt => opt.text)
+            }));
+            return [...buttons, ...links, ...selects];
+          });
+          console.log(elements);
+          throw new Error('Modal body not found');
+        }
 
         const modalButtons = await page.$$('.mantine-Modal-body button');
         let noThanksButton = null;
@@ -290,7 +346,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
 
         // Find and click "Go To Shopping Cart" button
         await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 });
-
+        
         const cartButtons = await page.$$('.mantine-Modal-body button');
         let cartButton = null;
         for (const button of cartButtons) {
@@ -534,7 +590,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
     if (placeOrderButton) {
         if (executePayment) {
             console.log('Executing payment...');
-            await placeOrderButton.click();
+            await page.evaluate(button => button.click(), placeOrderButton);
             await page.waitForNavigation({ waitUntil: 'networkidle0' });
             console.log('Payment submitted successfully');
         } else {
@@ -552,6 +608,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
 
   } catch (error) {
     console.error(`Error during payment: ${error.message}`);
+    responseData.error = error.message;
     console.log("Response data:", responseData);
     return responseData;
   }

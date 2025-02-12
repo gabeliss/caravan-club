@@ -111,7 +111,8 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
     for (const option of sortOptions) {
       const text = await page.evaluate(el => el.innerText, option);
       if (text.includes('Tent Sites')) {
-        await option.click(); // Click "Tent Sites"
+        console.log('Clicking "Tent Sites" option...');
+        await option.evaluate(el => el.click()); // Click "Tent Sites"
         console.log('Clicked "Tent Sites"');
         clickedTentSites = true;
         break;
@@ -286,7 +287,35 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         await addToCartButton.evaluate(b => b.click());
         console.log('Clicked "Add To Cart" button.');
 
-        await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 });
+        try {
+          await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 });
+        } catch (error) {
+          console.log('Printing all buttons, links and selects on page:');
+          const elements = await page.evaluate(() => {
+            const buttons = Array.from(document.querySelectorAll('button')).map(btn => ({
+              type: 'button', 
+              text: btn.textContent,
+              id: btn.id,
+              class: btn.className
+            }));
+            const links = Array.from(document.querySelectorAll('a')).map(link => ({
+              type: 'link',
+              text: link.textContent, 
+              href: link.href,
+              id: link.id,
+              class: link.className
+            }));
+            const selects = Array.from(document.querySelectorAll('select')).map(select => ({
+              type: 'select',
+              id: select.id,
+              class: select.className,
+              options: Array.from(select.options).map(opt => opt.text)
+            }));
+            return [...buttons, ...links, ...selects];
+          });
+          console.log(elements);
+          throw new Error('Modal body not found');
+        }
 
         const modalButtons = await page.$$('.mantine-Modal-body button');
         let noThanksButton = null;
