@@ -2,14 +2,14 @@ require('dotenv').config({ path: './backend/.env.local' });
 
 module.exports = {
     scrapers: [
+      'whiteWaterParkTent',
       'timberRidgeTent',
       'leelanauPinesTent',
       'indianRiverTent', 
       'teePeeCampgroundTent',
       'uncleDuckysTent',
       'fortSuperiorTent',
-      'touristParkTent',
-      'whiteWaterParkTent'
+      'touristParkTent'
     ],
     payers: [
       'timberRidgeTent',

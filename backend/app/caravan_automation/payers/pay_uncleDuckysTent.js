@@ -57,6 +57,24 @@ async function payUncleDuckysTent(startDate, endDate, numAdults, numKids, paymen
     const firstOption = await page.$('.cf-item-data');
     if (!firstOption) {
       console.log("No available tent options.");
+      console.log('Printing all buttons and links on page:');
+      const elements = await page.evaluate(() => {
+        const buttons = Array.from(document.querySelectorAll('button')).map(btn => ({
+          type: 'button',
+          text: btn.textContent,
+          id: btn.id,
+          class: btn.className
+        }));
+        const links = Array.from(document.querySelectorAll('a')).map(link => ({
+          type: 'link',
+          text: link.textContent,
+          href: link.href,
+          id: link.id,
+          class: link.className
+        }));
+        return [...buttons, ...links];
+      });
+      console.log(elements);
       await browser.close();
       console.log("Response data: ", responseData);
       return responseData;
