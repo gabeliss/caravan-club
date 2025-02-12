@@ -117,7 +117,7 @@ def create_trip():
     send_trip_confirmation_email(user_data["email"], trip)
     
     # Send notification email to admin
-    # send_admin_notification_email(trip)
+    send_admin_notification_email(trip)
 
     return {"message": "Trip created successfully", "trip_id": trip.trip_id}, 201
 
