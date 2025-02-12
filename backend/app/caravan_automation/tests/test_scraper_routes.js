@@ -2,7 +2,7 @@ const axios = require('axios');
 const routesConfig = require('./routes');
 
 const testScraperRoute = async (routeName, baseUrl, testParams) => {
-  const startTime = new Date();
+  const startTime = process.hrtime();
   const { dates, guests } = testParams;
   
   try {
@@ -16,19 +16,21 @@ const testScraperRoute = async (routeName, baseUrl, testParams) => {
     };
 
     const response = await axios.get(requestUrl, { params: requestParams });
-    const duration = new Date() - startTime;
+    const [seconds, nanoseconds] = process.hrtime(startTime);
+    const duration = seconds + nanoseconds / 1e9;
 
     console.log(`Response for ${routeName}:`, response.data);
 
     return {
       routeName,
       status: 'SUCCESS',
-      duration: `${duration}ms`,
+      duration: duration.toFixed(2),
       data: response.data,
       error: null
     };
   } catch (error) {
-    const duration = new Date() - startTime;
+    const [seconds, nanoseconds] = process.hrtime(startTime);
+    const duration = seconds + nanoseconds / 1e9;
     
     // Enhanced error logging
     console.error(`Error details for ${routeName}:`, {
@@ -41,7 +43,7 @@ const testScraperRoute = async (routeName, baseUrl, testParams) => {
     return {
       routeName,
       status: 'FAILED',
-      duration: `${duration}ms`,
+      duration: duration.toFixed(2),
       data: null,
       error: error.response?.data?.error || error.message
     };

@@ -202,6 +202,7 @@ async function payUncleDuckysTent(startDate, endDate, numAdults, numKids, paymen
   } catch (error) {
     console.error(`Error during payment: ${error.message}`);
     await browser.close();
+    responseData.error = error.message;
     console.log("Response data: ", responseData);
     return responseData;
   }

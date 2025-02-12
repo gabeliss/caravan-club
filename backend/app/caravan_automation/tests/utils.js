@@ -107,7 +107,7 @@ const formatTestResults = (results, type, numNights) => {
         <tr>
           <td>${formatRouteName(result.routeName)}</td>
           <td style="color: ${result.status === 'SUCCESS' ? 'green' : 'red'}">${result.status}</td>
-          <td>${(parseFloat(result.duration) / 1000).toFixed(2)}</td>
+          <td>${result.duration}</td>
           <td>${basePricePerNight}</td>
           <td>${basePriceTotal}</td>
           <td>${taxesTotal}</td>
@@ -134,7 +134,7 @@ const formatTestResults = (results, type, numNights) => {
       html += `        <tr>
           <td>${formatRouteName(result.routeName)}</td>
           <td style="color: ${data.payment_successful ? 'green' : 'red'}">${data.payment_successful ? 'Success' : 'Failed'}</td>
-          <td>${result.duration ? (parseFloat(result.duration) / 1000).toFixed(2) : 'N/A'}</td>
+          <td>${result.duration ? result.duration : 'N/A'}</td>
           <td>${data.base_price ? `$${data.base_price.toFixed(2)}` : 'N/A'}</td>
           <td>${data.tax ? `$${data.tax.toFixed(2)}` : 'N/A'}</td>
           <td>${data.total ? `$${data.total.toFixed(2)}` : 'N/A'}</td>

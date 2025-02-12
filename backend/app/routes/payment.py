@@ -33,9 +33,14 @@ def process_payment_lambda(place_name, lambda_path):
             "executePayment": execute_payment
         }
 
-        response = requests.post(lambda_endpoint, json=lambda_payload)
+        # Increase timeout to 120 seconds for the Lambda request
+        response = requests.post(lambda_endpoint, json=lambda_payload, timeout=120)
         return jsonify(response.json()), response.status_code
 
+    except requests.Timeout:
+        logging.error(f"Timeout error in process_payment for {place_name}")
+        return {"error": "Request timed out"}, 504
+        
     except Exception as e:
         logging.error(f"Error in process_payment for {place_name}: {e}")
         return {"error": "Internal server error"}, 500

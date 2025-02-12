@@ -65,7 +65,7 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
     console.log('Modal loaded');
 
     // **Click "Price (Low - High)"**
-    const sortOptions = (await page.$$('div.flex.w-full.cursor-pointer')).slice(12); // Get sorting options
+    const sortOptions = (await page.$$('div.flex.w-full.cursor-pointer'))
     const sortText = await Promise.all(sortOptions.map(async el => await page.evaluate(e => e.innerText, el)));
 
     let clickedPriceLowHigh = false;
@@ -80,6 +80,30 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
     }
     if (!clickedPriceLowHigh) {
       console.log('Available sort options:', sortText);
+      console.log('Printing all buttons, links and selects on page:');
+      const elements = await page.evaluate(() => {
+        const buttons = Array.from(document.querySelectorAll('button')).map(btn => ({
+          type: 'button',
+          text: btn.textContent,
+          id: btn.id,
+          class: btn.className
+        }));
+        const links = Array.from(document.querySelectorAll('a')).map(link => ({
+          type: 'link',
+          text: link.textContent,
+          href: link.href,
+          id: link.id,
+          class: link.className
+        }));
+        const selects = Array.from(document.querySelectorAll('select')).map(select => ({
+          type: 'select',
+          id: select.id,
+          class: select.className,
+          options: Array.from(select.options).map(opt => opt.text)
+        }));
+        return [...buttons, ...links, ...selects];
+      });
+      console.log(elements);
       throw new Error('"Price (Low - High)" option not found.');
     }
 
