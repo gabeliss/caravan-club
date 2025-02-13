@@ -24,6 +24,7 @@ async def process_payment_lambda(place_name, lambda_path):
 
         # Lambda API endpoint
         lambda_endpoint = f"https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/pay/{lambda_path}"
+        print("lambda_endpoint", lambda_endpoint)
 
         # Payload for Lambda function
         lambda_payload = {

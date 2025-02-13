@@ -59,12 +59,17 @@ const routesConfig = require('./routes');
       .filter(result => result.status === 'SUCCESS' && result.data?.available === true)
       .map(result => result.routeName.replace('_scraper', '_payer'));
 
+    const pLimit = require('p-limit');
+    const limit = pLimit(4);
+
     console.log('Running payer tests for successful scraper routes...');
     const payerResults = await Promise.all(
-      successfulScrapers.map(route => {
-        const params = testParams(route);
-        return runPayerTests(params, route);
-      })
+      successfulScrapers.map(route => 
+        limit(async () => {
+          const params = testParams(route);
+          return await runPayerTests(params, route);
+        })
+      )
     );
 
     // Combine and format results
