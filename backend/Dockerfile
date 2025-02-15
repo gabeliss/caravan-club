@@ -29,4 +29,4 @@ RUN chmod +x /usr/local/bin/gunicorn
 EXPOSE 5000
 
 # Start your application
-CMD exec gunicorn -b 0.0.0.0:5000 run:app
+CMD exec gunicorn --timeout 180 --workers 2 --threads 2 -k gevent -b 0.0.0.0:5000 run:app
