@@ -1,4 +1,3 @@
-import asyncio
 import httpx
 from flask import Blueprint, request, jsonify
 import logging
@@ -7,9 +6,9 @@ import os
 
 payment_bp = Blueprint('payment', __name__)
 
-async def process_payment_lambda(place_name, lambda_path):
+def process_payment_lambda(place_name, lambda_path):
     """
-    Generic function to process payments through AWS Lambda asynchronously
+    Generic function to process payments through AWS Lambda synchronously
     """
     try:
         payload = request.json.get('params', {})  # Extract the params object
@@ -36,12 +35,10 @@ async def process_payment_lambda(place_name, lambda_path):
             "executePayment": execute_payment
         }
 
-        async with httpx.AsyncClient(timeout=120) as client:
-            response = await client.post(lambda_endpoint, json=lambda_payload)
-        
+        response = requests.post(lambda_endpoint, json=lambda_payload, timeout=120)
         return jsonify(response.json()), response.status_code
 
-    except httpx.ReadTimeout:
+    except requests.Timeout:
         logging.error(f"Timeout error in process_payment for {place_name}")
         return jsonify({"error": "Request timed out"}), 504
 
@@ -50,36 +47,36 @@ async def process_payment_lambda(place_name, lambda_path):
         return jsonify({"error": "Internal server error"}), 500
 
 
-# Convert each route to an async Flask route
+# Convert each route to synchronous Flask route
 @payment_bp.route('/api/pay/uncleDuckysTent', methods=['POST'])
-async def pay_uncleDuckysTent():
-    return await process_payment_lambda("Uncle Duckys", "uncleDuckysTent")
+def pay_uncleDuckysTent():
+    return process_payment_lambda("Uncle Duckys", "uncleDuckysTent")
 
 @payment_bp.route('/api/pay/leelanauPinesTent', methods=['POST'])
-async def pay_leelanauPinesTent():
-    return await process_payment_lambda("Leelanau Pines", "leelanauPinesTent")
+def pay_leelanauPinesTent():
+    return process_payment_lambda("Leelanau Pines", "leelanauPinesTent")
 
 @payment_bp.route('/api/pay/indianRiverTent', methods=['POST'])
-async def pay_indianRiverTent():
-    return await process_payment_lambda("Indian River", "indianRiverTent")
+def pay_indianRiverTent():
+    return process_payment_lambda("Indian River", "indianRiverTent")
 
 @payment_bp.route('/api/pay/touristParkTent', methods=['POST'])
-async def pay_touristParkTent():
-    return await process_payment_lambda("Tourist Park", "touristParkTent")
+def pay_touristParkTent():
+    return process_payment_lambda("Tourist Park", "touristParkTent")
 
 @payment_bp.route('/api/pay/fortSuperiorTent', methods=['POST'])
-async def pay_fortSuperiorTent():
-    return await process_payment_lambda("Fort Superior", "fortSuperiorTent")
+def pay_fortSuperiorTent():
+    return process_payment_lambda("Fort Superior", "fortSuperiorTent")
 
 @payment_bp.route('/api/pay/timberRidgeTent', methods=['POST'])
-async def pay_timberRidgeTent():
-    return await process_payment_lambda("Timber Ridge", "timberRidgeTent")
+def pay_timberRidgeTent():
+    return process_payment_lambda("Timber Ridge", "timberRidgeTent")
 
 @payment_bp.route('/api/pay/teePeeCampgroundTent', methods=['POST'])
-async def pay_teePeeCampgroundTent():
-    return await process_payment_lambda("Tee Pee Campground", "teePeeCampgroundTent")
+def pay_teePeeCampgroundTent():
+    return process_payment_lambda("Tee Pee Campground", "teePeeCampgroundTent")
 
 @payment_bp.route('/api/pay/whiteWaterParkTent', methods=['POST'])
-async def pay_whiteWaterParkTent():
-    return await process_payment_lambda("White Water Park", "whiteWaterParkTent")
+def pay_whiteWaterParkTent():
+    return process_payment_lambda("White Water Park", "whiteWaterParkTent")
 

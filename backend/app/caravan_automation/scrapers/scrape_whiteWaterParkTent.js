@@ -9,6 +9,18 @@ async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) 
         const startDateFormatted = startDateObj.toISOString().split('T')[0];
         const endDateFormatted = endDateObj.toISOString().split('T')[0];
 
+        // Check if dates are within allowed range
+        const seasonStartDate = new Date('2025-04-01');
+        const seasonEndDate = new Date('2025-05-16');
+
+        if (startDateObj < seasonStartDate || endDateObj > seasonEndDate) {
+            return {
+                available: false,
+                price: null,
+                message: "No availability"
+            };
+        }
+
         // Construct the URL
         const baseUrl = "https://www.roverpass.com/c/whitewater-township-park-williamsburg-mi/booking/search";
         const params = new URLSearchParams({

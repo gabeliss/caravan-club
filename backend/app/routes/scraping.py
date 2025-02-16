@@ -13,9 +13,9 @@ import asyncio
 
 scraping_bp = Blueprint('scraping', __name__)
 
-async def get_price(place_name, min_travelers, max_travelers, scrape_function):
+def get_price(place_name, min_travelers, max_travelers, scrape_function):
     """
-    Generic function to handle scraping requests asynchronously
+    Generic function to handle scraping requests
     """
     try:
         num_adults = int(request.args.get('num_adults', 1))
@@ -33,8 +33,8 @@ async def get_price(place_name, min_travelers, max_travelers, scrape_function):
                 "error": f"Number of travelers must be between {min_travelers} and {max_travelers} for {place_name}"
             }), 400
 
-        # Run the scraping function asynchronously
-        result = await asyncio.to_thread(scrape_function, check_in, check_out, num_adults, num_kids)
+        # Call the scraping function directly
+        result = scrape_function(check_in, check_out, num_adults, num_kids)
         return jsonify(result), 200
 
     except ValueError as e:
@@ -45,37 +45,36 @@ async def get_price(place_name, min_travelers, max_travelers, scrape_function):
         return jsonify({"error": f"Failed to get price for {place_name}"}), 500
 
 @scraping_bp.route('/api/scrape/timberRidgeTent')
-async def get_timberRidgeTent_price():
-    return await get_price('Timber Ridge', 1, 6, scrape_timberRidgeTent)
+def get_timberRidgeTent_price():
+    return get_price('Timber Ridge', 1, 6, scrape_timberRidgeTent)
 
 @scraping_bp.route('/api/scrape/leelanauPinesTent')
-async def get_leelanauPinesTent_price():
-    return await get_price('Leelanau Pines', 1, 6, scrape_leelanauPinesTent)
+def get_leelanauPinesTent_price():
+    return get_price('Leelanau Pines', 1, 6, scrape_leelanauPinesTent)
 
 @scraping_bp.route('/api/scrape/indianRiverTent')
-async def get_indianRiverTent_price():
-    return await get_price('Indian River', 1, 6, scrape_indianRiverTent)
+def get_indianRiverTent_price():
+    return get_price('Indian River', 1, 6, scrape_indianRiverTent)
 
 @scraping_bp.route('/api/scrape/uncleDuckysTent')
-async def get_uncleDuckysTent_price():
-    return await get_price('Uncle Duckys', 1, 6, scrape_uncleDuckysTent)
+def get_uncleDuckysTent_price():
+    return get_price('Uncle Duckys', 1, 6, scrape_uncleDuckysTent)
 
 @scraping_bp.route('/api/scrape/touristParkTent')
-async def get_touristParkTent_price():
-    return await get_price('Tourist Park', 1, 6, scrape_touristParkTent)
+def get_touristParkTent_price():
+    return get_price('Tourist Park', 1, 6, scrape_touristParkTent)
 
 @scraping_bp.route('/api/scrape/fortSuperiorTent')
-async def get_fortSuperiorTent_price():
-    return await get_price('Fort Superior', 1, 6, scrape_fortSuperiorTent)
+def get_fortSuperiorTent_price():
+    return get_price('Fort Superior', 1, 6, scrape_fortSuperiorTent)
 
-# ✅ Convert AWS Lambda requests to async calls
-async def call_lambda(lambda_endpoint, payload):
-    async with httpx.AsyncClient(timeout=120) as client:
-        response = await client.post(lambda_endpoint, json=payload)
-        return response.json()
+# For Lambda calls, use synchronous requests
+def call_lambda(lambda_endpoint, payload):
+    response = requests.post(lambda_endpoint, json=payload, timeout=120)
+    return response.json()
 
 @scraping_bp.route('/api/scrape/teePeeCampgroundTent')
-async def get_teePeeCampgroundTent_price():
+def get_teePeeCampgroundTent_price():
     try:
         num_adults = request.args.get('num_adults', default=1, type=int)
         num_kids = request.args.get('num_kids', default=0, type=int)
@@ -91,7 +90,7 @@ async def get_teePeeCampgroundTent_price():
             "numKids": num_kids
         }
 
-        result = await call_lambda(lambda_endpoint, payload)
+        result = call_lambda(lambda_endpoint, payload)
         return jsonify(result), 200
 
     except Exception as e:
@@ -99,7 +98,7 @@ async def get_teePeeCampgroundTent_price():
         return jsonify({"error": "Internal server error"}), 500
 
 @scraping_bp.route('/api/scrape/whiteWaterParkTent')
-async def get_whiteWaterParkTent_price():
+def get_whiteWaterParkTent_price():
     try:
         num_adults = request.args.get('num_adults', default=1, type=int)
         num_kids = request.args.get('num_kids', default=0, type=int)
@@ -115,7 +114,7 @@ async def get_whiteWaterParkTent_price():
             "numKids": num_kids
         }
 
-        result = await call_lambda(lambda_endpoint, payload)
+        result = call_lambda(lambda_endpoint, payload)
         return jsonify(result), 200
 
     except Exception as e:
