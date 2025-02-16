@@ -47,18 +47,31 @@ async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, pay
         ]);
         console.log("Found rate or alert elements");
 
-        // Add a wait for the loading state to complete
+        // First check if we need to click the Tent Sites button
+        const tentSitesButton = await page.$('button.site-type');
+        if (tentSitesButton) {
+            const buttonText = await tentSitesButton.evaluate(el => el.textContent);
+            if (buttonText.includes('Tent Sites')) {
+                console.log("Found Tent Sites button, clicking it");
+                await tentSitesButton.evaluate(el => el.click());
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for content to update
+            }
+        }
+
+        // Modified wait for rates to load
         try {
             await page.waitForFunction(
                 () => {
                     const rates = document.querySelectorAll('.rate');
-                    return Array.from(rates).some(rate => {
-                        const rateName = rate.querySelector('.rate-name')?.textContent;
-                        return rateName && rateName !== 'Loading...';
-                    });
+                    const buttons = document.querySelectorAll('.btn.btn-selected-green');
+                    // Make sure we have rates and buttons AND the content isn't "Loading..."
+                    return rates.length > 0 && 
+                           buttons.length > 0 && 
+                           !document.querySelector('.rate')?.textContent?.includes('Loading...');
                 },
-                { timeout: 12000 }
+                { timeout: 30000 }
             );
+            console.log("Rates finished loading");
         } catch (error) {
             // Print all .rate elements
             const rates = await page.$$('.rate');
@@ -86,7 +99,6 @@ async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, pay
 
             throw new Error(`Timeout waiting for rates to load: ${error.message}`);
         }
-        console.log("Rates finished loading");
 
         // Check for no availability alerts
         const alertElements = await page.$$('.alert-danger');
@@ -99,10 +111,12 @@ async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, pay
             }
         }
 
+        // Add a small delay to ensure content is fully loaded
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
         // Look for tent site rates
         console.log("Searching for tent sites");
-        const rateElements = await page.$$('.rate', { timeout: 10000 });
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        const rateElements = await page.$$('.rate');
         console.log("Found rate elements:", rateElements.length);
         for (const rate of rateElements) {
             let rateName;
@@ -211,26 +225,31 @@ async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, pay
             await page.waitForSelector('.cart-summary');
             console.log("Cart summary loaded");
 
-            // Get base price
-            const basePriceText = await page.$eval('.reservation .text-gray', el => el.textContent);
-            responseData.base_price = parseFloat(basePriceText.replace('$', '').trim());
-            console.log(`Base price: $${responseData.base_price}`);
+            // Get base price from the reservation section
+            const basePriceText = await page.$eval('.reservations .collapse.show .text-start', el => el.textContent);
+            const responseData_base_price = parseFloat(basePriceText.replace('$', '').trim());
+            console.log(`Base price: $${responseData_base_price}`);
 
-            // Get total price
-            const totalPriceText = await page.$eval('.text-green', el => el.textContent);
-            responseData.total = parseFloat(totalPriceText.match(/\$(\d+\.\d+)/)[1]);
-            console.log(`Total price: $${responseData.total}`);
+            // Get reservation fee (tax) from the addon section
+            const taxText = await page.$eval('.my-2.text-muted .text-gray', el => el.textContent);
+            const responseData_tax = parseFloat(taxText.replace('$', '').trim());
+            console.log(`Tax: $${responseData_tax}`);
 
-            // Calculate tax
-            responseData.tax = responseData.total - responseData.base_price;
-            console.log(`Tax: $${responseData.tax}`);
+            // Get total price from the total section
+            const totalText = await page.$eval('.text-green', el => el.textContent);
+            const responseData_total = parseFloat(totalText.match(/\$(\d+\.\d+)/)[1]);
+            console.log(`Total price: $${responseData_total}`);
 
             // Click continue to payment
             const continueButton = await page.$('#continue-payment-button button');
-            await continueButton.evaluate(el => el.scrollIntoView());
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            await continueButton.evaluate(el => el.click());
-            console.log("Clicked continue to payment");
+            if (continueButton) {
+                await continueButton.evaluate(el => el.scrollIntoView());
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                await continueButton.evaluate(el => el.click());
+                console.log("Clicked continue to payment");
+            } else {
+                console.log("Continue button not found, proceeding anyway");
+            }
             
             // Wait for payment form to load with multiple possible selectors
             console.log("Waiting for payment form...");
@@ -333,6 +352,10 @@ async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, pay
                 console.log("Test mode: Payment execution skipped");
                 responseData.payment_successful = true;
             }
+
+            responseData.base_price = responseData_base_price;
+            responseData.tax = responseData_tax;
+            responseData.total = responseData_total;
 
             console.log("Response data:", responseData);
             await browser.close();

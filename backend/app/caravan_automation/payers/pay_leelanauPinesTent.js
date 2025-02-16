@@ -287,9 +287,12 @@ async function payLeelanauPinesTent(startDate, endDate, numAdults, numKids, paym
         await addToCartButton.evaluate(b => b.click());
         console.log('Clicked "Add To Cart" button.');
 
-        try {
-          await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 });
-        } catch (error) {
+        const modalElement = await page.waitForSelector('.mantine-Modal-body', { visible: true, timeout: 10000 })
+          .catch(() => null);
+
+        console.log('Modal element:', modalElement);
+
+        if (!modalElement) {
           console.log('Printing all buttons, links and selects on page:');
           const elements = await page.evaluate(() => {
             const buttons = Array.from(document.querySelectorAll('button')).map(btn => ({

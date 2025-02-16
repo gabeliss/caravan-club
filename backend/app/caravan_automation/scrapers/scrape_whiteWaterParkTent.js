@@ -53,18 +53,31 @@ async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) 
         ]);
         console.log("Found rate or alert elements");
 
-        // Add a wait for the loading state to complete
+        // First check if we need to click the Tent Sites button
+        const tentSitesButton = await page.$('button.site-type');
+        if (tentSitesButton) {
+            const buttonText = await tentSitesButton.evaluate(el => el.textContent);
+            if (buttonText.includes('Tent Sites')) {
+                console.log("Found Tent Sites button, clicking it");
+                await tentSitesButton.evaluate(el => el.click());
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for content to update
+            }
+        }
+
+        // Modified wait for rates to load
         try {
             await page.waitForFunction(
                 () => {
                     const rates = document.querySelectorAll('.rate');
-                    return Array.from(rates).some(rate => {
-                        const rateName = rate.querySelector('.rate-name')?.textContent;
-                        return rateName && rateName !== 'Loading...';
-                    });
+                    const buttons = document.querySelectorAll('.btn.btn-selected-green');
+                    // Make sure we have rates and buttons AND the content isn't "Loading..."
+                    return rates.length > 0 && 
+                           buttons.length > 0 && 
+                           !document.querySelector('.rate')?.textContent?.includes('Loading...');
                 },
-                { timeout: 12000 }
+                { timeout: 30000 }
             );
+            console.log("Rates finished loading");
         } catch (error) {
             // Print all .rate elements
             const rates = await page.$$('.rate');
@@ -92,7 +105,6 @@ async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) 
 
             throw new Error(`Timeout waiting for rates to load: ${error.message}`);
         }
-        console.log("Rates finished loading");
 
         // Check for no availability alerts
         const alertElements = await page.$$('.alert-danger');
@@ -105,10 +117,12 @@ async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) 
             }
         }
 
+        // Add a small delay to ensure content is fully loaded
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
         // Look for tent site rates
         console.log("Searching for tent sites");
-        const rateElements = await page.$$('.rate', { timeout: 10000 });
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        const rateElements = await page.$$('.rate');
         console.log("Found rate elements:", rateElements.length);
         for (const rate of rateElements) {
             const rateName = await rate.$eval('.rate-name', el => el.textContent);
