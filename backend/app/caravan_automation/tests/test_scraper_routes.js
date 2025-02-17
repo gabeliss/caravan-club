@@ -15,7 +15,10 @@ const testScraperRoute = async (routeName, baseUrl, testParams) => {
       end_date: dates.endDate 
     };
 
-    const response = await axios.get(requestUrl, { params: requestParams });
+    const response = await axios.get(requestUrl, { 
+      params: requestParams,
+      timeout: 180000 // 180 seconds in milliseconds
+    });
     const [seconds, nanoseconds] = process.hrtime(startTime);
     const duration = seconds + nanoseconds / 1e9;
 

@@ -21,7 +21,8 @@ const testPayerRoute = async (routeName, baseUrl, testParams) => {
     const requestUrl = `${baseUrl}/api/pay/${routeName}`;
 
     const response = await axios.post(requestUrl, payload, {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
+      timeout: 180000 // 180 seconds in milliseconds
     });
     const [seconds, nanoseconds] = process.hrtime(startTime);
     const duration = seconds + nanoseconds / 1e9; // Convert to seconds

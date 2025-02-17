@@ -131,13 +131,16 @@ async function scrapeWhiteWaterParkTent(startDate, endDate, numAdults, numKids) 
                 const priceText = await rate.$eval('strong', el => 
                     el.textContent.trim().replace('$', '').replace(' USD', '')
                 );
+                console.log("Price text:", priceText);
                 const price = parseFloat(priceText);
                 await browser.close();
-                return {
+                responseData = {
                     available: true,
                     price: price,
                     message: `$${price.toFixed(2)} per night`
                 };
+                console.log("Response data:", responseData);
+                return responseData;
             }
         }
 
