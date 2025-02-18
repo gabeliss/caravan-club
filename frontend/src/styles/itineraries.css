@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     background-color: var(--secondary-color);
-    font-family: 'Arial', sans-serif;
+    font-family: inherit;
     padding: 20px 50px;
   }
   
@@ -22,7 +22,7 @@
   
   .title {
     font-size: 30px;
-    color: var(--primary-color);
+    color: var(--orange-color);
     font-weight: bolder;
     flex-wrap: wrap;
     margin: 0;
@@ -33,7 +33,7 @@
     font-weight: bolder;
     margin-top: 0px;
     margin-bottom: 0px;
-    color: black;
+    color: var(--primary-color);
     white-space: nowrap;
   }
 
@@ -71,6 +71,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 80%;
   }
   
   .trip-info h3 {
@@ -118,16 +119,20 @@
     background-color: var(--secondary-color);
     color: black;
     padding: 20px;
-    border-radius: 12px;
+    padding-bottom: 40px;
+    border-radius: 12px 12px 0 0;
     margin-top: 20px;
     font-family: inherit;
     text-align: center;
+    width: 100%;
+    border-bottom: 1px solid var(--primary-color-dark);
   }
 
   .text-content h1 {
     font-size: 2.5rem;
     font-weight: bolder;
     margin-bottom: 40px;
+    color: var(--orange-color);
   }
 
   .text-content p {
@@ -137,130 +142,190 @@
     color: var(--primary-color-dark)
   }
 
-  .best-stuff {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    width: 100%;
-    gap: 20px;
-    padding: 20px;
-  }
-
-  .best-object {
-    flex: 1;
-    max-width: calc(30% - 14px);
-    margin: 0;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .best-title, .best-answer {
-    color: var(--secondary-color);
-    background-color: var(--primary-color);
-    padding: 10px 0;
-    font-weight: bolder;
-    width: 100%;
-    text-align: center;
-  }
-
-  .best-images {
-    position: relative;
-    width: 100%;
-    height: 450px;
-    margin-bottom: 40px;
-  }
-
-  .best-images .slick-slider,
-  .best-images .slick-list,
-  .best-images .slick-track,
-  .best-images .slick-slide,
-  .best-images .slick-slide > div {
-    height: 100%;
-  }
-
-  .best-image {
-    width: 100%;
-    height: 450px;
-    object-fit: contain;
-    border-radius: 8px;
-  }
-
-  /* Slider dots styling */
-  .best-images .slick-dots {
-    bottom: -30px !important;
-    z-index: 1;
-  }
-
-  .best-images .slick-dots button {
-    color: var(--primary-color);
-  }
-
-  .best-images .slick-dots li button:before {
-    color: var(--primary-color) !important;
-    font-size: 8px !important;
-    opacity: 0.8 !important;
-  }
-
-  .best-images .slick-dots li.slick-active button:before {
-    color: var(--primary-color) !important;
-    opacity: 1 !important;
-    font-size: 10px !important;
-  }
-
-  .best-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 15px;
-  }
-
-  .best-answer {
-    font-size: 1.2rem;
-    margin-top: 10px;
-  }
-
-  .outro-text {
-    width: 90%;
-    margin: 30px 0;
-    font-size:large;
-    text-align: center;
-    color: var(--primary-color-dark);
-  }
-
   .book-now-button {
-    background-color: var(--charcoal-gray);
-    color: var(--secondary-color);
-    padding: 15px;
-    border-radius: 8%;
+    background-color: var(--secondary-color);
+    color: var(--primary-color-dark);
+    border: 2px solid var(--primary-color-dark);
+    padding: 15px 30px;
+    border-radius: 30px;
     margin: 15px;
-    width: 250px;
+    width: auto;
     font-weight: bolder;
     font-size: larger;
+    text-align: center;
+    display: inline-block;
+    width: 250px;
   }
 
   .book-now-button:hover {
-    background-color: #4f4d4d;
+    background-color: var(--secondary-color-light);
   }
 
-  @media (max-width: 1024px) {
-    .best-title, .best-answer {
-      font-size: 1rem;
-    }
+  .best-stuff {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+  }
 
-    .best-images {
-      height: 350px;
-    }
+  .best-restaurant {
+    border-bottom: 1px solid var(--primary-color-dark);
+  }
 
-    .best-image {
-      height: 350px;
-    }
+  .best-restaurant-text, .best-hike-text {
+    width: 80%;
+    padding-left: 10%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 40px;
+  }
 
-    .best-images .slick-dots {
-      bottom: 25px;
-      z-index: 1;
-    }
+  .best-restaurant-text h1, .best-hike-text h1, .best-restaurant-text p, .best-hike-text p {
+    font-size: 1.3rem;
+    color: black;
+    font-weight: normal;
+    padding: 20px;
+    margin: 0;
+    min-width: 180px;
+  }
+
+  .best-restaurant-images {
+    display: flex;
+    flex-direction: column;
+    padding-left: 10%;
+    width: 80%;
+  }
+
+  .image-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 60px;
+    max-height: 100vh;
+  }
+
+  .image-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 48%;
+  }
+
+  .single-image-column img {
+    flex: 1;
+    width: 100%;
+    max-height: 80vh;
+    margin-bottom: 5px;
+  }
+
+  .double-image-column img {
+    flex: 0.5;
+    width: 100%;
+    max-height: 50vh;
+    margin-bottom: 5px;
+  }
+
+  .caption {
+    font-size: 0.9rem;
+    color: black;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .caption-large {
+    font-size: 2.2rem;
+    font-weight: bolder;
+    color: var(--orange-color);
+    text-align: center;
+    margin-bottom: 5px;
+    width: 100%;
+  }
+
+  .bottom-aligned-image {
+    object-position: bottom;  /* Ensure image starts from the bottom */
+  }
+
+  .contain-image {
+    object-fit: contain;  /* Ensure image scales to fit within its container */
+  }
+
+  .cover-image {
+    object-fit: cover;
+  }
+
+  .best-hike {
+    border-bottom: 1px solid var(--primary-color-dark);
+    padding-bottom: 40px;
+  }
+
+  .best-hike-details {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .best-hike-image {
+    width: 100%;
+  }
+
+  .best-hike-image img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    object-position: center 60%;
+    border-radius: 200px;
+  }
+
+  .best-hike-details-text {
+    width: 100%;
+    padding-left: 30px;
+  }
+
+  .best-hike-details-text h1 {
+    font-size: 2.75rem;
+    font-weight: bolder;
+    margin-bottom: 40px;
+    color: var(--orange-color);
+  }
+
+  .best-hike-details-text p {
+    font-size: 1.15rem;
+    text-align: left;
+    color: black;
+    font-weight: normal;
+    margin: 0;
+  }
+
+  .best-hike-details-facts {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .best-hike-details-facts-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .best-hike-details-facts-column {
+    width: 45%;
+  }
+
+  .best-hike-details-facts-column h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: left;
+    color: black;
+  }
+
+  .best-hike-details-facts-column p {
+    font-size: 1.2rem;
+    color: black;
   }
 
   @media (max-width: 768px) {
@@ -315,30 +380,6 @@
 
     .info-label {
       margin-right: 50px;
-    }
-
-    .best-stuff {
-      flex-direction: column;
-      padding: 10px;
-    }
-
-    .best-object {
-      max-width: 100%;
-      margin-bottom: 20px;
-    }
-
-    .best-title, .best-answer {
-      height: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: smaller;
-      padding: 0;
-      font-size: 1.3rem;
-    }
-
-    .outro-text {
-      font-size: medium;
     }
 
     .book-now-button {
