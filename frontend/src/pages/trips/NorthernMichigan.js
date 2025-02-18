@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './../../styles/itineraries.css';
 import { Link } from 'react-router-dom';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 function NorthernMichigan() {
+  useEffect(() => {
+    AOS.init({ duration: 1000 });
+  }, []);
+
   const sliderSettings = {
     dots: true,
     infinite: false,
@@ -18,14 +24,14 @@ function NorthernMichigan() {
 
   return (
     <div className='page'>
-      <div className="header-section">
+      <div className="header-section" data-aos="fade-up">
         <div className="text-area">
           <h1 className="title">Great Lakes Getaway</h1>
           <h1 className="subtitle">Northern Michigan</h1>
         </div>
       </div>
 
-      <div className="trip-info-container">
+      <div className="trip-info-container" data-aos="fade-up">
         <div className="trip-info">
           <h3>A Typical Trip to Northern Michigan</h3>
           <div className="info-item">
@@ -49,7 +55,7 @@ function NorthernMichigan() {
             <span className="info-value">Tent</span>
           </div>
         </div>
-        <div className="trip-info-image">
+        <div className="trip-info-image" data-aos="fade-up">
           <img 
             src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/kayaking.png" 
             alt="Northern Michigan Landscape"
@@ -58,7 +64,7 @@ function NorthernMichigan() {
         </div>
       </div>
 
-      <div className="text-content">
+      <div className="text-content" data-aos="fade-up">
         <h1>Want The Full Itinerary?</h1>
         <Link to="/">
           <button className='book-now-button'>Book a Trip</button>
@@ -66,7 +72,7 @@ function NorthernMichigan() {
       </div>
 
       <div className="best-stuff">
-        <div className="best-restaurant">
+        <div className="best-restaurant" data-aos="fade-up">
           <div className="best-restaurant-text">
             <h1>Favorite Restaurant</h1>
             <p>
@@ -77,7 +83,7 @@ function NorthernMichigan() {
             </p>
           </div>
           <div className="best-restaurant-images">
-            <div className="image-row">
+            <div className="image-row" data-aos="fade-up">
               <div className="single-image-column image-column">
                 <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/restaurant/restaurant1.jpg" alt="Farm Club 1" className="cover-image" />
                 <span className="caption">Outdoor lawn seating for bar and market snacks</span>
@@ -90,7 +96,7 @@ function NorthernMichigan() {
                 <span className="caption">Farm to Table Ingredients</span>
               </div>
             </div>
-            <div className="image-row">
+            <div className="image-row" data-aos="fade-up">
               <div className="double-image-column image-column">
                 <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/restaurant/restaurant4.jpg" alt="Farm Club 4" className="cover-image" />
                 <span className="caption">No Reservations Required</span>
@@ -104,7 +110,7 @@ function NorthernMichigan() {
             </div>
           </div>
         </div>
-        <div className="best-hike">
+        <div className="best-hike" data-aos="fade-up">
           <div className="best-hike-text">
             <h1>Favorite Hike</h1>
             <p>
@@ -115,10 +121,10 @@ function NorthernMichigan() {
             </p>
           </div>
           <div className="best-hike-details">
-            <div className="best-hike-image">
+            <div className="best-hike-image" data-aos="fade-up">
               <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/hike/hike1.jpg" alt="Empire Bluff Trail" className="cover-image" />
             </div>
-            <div className="best-hike-details-text">
+            <div className="best-hike-details-text" data-aos="fade-up">
               <h1>Empire Bluffs</h1>
               <p>
                 Stunning views, ease of trail, and well-maintained paths. Challenges include some steep areas and potential 
@@ -148,6 +154,91 @@ function NorthernMichigan() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="best-activity" data-aos="fade-up">
+          <div className="best-activity-text">
+            <h1>Favorite Activity</h1>
+            <h2>Cruise Along Grand Traverse Bay</h2>
+            <p>
+              Experience the beauty of Northern Michigan on a <strong>Nauti-Cat Cruise</strong> around <strong>Grand Traverse Bay</strong>. 
+              Enjoy stunning views, music, and drinks while relaxing aboard. Whether it's a sunny day or a sunset ride, 
+              it's the perfect mix of adventure and relaxation, making it a must-do!
+            </p>
+          </div>
+          <div className="best-activity-images" data-aos="fade-up">
+            <div className="best-activity-image">
+              <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/activity/activity1.jpg" alt="Activity 1" className="cover-image" />
+            </div>
+            <div className="best-activity-image">
+              <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/activity/activity2.jpg" alt="Activity 2" className="cover-image" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="sliding-footer">
+        <div className="sliding-text">
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          Let's Caravan
         </div>
       </div>
     </div>
