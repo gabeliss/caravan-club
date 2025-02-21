@@ -40,12 +40,34 @@ async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, pay
         await page.goto(url, { waitUntil: 'networkidle2' });
         console.log("Page loaded successfully");
 
-        // Wait for either rate divs or alert divs to appear
-        await Promise.race([
-            page.waitForSelector('.rate', { timeout: 10000 }),
-            page.waitForSelector('.alert-danger', { timeout: 10000 })
+        const result = await Promise.race([
+            page.waitForSelector('.alert-danger', { timeout: 10000 }).then(() => ({ type: 'alert' })),
+            page.waitForFunction(
+                () => {
+                    const rateElement = document.querySelector('.rate');
+                    return rateElement && !rateElement.textContent.includes('Loading...');
+                },
+                { timeout: 10000 }
+            ).then(() => ({ type: 'rate' }))
         ]);
-        console.log("Found rate or alert elements");
+
+        console.log(`Promise.race resolved with: ${result.type}`);
+
+        // Check for no availability alerts
+        if (result.type === 'alert') {
+            console.log("Checking for no availability alerts");
+            const alertElements = await page.$$('.alert-danger');
+            console.log("Alert elements found:", alertElements.length);
+            for (const alert of alertElements) {
+                const alertText = await alert.evaluate(el => el.textContent);
+                console.log("Alert element found, alert text:", alertText);
+                if (alertText.toLowerCase().includes('no availability')) {
+                    console.log("No availability found");
+                    await browser.close();
+                    return responseData;
+                }
+            }
+        }
 
         // First check if we need to click the Tent Sites button
         const tentSitesButton = await page.$('button.site-type');
@@ -98,17 +120,6 @@ async function payWhiteWaterParkTent(startDate, endDate, numAdults, numKids, pay
             }
 
             throw new Error(`Timeout waiting for rates to load: ${error.message}`);
-        }
-
-        // Check for no availability alerts
-        const alertElements = await page.$$('.alert-danger');
-        for (const alert of alertElements) {
-            const alertText = await alert.evaluate(el => el.textContent);
-            if (alertText.toLowerCase().includes('no availability')) {
-                console.log("No availability found");
-                await browser.close();
-                return responseData;
-            }
         }
 
         // Add a small delay to ensure content is fully loaded

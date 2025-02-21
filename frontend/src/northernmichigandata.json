@@ -78,21 +78,40 @@
       },
       "whiteWaterPark": {
         "title": "White Water Park Campground",
-        "address": "10000 E. Leelanau Pines Drive, Cedar, MI 49621",
-        "cityAndState": "Leelanau, MI",
-        "content": "White Water Park Campground is a family-friendly campground located on the shores of Lake Leelanau, offering a range of amenities and activities for campers of all ages. The campground features a sandy beach, a playground, and a pool, making it an ideal spot for families looking to enjoy the lake and its surrounding natural beauty.",
+        "address": "9500 Park Road, Williamsburg, MI 49690",
+        "cityAndState": "Williamsburg, MI",
+        "content": "Whitewater Campground is a scenic, family-friendly campground nestled along the shores of Elk Lake, offering a peaceful retreat with easy access to Traverse City and the beauty of Northern Michigan. Whether you're looking to relax by the water or explore the nearby hiking trails and charming towns, Whitewater Campground is an excellent home base for your adventure.",
         "available": false,
         "price": 0,
         "name": "",
+        "offerings": "55 Sites",
         "taxRate": 0,
         "fixedFee": 8,
         "message": "Unavailable",
         "imageUrls": [
-          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/teePee1.jpg",
-          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/teePee2.jpg",
-          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/teePee3.jpg"
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/whiteWater1.png",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/whiteWater2.png",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/whiteWater3.png",
+          "https://caravan-bucket.s3.us-east-2.amazonaws.com/images/bookNorthernMichiganPage/whiteWater4.png"
         ],
-        "distanceToTown": "15 minutes from Suttons Bay, 20 minutes from downtown Leland, and 25 minutes from Traverse City"
+        "distanceToTown": "15 minutes from Suttons Bay, 20 minutes from downtown Leland, and 25 minutes from Traverse City",
+        "amenities": [
+          "Water & electric on all sites",
+          "Fire pit",
+          "Picnic table", 
+          "Lake Access",
+          "Boat launch",
+          "Pet-friendly",
+          "Bathhouse with restrooms & showers",
+          "Camp store",
+          "Soccer and Volleyball court",
+          "Wi-Fi",
+          "Kayak & paddleboard rentals"
+        ],
+        "checkInTime": "3:00 PM",
+        "checkOutTime": "12:00 PM",
+        "guidelines": "Maximum of 6 people per site, 2 vehicles per site. Maximum of 2 adult sleeping units per site; the second unit must be registered with the ranger station at check-in and will be charged an additional fee of $25 per night. Quiet hours: 10:00 PM - 7:00 AM",
+        "cancellationPolicy": "If you cancel at least 14 days before your arrival, you will receive a refund minus an $8.00 reservation fee and the first night's camping fee. If you cancel less than 14 days before your arrival, no refund will be issued. Full refunds for camping fees may be given only under limited circumstances and must be approved by the Parks & Recreation Manager. The $8.00 reservation fee is non-refundable under any circumstances. No refunds will be issued for early departure due to weather or other natural conditions."
       }
     },
     "lodging": {}

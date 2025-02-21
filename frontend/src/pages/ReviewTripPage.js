@@ -5,12 +5,16 @@ import accommodationsData from './../northernmichigandata.json';
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import './../styles/reviewtrip.css';
+import ToggleList from '../components/book/BookPagesToggle';
+import ReviewToggleItem from '../components/book/ReviewToggleItem';
 
 function ReviewTripPage() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const placeDetails = accommodationsData;
+    // Initialize placeDetails state
+    const [placeDetails, setPlaceDetails] = useState(accommodationsData);
+
     const [totals, setTotals] = useState({});
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 914);
@@ -26,10 +30,35 @@ function ReviewTripPage() {
     }, []);
 
     useEffect(() => {
-        if (!location.state) {
-            navigate('/');
+        // Check if the component has mounted
+        const checkStateAndNavigate = () => {
+            console.log('location.state', location.state);
+            const savedState = localStorage.getItem('tripState');
+            console.log('savedState', savedState);
+            if (savedState) {
+                const parsedState = JSON.parse(savedState);
+                console.log('parsedState', parsedState);
+                if (!location.state) {
+                    console.log('navigating to home');
+                    navigate('/', { state: parsedState });
+                }
+            } else if (!location.state) {
+                console.log('navigating to home');
+                navigate('/');
+            }
+        };
+
+        // Run the check after the component has mounted
+        checkStateAndNavigate();
+    }, [navigate, location.state]);
+
+    useEffect(() => {
+        if (location.state) {
+            // Save state to local storage whenever it changes
+            console.log('saving state to local storage');
+            localStorage.setItem('tripState', JSON.stringify(location.state));
         }
-    }, [location.state, navigate]);
+    }, [location.state]);
 
     const {
         tripTitle = '',
@@ -78,6 +107,20 @@ function ReviewTripPage() {
     };
 
     useEffect(() => {
+        const savedTotals = localStorage.getItem('newTotals');
+        if (savedTotals) {
+            setTotals(JSON.parse(savedTotals));
+            console.log('Loaded totals from localStorage:', JSON.parse(savedTotals));
+        }
+
+        const savedPlaceDetails = localStorage.getItem('updatedPlaceDetails');
+        if (savedPlaceDetails) {
+            setPlaceDetails(JSON.parse(savedPlaceDetails)); // Load updated data from localStorage
+            console.log('Loaded updated place details from localStorage:', JSON.parse(savedPlaceDetails));
+        }
+    }, []);
+
+    useEffect(() => {
         if (selectedAccommodations && placeDetails && segments) {
             const newTotals = {};
 
@@ -85,11 +128,16 @@ function ReviewTripPage() {
                 const segment = segments[city];
                 if (segment) {
                     const numNights = calculateNights(segment.start, segment.end);
+                    console.log("calculateTotalForStay params", city, selected_accommodation, placeDetails, numNights);
                     newTotals[city] = calculateTotalForStay(city, selected_accommodation, placeDetails, numNights);
                 }
             });
 
             setTotals(newTotals);
+            localStorage.setItem('newTotals', JSON.stringify(newTotals));
+            console.log('Calculated and saved newTotals:', newTotals);
+        } else {
+            console.log('Missing data for recalculation:', { selectedAccommodations, placeDetails, segments });
         }
     }, [selectedAccommodations, placeDetails, segments]);
 
@@ -131,6 +179,20 @@ function ReviewTripPage() {
         );
     };
 
+    // Map city keys to display names
+    const cityDisplayNames = {
+        traverseCity: 'Traverse City',
+        mackinacCity: 'Mackinac City',
+        picturedRocks: 'Pictured Rocks'
+    };
+
+    // Function to calculate total price including taxes and fees
+    const calculateTotalPrice = (basePrice, taxes, fees, numNights) => {
+        const totalBasePrice = basePrice * numNights;
+        const totalTaxes = taxes * numNights;
+        return totalBasePrice + totalTaxes + fees;
+    };
+
     return (
         <div className="review-trip-page">
             <h1 className="header-title">Review Your Road Trip</h1>
@@ -138,97 +200,48 @@ function ReviewTripPage() {
                 <strong>Trip: </strong>
                 {tripTitle.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
             </h3>
-            <h3 className="header-info"><strong>Adults: </strong>{num_adults}</h3>
-            <h3 className="header-info"><strong>Kids: </strong>{num_kids}</h3>
+            <h3 className="header-info"><strong>Adults: </strong>{num_adults} • <strong>Kids: </strong>{num_kids}</h3>
             <h3 className="header-info"><strong>Dates: </strong>{start_date && end_date ? formatDates(start_date, end_date) : 'Dates not available'}</h3>
 
             <div className="nightstays-container">
-                {isSmallScreen ? (
-                    <>
-                        {Object.keys(segments).length > 1 && (
-                            <div className="arrow-container left">
-                                <ArrowCircleLeftIcon 
-                                    className="carousel-arrow" 
-                                    onClick={handlePrevSlide}
-                                    fontSize="large"
-                                />
-                            </div>
-                        )}
-                        {Object.entries(segments).map(([city, dateRange], index) => {
-                            const nightRanges = calculateNightRanges(segments);
-                            const accommodation = placeDetails[city]?.tent[selectedAccommodations[city]];
-                            const firstImageUrl = accommodation?.imageUrls?.[0];
+                {Object.entries(selectedAccommodations).map(([city, selected_accommodation]) => {
+                    const accommodationDetails = placeDetails[city]?.tent[selected_accommodation];
+                    if (!accommodationDetails) return null;
 
-                            return (
-                                <div 
-                                    className={`nightstay ${index === currentSlide ? 'active' : 'hidden'}`}
-                                    key={city}
-                                >
-                                    <h2>{nightRanges[city].range}</h2>
-                                    {firstImageUrl && (
-                                        <img
-                                            src={firstImageUrl}
-                                            alt={accommodation.title}
-                                            className="accommodation-image"
-                                        />
-                                    )}
-                                    <h2>{accommodation?.title || 'Not Selected'}</h2>
-                                    <h2>Total for Stay: ${totals[city]?.total?.toFixed(2) || '0.00'}</h2>
-                                    {totals[city]?.disclaimer && (
-                                        <>
-                                            <h2>Payment Due: ${totals[city]?.payment?.toFixed(2)}</h2>
-                                            <h2 className="stay-disclaimer">{totals[city]?.disclaimer}</h2>
-                                        </>
-                                    )}
-                                </div>
-                            );
-                        })}
-                        {Object.keys(segments).length > 1 && (
-                            <div className="arrow-container right">
-                                <ArrowCircleRightIcon 
-                                    className="carousel-arrow" 
-                                    onClick={handleNextSlide}
-                                    fontSize="large"
-                                />
-                            </div>
-                        )}
-                    </>
-                ) : (
-                    Object.entries(segments).map(([city, dateRange]) => {
-                        const nightRanges = calculateNightRanges(segments);
-                        const accommodation = placeDetails[city]?.tent[selectedAccommodations[city]];
-                        const firstImageUrl = accommodation?.imageUrls?.[0];
+                    const segment = segments[city];
+                    const numNights = calculateNights(segment.start, segment.end);
 
-                        return (
-                            <div className="nightstay" key={city}>
-                                <h2>{nightRanges[city].range}</h2>
-                                {firstImageUrl && (
-                                    <img
-                                        src={firstImageUrl}
-                                        alt={accommodation.title}
-                                        className="accommodation-image"
-                                    />
-                                )}
-                                <h2>{accommodation?.title || 'Not Selected'}</h2>
-                                <h2>Total for Stay: ${totals[city]?.total?.toFixed(2) || '0.00'}</h2>
-                                {totals[city]?.disclaimer && (
-                                    <>
-                                        <h2>Payment Due: ${totals[city]?.payment?.toFixed(2)}</h2>
-                                        <h2 className="stay-disclaimer">{totals[city]?.disclaimer}</h2>
-                                    </>
-                                )}
-                            </div>
-                        );
-                    })
-                )}
+                    const nightRange = `${calculateNightRanges(segments)[city].range}: ${cityDisplayNames[city]}`;
+
+                    // Calculate base price, taxes, and fees
+                    const basePrice = accommodationDetails.price || 0;
+                    const taxes = (accommodationDetails.price || 0) * (accommodationDetails.taxRate || 0);
+                    const fees = accommodationDetails.fixedFee || 0;
+                    const totalPrice = calculateTotalPrice(basePrice, taxes, fees, numNights);
+
+                    return (
+                        <ReviewToggleItem
+                            key={city}
+                            title={accommodationDetails.title}
+                            content={accommodationDetails.content}
+                            availability={accommodationDetails.available}
+                            price={totalPrice}
+                            message={accommodationDetails.message}
+                            details={{
+                                ...accommodationDetails,
+                                basePrice,
+                                taxes,
+                                fees,
+                                numNights
+                            }}
+                            nightRange={nightRange}
+                        />
+                    );
+                })}
             </div>
-
-            <h4 className="disclaimer">
-                * Note: Total for Stay includes the rate for the number of nights, plus any added taxes / fees estimated for each website. These totals do not include any fees by Caravan Club.
-            </h4>
             <div className="reviewtrip-buttons">
                 <button className="reviewtrip-button" onClick={handleBack}>Back</button>
-                <button className="reviewtrip-button" onClick={handleConfirm}>Confirm</button>
+                <button className="reviewtrip-button" onClick={handleConfirm}>Calculate Total</button>
             </div>
         </div>
     );

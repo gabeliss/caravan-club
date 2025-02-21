@@ -122,6 +122,7 @@ function BookNorthernMichiganPage() {
 
         await Promise.all(apiCalls);
         setPlaceDetails(updatedPlaceDetails);
+        localStorage.setItem('updatedPlaceDetails', JSON.stringify(updatedPlaceDetails));
       } catch (error) {
         console.error('Unexpected error:', error);
         setFetchError(error);
@@ -193,13 +194,13 @@ function BookNorthernMichiganPage() {
             {location.state.tripTitle.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
             <span><span className="dash"> - </span>{location.state.nights} Night Road Trip</span>
           </h1>
-          <h3><strong>Instructions:</strong><br/><br/>
+          <h3><br></br>
           <span className="instructions-list">
-            1. Review the nights and dates selected for your trip<br/><br/>
-            2. Browse the campground drop downs under each location<br/><br/>
-            3. Select 1 campground per location based on your preferences<br/><br/>
-            4. Once all your options have been selected, click "Review Trip" to see your trip summary<br/><br/>
-            *If there is no availability, consider changing the dates selected or wait until more sites have been released
+            🗓 <strong>Review Dates</strong> - Check the nights & dates for your trip. <br/><br/>
+            🔍 <strong>Browse Campgrounds</strong> - Explore dropdown options for each location. <br/><br/>
+            ✅ <strong>Pick One</strong> - Select one campground per stop. <br/><br/>
+            📋 <strong>Review & Confirm</strong> - Click "Review Trip" for a final summary. <br/><br/>
+            ⚠️ <strong>No Availability?</strong> - Adjust dates or check back later.
           </span>
           </h3>
         </div>

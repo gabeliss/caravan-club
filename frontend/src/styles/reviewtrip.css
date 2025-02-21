@@ -165,6 +165,16 @@
     }
 }
 
+@media (max-width: 768px) {
+    .toggle-item {
+        margin: 0 !important;
+    }
+
+    .toggle-images img {
+        height: 250px !important;
+    }
+}
+
 @media (max-width: 600px) {
     .arrow-container.left {
         left: 0;
@@ -173,10 +183,63 @@
     .arrow-container.right {
         right: 0;
     }
+
+    .nightstays-container {
+        width: 70%;
+    }
+
+    .toggle-item {
+        margin-bottom: 50px !important; 
+    }
 }
 
 @media (min-width: 915px) {
     .arrow-container {
         display: none;
     }
+}
+
+.night-range-chip {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: gray;
+    color: white;
+    padding: 12px 12px;
+    border-radius: 25px;
+    font-weight: bold;
+    z-index: 2;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.price-chip {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-top: 10px;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.price-text {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.toggle-icon-review {
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.toggle-icon-review.active {
+    transform: rotate(-180deg);
 }

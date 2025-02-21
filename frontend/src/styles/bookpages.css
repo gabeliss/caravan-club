@@ -25,7 +25,7 @@
 }
 
 .intro-text {
-    flex: 2; /* Take equal space with the image */
+    flex: 1; /* Take equal space with the image */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -187,7 +187,7 @@
 }
 
 .toggle-item {
-    border: 1px solid var(--charcoal-gray);
+    border: 2px solid var(--primary-color-dark);
     border-radius: 10px;
     margin-right: 30px;
     width: 400px;
@@ -197,7 +197,7 @@
 
 /* Add style for selected card */
 .toggle-item:has(.availability-status.selected) {
-    border: 3px solid var(--charcoal-gray);
+    border: 3px solid var(--primary-color-dark);
 }
 
 .toggle-item.selected {
@@ -228,7 +228,7 @@
 
 .toggle-img {
     width: 100%;
-    height: 300px; /* Set a fixed height */
+    height: 400px; /* Set a fixed height */
     object-fit: cover; /* This ensures images fill the space without distortion */
     border-radius: 5px;
 }
@@ -267,7 +267,6 @@
     color: black;
     font-weight: bolder;
     margin: 3px;
-    margin-bottom: 15px;
 
 }
 
@@ -328,26 +327,25 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    width: 50%;
-    padding: 10px 0;
+    width: 40%; /* Adjust width to fit content */
+    padding: 12px 20px; /* Match the padding of the price chip */
     text-align: center;
-    border-radius: 10px;
-    color: grey;
+    border-radius: 25px; /* Match the border radius of the price chip */
+    color: white;
     z-index: 2;
     margin: 0;
-    font-weight: bolder;
-    font-size: 1.15rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+    background-color: gray; /* Default background color */
 }
 
 .availability-status.available {
     background-color: var(--primary-color-light);
-    color: white;
 }
 
 .availability-status.not-available {
     background-color: rgb(229, 139, 139);
     cursor: default;
-    color: white;
 }
 
 .toggle-item.expanded .availability-status {
@@ -380,12 +378,12 @@
     position: absolute;
     top: -45px; /* Position above the price flag */
     left: 0;
-    width: 100%;
-    padding: 10px 0;
+    width: 80%;
+    padding: 12px 20px; /* Match the padding of the price chip */
     background-color: gray;
     color: white;
     text-align: center;
-    border-radius: 10px;
+    border-radius: 25px; /* Match the border radius of the price chip */
     font-weight: bolder;
 }
 
@@ -407,7 +405,8 @@
     }
 
     .toggle-item {
-        width: 40%;
+        width: 60%;
+        margin-bottom: 20px !important;
     }
 
     .toggle-labels {
@@ -417,7 +416,7 @@
 
 
     .availability-status {
-        font-size: 0.8rem;
+        font-size: 1rem;
     }
 
     .toggle-header {

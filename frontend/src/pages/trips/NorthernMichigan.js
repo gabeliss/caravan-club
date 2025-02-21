@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import './../../styles/itineraries.css';
 import { Link } from 'react-router-dom';
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import AOS from 'aos';
@@ -11,16 +10,6 @@ function NorthernMichigan() {
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
-
-  const sliderSettings = {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    adaptiveHeight: false,
-    arrows: false  // This removes the arrows
-  };
 
   return (
     <div className='page'>
@@ -168,9 +157,6 @@ function NorthernMichigan() {
           <div className="best-activity-images" data-aos="fade-up">
             <div className="best-activity-image">
               <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/activity/activity1.jpg" alt="Activity 1" className="cover-image" />
-            </div>
-            <div className="best-activity-image">
-              <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/activity/activity2.jpg" alt="Activity 2" className="cover-image" />
             </div>
           </div>
         </div>
