@@ -199,7 +199,8 @@ def send_trip_confirmation_email(email, trip):
             num_kids=trip.num_kids,
             grand_total=f"{trip.grand_total:.2f}",
             segments=segments_data,
-            trip=trip
+            trip=trip,
+            trip_fully_processed=trip.trip_fully_processed
         )
 
         # Create the email message
@@ -290,6 +291,7 @@ def preview_email_confirmation():
         "end_date": (preview_date + timedelta(days=5)).strftime('%B %d, %Y'),
         "num_adults": 2,
         "num_kids": 1,
+        "trip_fully_processed": True,
         "trip": {
             "nights": 5  # Added this for the attachment info
         },
@@ -303,7 +305,8 @@ def preview_email_confirmation():
                 "total": "199.99",
                 "nights": 2,
                 "night_start": 1,
-                "night_end": 2
+                "night_end": 2,
+                "payment_successful": True
             },
             {
                 "name": "Leelanau Pines",
@@ -314,7 +317,8 @@ def preview_email_confirmation():
                 "total": "249.99",
                 "nights": 2,
                 "night_start": 3,
-                "night_end": 4
+                "night_end": 4,
+                "payment_successful": True
             },
             {
                 "name": "Fort Superior",
@@ -325,7 +329,62 @@ def preview_email_confirmation():
                 "total": "179.99",
                 "nights": 1,
                 "night_start": 5,
-                "night_end": 5
+                "night_end": 5,
+                "payment_successful": True
+            }
+        ],
+        "grand_total": "629.97"
+    }
+    return render_template("email_trip_confirmation.html", **data)
+
+@booking_bp.route("/api/preview-pending-email-confirmation")
+def preview_pending_email_confirmation():
+    # Create sample data that matches the structure expected by the template
+    preview_date = datetime.now()
+    data = {
+        "first_name": "John",
+        "confirmation_number": "C7730407",  # This needs to match a real trip in the database
+        "start_date": (preview_date).strftime('%B %d, %Y'),
+        "end_date": (preview_date + timedelta(days=5)).strftime('%B %d, %Y'),
+        "num_adults": 2,
+        "num_kids": 1,
+        "trip_fully_processed": False,  # Indicate that the trip is not fully processed
+        "segments": [
+            {
+                "name": "Timber Ridge",
+                "selected_accommodation": "Timber Ridge Recreation",
+                "address": "4050 E Hammond Rd, Traverse City, MI 49686",
+                "start_date": "Jun 15",
+                "end_date": "Jun 17",
+                "total": "199.99",
+                "nights": 2,
+                "night_start": 1,
+                "night_end": 2,
+                "payment_successful": True
+            },
+            {
+                "name": "Leelanau Pines",
+                "selected_accommodation": "Leelanau Pines Campground",
+                "address": "6500 E. Leelanau Pines Drive, Cedar, MI 49621",
+                "start_date": "Jun 17",
+                "end_date": "Jun 19",
+                "total": "249.99",
+                "nights": 2,
+                "night_start": 3,
+                "night_end": 4,
+                "payment_successful": False
+            },
+            {
+                "name": "Fort Superior",
+                "selected_accommodation": "Fort Superior Campground",
+                "address": "N7685 Old Golf Course Rd. Munising, MI 49862",
+                "start_date": "Jun 19",
+                "end_date": "Jun 20",
+                "total": "179.99",
+                "nights": 1,
+                "night_start": 5,
+                "night_end": 5,
+                "payment_successful": True
             }
         ],
         "grand_total": "629.97"

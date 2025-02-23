@@ -48,9 +48,15 @@
         <div class="confirmation-number">Confirmation Number: {{ confirmation_number }}</div>
         <p>Hi {{ first_name }},</p>
         <p>
-            Congratulations! Your <strong class="green">Northern Michigan</strong> road trip is officially confirmed. 
-            We're so excited to help you embark on this unforgettable journey.
-            Below are the details of your trip, along with a few notes to help you prepare.
+            {% if trip_fully_processed %}
+                Congratulations! Your <strong class="green">Northern Michigan</strong> road trip is officially confirmed. 
+                We're so excited to help you embark on this unforgettable journey. Below are the details of your trip, 
+                along with a few notes to help you prepare.
+            {% else %}
+                Congratulations! Your <strong class="green">Northern Michigan</strong> road trip is almost fully confirmed. 
+                We're thrilled to help you embark on this unforgettable journey! While we're still working to secure a few campsites, 
+                here are the details of your trip so far, along with some notes to help you prepare. Stay tuned for final confirmations soon!
+            {% endif %}
         </p>
         <div class="trip-details">
             <strong class="green">Trip Overview:</strong>
@@ -67,6 +73,11 @@
                             Night {{ segment.night_start }}
                         {% endif %}
                         ({{ segment.start_date }} - {{ segment.end_date }}): {{ segment.name }}
+                        {% if segment.payment_successful %}
+                            <span class="green">(Confirmed)</span>
+                        {% else %}
+                            <span class="green">(Pending Confirmation)</span>
+                        {% endif %}
                     </strong>
                     <ul>
                         <li>{{ segment.selected_accommodation }}</li>
@@ -76,15 +87,36 @@
                 </li>
             {% endfor %}
             </ul>
-            <p><strong>Total Road Trip Cost:</strong> ${{ grand_total }}</p>
+            <p><strong>
+                {% if trip_fully_processed %}
+                    Total Road Trip Cost:
+                {% else %}
+                    Estimated Total Road Trip Cost:
+                {% endif %}
+            </strong> ${{ grand_total }}
+            {% if not trip_fully_processed %}
+                <em>(Final total may adjust based on pending confirmations)</em>
+            {% endif %}
+            </p>
         </div>
         <div class="important-notes">
             <h4>Important Notes:</h4>
             <ul>
+                {% if not trip_fully_processed %}
+                    <li><strong>Pending Confirmations:</strong> We are still working to finalize your stay at 
+                        {% for segment in segments %}
+                            {% if not segment.payment_successful %}
+                                {{ segment.selected_accommodation }}{% if not loop.last %}, {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        and will update you as soon as they are confirmed. If we are unable to secure this site or if pricing changes, 
+                        we will keep you informed and provide alternative options.
+                    </li>
+                {% endif %}
                 <li><strong>Cancellations & Changes:</strong> Any modifications to your reservations should be made directly 
-                    with the campgrounds listed in your itinerary You will receive confirmation emails directly from 
+                    with the campgrounds listed in your itinerary. You will receive confirmation emails directly from 
                     each site with confirmation numbers and details. </li>
-                <li><strong>Itinerary:</strong> Click <a href="{{ url_for('booking.get_itinerary', confirmation_number=confirmation_number, _external=True) }}" style="color: #3E624F; font-weight: bold;">here</a> 
+                <li><strong>Itinerary Included:</strong> Click <a href="{{ url_for('booking.get_itinerary', confirmation_number=confirmation_number, _external=True) }}" style="color: #3E624F; font-weight: bold;">here</a> 
                     to download your detailed itinerary with recommendations for restaurants, activities, hikes, and nearby towns to enhance your trip.</li>
             </ul>
         </div>

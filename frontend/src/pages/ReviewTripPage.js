@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { calculateTotalForStay, formatDates } from './../utils/helpers';
 import accommodationsData from './../northernmichigandata.json';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import './../styles/reviewtrip.css';
-import ToggleList from '../components/book/BookPagesToggle';
 import ReviewToggleItem from '../components/book/ReviewToggleItem';
 
 function ReviewTripPage() {
@@ -16,18 +13,7 @@ function ReviewTripPage() {
     const [placeDetails, setPlaceDetails] = useState(accommodationsData);
 
     const [totals, setTotals] = useState({});
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 914);
-
-    // Listen for screen resize to update `isSmallScreen`
-    useEffect(() => {
-        const handleResize = () => {
-            setIsSmallScreen(window.innerWidth <= 914);
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    const [isAllActive, setIsAllActive] = useState(false);
 
     useEffect(() => {
         // Check if the component has mounted
@@ -166,19 +152,6 @@ function ReviewTripPage() {
             }
         });
     };
-
-    const handlePrevSlide = () => {
-        setCurrentSlide(current => 
-            current === 0 ? Object.keys(segments).length - 1 : current - 1
-        );
-    };
-
-    const handleNextSlide = () => {
-        setCurrentSlide(current => 
-            current === Object.keys(segments).length - 1 ? 0 : current + 1
-        );
-    };
-
     // Map city keys to display names
     const cityDisplayNames = {
         traverseCity: 'Traverse City',
@@ -191,6 +164,10 @@ function ReviewTripPage() {
         const totalBasePrice = basePrice * numNights;
         const totalTaxes = taxes * numNights;
         return totalBasePrice + totalTaxes + fees;
+    };
+
+    const toggleAllExpand = () => {
+        setIsAllActive(prevState => !prevState);
     };
 
     return (
@@ -235,6 +212,8 @@ function ReviewTripPage() {
                                 numNights
                             }}
                             nightRange={nightRange}
+                            isActive={isAllActive}
+                            toggleExpand={toggleAllExpand}
                         />
                     );
                 })}

@@ -6,13 +6,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import './../../styles/bookpages.css';
 import './../../styles/reviewtrip.css';
 
-const ReviewToggleItem = ({ title, content, availability, price, message, details, nightRange }) => {
-    const [isActive, setIsActive] = useState(false);
+const ReviewToggleItem = ({ title, content, availability, price, message, details, nightRange, isActive, toggleExpand }) => {
     const contentRef = useRef(null);
-
-    const toggleExpand = () => {
-        setIsActive(prevState => !prevState);
-    };
 
     const formattedPrice = `$${(price || 0).toFixed(2)} Total for Stay`;
     console.log('details', details);
