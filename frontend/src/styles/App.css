@@ -171,18 +171,35 @@ footer {
   height: 10vh;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around; /* Use space-around to bring items closer */
   padding: 10px;
   color: var(--primary-color);
 }
 
 .footer-left,
-.footer-center,
 .footer-right {
-  flex: 1;
+  flex: 0 1 auto; /* Adjust flex properties to control spacing */
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.footer-left {
+  align-items: flex-start; /* Align logo to the left */
+}
+
+.footer-left img {
+  width: 100px; /* Set a specific width for the logo */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.footer-right {
+  align-items: flex-end; /* Align links to the right */
+  flex-direction: column; /* Stack links vertically */
+}
+
+.footer-right a {
+  margin-left: 0; /* Remove left margin for vertical stacking */
 }
 
 .footer-center {
@@ -193,10 +210,6 @@ footer {
   width: 150px;
   height: auto;
   padding-top: 20%;
-}
-
-.footer-right {
-  align-items: flex-end;
 }
 
 footer a {
@@ -447,6 +460,7 @@ footer a {
     margin: 2rem 1rem;
     padding: 0;
     margin: 0;
+    margin-bottom: 20px;
     width: 125px;
   }
 
@@ -456,6 +470,10 @@ footer a {
   }
 
   .learn-more-btn {
+    font-size: 0.8rem;
+  }
+
+  .footer-left a, .footer-right a {
     font-size: 0.8rem;
   }
 }

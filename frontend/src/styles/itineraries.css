@@ -477,7 +477,7 @@
     color: white;
     padding: 10px 0;
     position: relative;
-    height: 120px;
+    height: 80px;
     display: flex;
     align-items: center;
   }
@@ -486,7 +486,7 @@
     display: inline-block;
     animation: slide 120s linear infinite;
     white-space: nowrap;
-    font-size: 3.75rem;
+    font-size: 3.25rem;
     color: var(--secondary-color);
   }
 
@@ -527,9 +527,13 @@
     }
 
     .text-content {
-        width: 95%;
-        left: 0;
-      }
+      width: 95%;
+      left: 0;
+    }
+
+    .text-content h1 {
+      font-size: 2rem;
+    }
 
     .trip-info-container {
       display: flex;
@@ -565,7 +569,7 @@
 
     .book-now-button {
       font-size: medium;
-      width: 150px;
+      width: 250px;
     }
 
     .best-restaurant-text, .best-hike-text {
@@ -583,10 +587,21 @@
       padding-bottom: 0px;
     }
 
+    .best-activity-text h1 {
+      text-align: left;
+      width: 100%;
+      font-size: 1rem;
+    }
+
     .best-restaurant-text p, .best-hike-text p {
       text-align: left;
       font-size: 1.25rem;
       width: 90%;
+    }
+
+    .best-restaurant-images {
+      width: 100%;
+      padding-left: 0;
     }
 
     .image-row, .best-hike-text {
@@ -623,7 +638,7 @@
     }
 
     .best-hike-details-facts {
-      width: 100%;
+      width: 80%;
     }
 
     .best-hike-details-facts-column h1 {
@@ -658,6 +673,7 @@
     .best-activity-text p {
       font-size: 1rem;
       padding: 10px 0px;
+      padding-bottom: 20px;
     }
 
     .best-activity-images {
