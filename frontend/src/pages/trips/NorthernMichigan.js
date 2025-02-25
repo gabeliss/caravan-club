@@ -22,7 +22,7 @@ function NorthernMichigan() {
 
       <div className="trip-info-container" data-aos="fade-up">
         <div className="trip-info">
-          <h3>A Typical Trip to Northern Michigan</h3>
+          <h3>A Typical Trip</h3>
           <div className="info-item">
             <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/icons/calendar.png" alt="Calendar" />
             <span className="info-label">Best Time to Visit</span>
@@ -74,27 +74,26 @@ function NorthernMichigan() {
           <div className="best-restaurant-images">
             <div className="image-row" data-aos="fade-up">
               <div className="single-image-column image-column">
+              <span className="caption-large">Farm Club</span>
                 <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/restaurant/restaurant1.jpg" alt="Farm Club 1" className="cover-image" />
-                <span className="caption">Outdoor lawn seating for bar and market snacks</span>
+                <span className="caption align-left">Outdoor lawn seating for bar and market snacks</span>
               </div>
               <div className="double-image-column image-column">
-              <span className="caption-large">Farm Club</span>
                 <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/restaurant/restaurant2.jpg" alt="Farm Club 2" className="contain-image" />
                 <span className="caption"></span>
-                <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/restaurant/restaurant3.jpg" alt="Farm Club 3" className="cover-image" />
+                <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/restaurant/restaurant3.jpg" alt="Farm Club 3" className="contain-image" />
                 <span className="caption">Farm to Table Ingredients</span>
               </div>
             </div>
             <div className="image-row" data-aos="fade-up">
-              <div className="double-image-column image-column">
-                <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/restaurant/restaurant4.jpg" alt="Farm Club 4" className="cover-image" />
-                <span className="caption">No Reservations Required</span>
-                <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/restaurant/restaurant5.jpg" alt="Farm Club 5" className="contain-image" />
-                <span className="caption">Enjoy a drink from the backyard while you wait for your table!</span>
+              <div className="double-image-column image-column negative-padding">
+                <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/restaurant/restaurant4.jpg" alt="Farm Club 4" className="cover-image img-4" />
+                <span className="caption align-right">No Reservations Required</span>
+                <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/restaurant/restaurant5.jpg" alt="Farm Club 5" className="cover-image" />
+                <span className="caption align-left">Enjoy a drink from the backyard while<br></br> you wait for your table!</span>
               </div>
               <div className="single-image-column image-column">
                 <img src="https://caravan-bucket.s3.us-east-2.amazonaws.com/images/trippage/northernmichigan/restaurant/restaurant6.jpg" alt="Farm Club 6" className="cover-image" />
-                <span className="caption">Beautiful Garden</span>
               </div>
             </div>
           </div>

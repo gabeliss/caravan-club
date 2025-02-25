@@ -21,7 +21,7 @@
   }
   
   .title {
-    font-size: 4.5rem;
+    font-size: 4rem;
     color: var(--orange-color);
     font-weight: bolder;
     flex-wrap: wrap;
@@ -29,7 +29,7 @@
   }
   
   .subtitle {
-    font-size: 9.5rem; 
+    font-size: 7rem; 
     font-weight: bolder;
     margin-top: 0px;
     margin-bottom: 0px;
@@ -39,21 +39,21 @@
 
   @media (max-width: 1300px) {
     .title {
-      font-size: 3.75rem;
+      font-size: 3rem;
     }
 
     .subtitle {
-      font-size: 8.5rem;
+      font-size: 7.5rem;
     }
   }
 
   @media (max-width: 1200px) {
     .title {
-      font-size: 3.5rem;
+      font-size: 3rem;
     }
 
     .subtitle {
-      font-size: 7.5rem;
+      font-size: 7rem;
     }
   }
 
@@ -201,7 +201,7 @@
   .text-content h1 {
     font-size: 2.5rem;
     font-weight: bolder;
-    margin-bottom: 40px;
+    margin: 0;
     color: var(--orange-color);
   }
 
@@ -228,7 +228,8 @@
   }
 
   .book-now-button:hover {
-    background-color: var(--secondary-color-light);
+    background-color: var(--primary-color-dark);
+    color: var(--secondary-color);
   }
 
   .best-stuff {
@@ -252,19 +253,24 @@
     padding-bottom: 40px;
   }
 
+  .best-restaurant-text h1, .best-hike-text h1, .best-activity-text h1 {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
   .best-restaurant-text h1, .best-hike-text h1, .best-restaurant-text p, .best-hike-text p, .best-activity-text h1 {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     color: black;
     font-weight: normal;
     padding: 20px;
     margin: 0;
-    min-width: 180px;
+    min-width: 200px;
   }
 
   .best-restaurant-images {
     display: flex;
     flex-direction: column;
     padding-left: 10%;
+    padding-bottom: 60px;
     width: 80%;
   }
 
@@ -286,7 +292,7 @@
   .single-image-column img {
     flex: 1;
     width: 100%;
-    max-height: 80vh;
+    max-height: 90vh;
     margin-bottom: 5px;
   }
 
@@ -298,17 +304,19 @@
   }
 
   .caption {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     color: black;
     text-align: center;
+    margin-top: 10px;
     margin-bottom: 10px;
+    width: 100%;
   }
 
   .caption-large {
-    font-size: 2.2rem;
+    font-size: 4rem;
     font-weight: bolder;
     color: var(--orange-color);
-    text-align: center;
+    text-align: left;
     margin-bottom: 5px;
     width: 100%;
   }
@@ -323,6 +331,19 @@
 
   .cover-image {
     object-fit: cover;
+    object-position: center 100%;
+  }
+
+  .img-4 {
+    object-position: center 20%;
+  }
+
+  .align-left {
+    text-align: left;
+  }
+
+  .align-right {
+    text-align: right;
   }
 
   .best-hike {
@@ -356,12 +377,12 @@
   .best-hike-details-text h1 {
     font-size: 2.75rem;
     font-weight: bolder;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
     color: var(--orange-color);
   }
 
   .best-hike-details-text p {
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     text-align: left;
     color: black;
     font-weight: normal;
@@ -371,8 +392,9 @@
   .best-hike-details-facts {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-evenly;
     margin-top: 20px;
+    width: 60%;
   }
 
   .best-hike-details-facts-row {
@@ -386,7 +408,7 @@
   }
 
   .best-hike-details-facts-column h1 {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     font-weight: bold;
     margin-bottom: 10px;
     text-align: left;
@@ -477,6 +499,12 @@
     }
   }
 
+  @media (max-width: 1024px) {
+    .best-hike-details-facts {
+      width: 85%;
+    }
+  }
+
   @media (max-width: 768px) {
     .page {
       padding: 20px 20px;
@@ -548,9 +576,17 @@
       align-items: center;
     }
 
-    .best-restaurant-text p, .best-hike-text p {
-      text-align: center;
+    .best-restaurant-text h1, .best-hike-text h1 {
+      text-align: left;
+      width: 90%;
       font-size: 1rem;
+      padding-bottom: 0px;
+    }
+
+    .best-restaurant-text p, .best-hike-text p {
+      text-align: left;
+      font-size: 1.25rem;
+      width: 90%;
     }
 
     .image-row, .best-hike-text {
@@ -584,6 +620,10 @@
 
     .best-hike-details-text p {
       font-size: 1rem;
+    }
+
+    .best-hike-details-facts {
+      width: 100%;
     }
 
     .best-hike-details-facts-column h1 {

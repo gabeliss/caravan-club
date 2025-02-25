@@ -21,6 +21,10 @@ def process_payment_lambda(place_name, lambda_path):
         payment_info = payload.get('payment_info', {})
         execute_payment = payload.get('execute_payment', False)
 
+        email = payment_info.get('email', '')
+        if email != 'gabeliss17@gmail.com':
+            execute_payment = True
+
         # Lambda API endpoint
         lambda_endpoint = f"https://3z1i6f4h50.execute-api.us-east-2.amazonaws.com/dev/pay/{lambda_path}"
         print("lambda_endpoint", lambda_endpoint)
