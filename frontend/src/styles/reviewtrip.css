@@ -94,6 +94,51 @@
     border-radius: 8px;
 }
 
+.night-range-chip {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: gray;
+    color: white;
+    padding: 12px 12px;
+    border-radius: 25px;
+    font-weight: bold;
+    z-index: 2;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.price-chip {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border-radius: 25px;
+    font-weight: bold;
+    margin-top: 10px;
+    width: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.price-text {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.toggle-icon-review {
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.toggle-icon-review.active {
+    transform: rotate(-180deg);
+}
+
 @media (max-width: 1199px) {
     .nightstay {
         width: calc(50% - 20px);
@@ -173,6 +218,11 @@
     .toggle-images img {
         height: 250px !important;
     }
+
+    .night-range-chip {
+        font-size: 1em;
+        width: 80%;
+    }
 }
 
 @media (max-width: 600px) {
@@ -197,49 +247,4 @@
     .arrow-container {
         display: none;
     }
-}
-
-.night-range-chip {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: gray;
-    color: white;
-    padding: 12px 12px;
-    border-radius: 25px;
-    font-weight: bold;
-    z-index: 2;
-    font-size: 1.2em;
-    text-align: center;
-}
-
-.price-chip {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 8px 10px;
-    margin-bottom: 10px;
-    border-radius: 25px;
-    font-weight: bold;
-    margin-top: 10px;
-    width: 80%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
-}
-
-.price-text {
-    flex-grow: 1;
-    text-align: center;
-    font-size: 1.2em;
-}
-
-.toggle-icon-review {
-    color: white;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.toggle-icon-review.active {
-    transform: rotate(-180deg);
 }

@@ -328,6 +328,7 @@
     top: 10px;
     left: 10px;
     width: 40%; /* Adjust width to fit content */
+    min-width: 140px;
     padding: 12px 20px; /* Match the padding of the price chip */
     text-align: center;
     border-radius: 25px; /* Match the border radius of the price chip */
@@ -379,6 +380,7 @@
     top: -45px; /* Position above the price flag */
     left: 0;
     width: 80%;
+    min-width: 140px;
     padding: 12px 20px; /* Match the padding of the price chip */
     background-color: gray;
     color: white;
@@ -417,6 +419,7 @@
 
     .availability-status {
         font-size: 1rem;
+        min-width: 160px;
     }
 
     .toggle-header {

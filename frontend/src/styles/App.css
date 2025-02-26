@@ -424,6 +424,7 @@ footer a {
   font-size: 1rem;
   font-weight: bold;
   font-family: inherit;
+  width: 95%;
 }
 
 @media (max-width: 768px) {
@@ -471,6 +472,8 @@ footer a {
 
   .learn-more-btn {
     font-size: 0.8rem;
+    width: 80%;
+    padding: 10px 5px;
   }
 
   .footer-left a, .footer-right a {

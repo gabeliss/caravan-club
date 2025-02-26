@@ -189,11 +189,24 @@ async function scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids
 
     // First wait for the ng-book-counts div to be present
     try {
-        await page.waitForSelector('div.book-anon-columns-section.with-bottom-border.book-anon', { timeout: 15000 });
-        console.log("book-anon-columns-section div found");
+      await page.waitForSelector('div.book-anon-columns-section.with-bottom-border.book-anon', { timeout: 7000 });
+      console.log("book-anon-columns-section div found");
     } catch (error) {
-        console.log('Could not find book-anon-columns-section div');
-        throw new Error('Required book-anon-columns-section div not found');
+        try {
+            const callToBookElement = await page.$('h2.sold-out', { timeout: 3000 });
+            if (callToBookElement) {
+                const text = await page.evaluate(el => el.textContent.trim(), callToBookElement);
+                console.log('Call to book element found:', text);
+                await browser.close();
+                return { available: false, price: null, message: "No availability" };
+            } else {
+                throw new Error('No availability and no call-to-book element found');
+            }
+        } catch (innerError) {
+            console.log('Could not find book-anon-columns-section div or call-to-book element');
+            await browser.close();
+            return { available: false, price: null, message: "Something went wrong" };
+        }
     }
 
     // Then wait for price and select elements
@@ -205,6 +218,14 @@ async function scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids
         console.log("Price element found");
         await page.waitForSelector(selectSelector, { timeout: 10000 });
         console.log("Select element found");
+
+        // Check if the select element is disabled
+        const isSelectDisabled = await page.$eval(selectSelector, select => select.disabled);
+        if (isSelectDisabled) {
+            console.log("Select element is disabled");
+            await browser.close();
+            return { available: false, price: null, message: "Reservation not available for the selected dates" };
+        }
     } catch (error) {
         console.log('Could not find required elements, printing all selects and buttons:');
         const selects = await page.$$eval('select', selects => selects.map(sel => ({
@@ -281,7 +302,7 @@ async function scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids
 
 if (require.main === module) {
   (async () => {
-    const result = await scrapeTeePeeCampgroundTent("06/28/25", "06/30/25", 5, 0);
+    const result = await scrapeTeePeeCampgroundTent("08/28/25", "08/30/25", 5, 0);
     console.log("Scrape result:", result);
   })();
 }
