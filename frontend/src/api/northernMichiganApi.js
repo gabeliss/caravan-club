@@ -22,13 +22,13 @@ export const fetchAccommodationDetails = async (selected_accommodation, start_da
         console.error(`API route not defined for accommodation: ${selected_accommodation}`);
         return;
     }
-    console.log('Scrape endpoint:', `${SCRAPE_ENDPOINT}/${apiEndpoint}`);
+
     const url = `${SCRAPE_ENDPOINT}/${apiEndpoint}`;
     try {
         const response = await axios.get(url, {
             params: { start_date, end_date, num_adults, num_kids }
         });
-        console.log('fetchAccomodationDetails response.data', selected_accommodation, response.data)
+
         return response.data;
     } catch (error) {
         console.log('fetchAccomodationDetails error', error)

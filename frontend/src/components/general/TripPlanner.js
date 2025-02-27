@@ -139,7 +139,6 @@ function TripPlanner() {
       segmentStart = new Date(segmentEnd);
     });
   
-    console.log('Calculated segments:', segments);  // Debug log to inspect segments
     return segments;
   };
 

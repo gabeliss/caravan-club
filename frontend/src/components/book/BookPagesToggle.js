@@ -100,7 +100,6 @@ const ToggleItem = ({ title, content, isActive, setActive, availability, price, 
 const ToggleList = ({ data, onSelectionChange }) => {
     const [activeIndex, setActiveIndex] = useState(null);
     const [selectedStatusKey, setSelectedStatusKey] = useState(null);
-    console.log("Data:", data);  // For debugging
 
     const calculateNightRange = (city) => {
         const range = data.segments?.range;

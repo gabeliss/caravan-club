@@ -202,10 +202,22 @@ async function scrapeTeePeeCampgroundTent(startDate, endDate, numAdults, numKids
                 await browser.close();
                 return { available: false, price: null, message: "No availability" };
             } else {
-                throw new Error('No availability and no call-to-book element found');
+                // Check for call-to-book message div
+                const callToBookMessageDiv = await page.$('div[data-test-id="call-to-book-message"]', { timeout: 3000 });
+                if (callToBookMessageDiv) {
+                    const text = await page.evaluate(el => {
+                        const phoneSpan = el.querySelector('span');
+                        return phoneSpan ? phoneSpan.textContent.trim() : '';
+                    }, callToBookMessageDiv);
+                    console.log('Call to book message found:', text);
+                    await browser.close();
+                    return { available: false, price: null, message: "No availability" };
+                } else {
+                    throw new Error('No availability indicators found');
+                }
             }
         } catch (innerError) {
-            console.log('Could not find book-anon-columns-section div or call-to-book element');
+            console.log('Could not find book-anon-columns-section div or availability indicators');
             await browser.close();
             return { available: false, price: null, message: "Something went wrong" };
         }

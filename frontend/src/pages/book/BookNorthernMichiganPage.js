@@ -87,7 +87,6 @@ function BookNorthernMichiganPage() {
     const { num_adults, num_kids, segments } = location.state;
 
     if (apiCalled.current) {
-      console.log("API calls have already been made. Skipping repeated fetch.");
       return;
     }
 
@@ -103,7 +102,6 @@ function BookNorthernMichiganPage() {
           const endDateFormatted = convertDateFormat(dateRange.end);
 
           Object.keys(accommodationsData[locationKey].tent).forEach(accommodation => {
-            console.log(`Fetching details for ${accommodation} from ${startDateFormatted} to ${endDateFormatted}`);
             apiCalls.push(
               fetchAccommodationDetails(accommodation, startDateFormatted, endDateFormatted, num_adults, num_kids)
                 .then(data => {
@@ -136,7 +134,6 @@ function BookNorthernMichiganPage() {
       fetchAccommodationData();
     }
 
-    console.log('Location state found:', location.state);
   }, [location.state, navigate, placeDetails]);
 
   const handleSelectStatus = (location, selected_accommodation) => {
