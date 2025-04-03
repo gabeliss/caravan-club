@@ -1,11 +1,11 @@
 from flask import Blueprint, request, jsonify
 import logging
-from app.caravan_automation.scrapers.scrapeTimberRidgeTent import scrape_timberRidgeTent
-from app.caravan_automation.scrapers.scrapeLeelanauPinesTent import scrape_leelanauPinesTent
-from app.caravan_automation.scrapers.scrapeIndianRiverTent import scrape_indianRiverTent
-from app.caravan_automation.scrapers.scrapeUncleDuckysTent import scrape_uncleDuckysTent
-from app.caravan_automation.scrapers.scrapeTouristParkTent import scrape_touristParkTent
-from app.caravan_automation.scrapers.scrapeFortSuperiorTent import scrape_fortSuperiorTent
+from backend.app.caravan_automation.scrapers.traverse_city.scrapeTimberRidge import scrape_timberRidgeTent
+from backend.app.caravan_automation.scrapers.traverse_city.scrapeLeelanauPines import scrape_leelanauPinesTent
+from backend.app.caravan_automation.scrapers.mackinac_city.scrapeIndianRiver import scrape_indianRiverTent
+from backend.app.caravan_automation.scrapers.pictured_rocks.scrapeUncleDuckysAuTrain import scrape_uncleDuckysTent
+from backend.app.caravan_automation.scrapers.pictured_rocks.scrapeTouristPark import scrape_touristParkTent
+from backend.app.caravan_automation.scrapers.pictured_rocks.scrapeFortSuperior import scrape_fortSuperiorTent
 import requests
 import os
 import httpx
